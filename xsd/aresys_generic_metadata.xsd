@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:ns1="aresysTypes" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:import schemaLocation="aresysTypes.xsd" namespace="aresysTypes"/>
+  <xs:element name="AresysXmlDoc" type="AresysXmlDocType"/>
+  <xs:complexType name="AresysXmlDocType">
+    <xs:sequence>
+      <xs:element name="NumberOfChannels" type="xs:unsignedInt"/>
+      <xs:element name="VersionNumber" type="xs:double"/>
+      <xs:element name="Description" type="xs:string"/>
+      <xs:sequence minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Channel">
+          <xs:complexType>
+            <xs:complexContent mixed="false">
+              <xs:extension base="ChannelType">
+                <xs:sequence minOccurs="1" maxOccurs="1">
+                  <xs:element minOccurs="0" maxOccurs="1" name="RasterInfo" type="ns1:RasterInfoType"/>
+                  <xs:element minOccurs="0" maxOccurs="1" name="DataSetInfo" type="ns1:DataSetInfoType"/>
+                  <xs:element minOccurs="0" maxOccurs="1" name="SwathInfo" type="ns1:SwathInfoType"/>
+                  <xs:element minOccurs="0" maxOccurs="1" name="SamplingConstants" type="ns1:SamplingConstantsType"/>
+                  <xs:element minOccurs="0" maxOccurs="1" name="AcquisitionTimeLine" type="ns1:AcquisitionTimelineType"/>
+                  <xs:element minOccurs="0" maxOccurs="1" name="DataStatistics" type="ns1:DataStatisticsType"/>
+                  <xs:element minOccurs="0" maxOccurs="1" name="BurstInfo" type="ns1:BurstInfoType"/>
+                  <xs:element minOccurs="0" maxOccurs="1" name="StateVectorData" type="ns1:StateVectorDataType"/>
+                  <xs:element minOccurs="0" maxOccurs="unbounded" name="DopplerCentroid" type="ns1:polyType"/>
+                  <xs:element minOccurs="0" maxOccurs="unbounded" name="DopplerRate" type="ns1:polyType"/>
+                  <xs:element minOccurs="0" maxOccurs="unbounded" name="TopsAzimuthModulationRate" type="ns1:polyType"/>
+                  <xs:element minOccurs="0" maxOccurs="unbounded" name="SlantToGround" type="ns1:polyType"/>
+                  <xs:element minOccurs="0" maxOccurs="unbounded" name="GroundToSlant" type="ns1:polyType"/>
+                  <xs:element minOccurs="0" maxOccurs="unbounded" name="SlantToIncidence" type="ns1:polyType"/>
+                  <xs:element minOccurs="0" maxOccurs="unbounded" name="SlantToElevation" type="ns1:polyType"/>
+                  <xs:element minOccurs="0" maxOccurs="1" name="AttitudeInfo" type="ns1:AttitudeInfoType"/>
+                  <xs:element minOccurs="0" maxOccurs="1" name="GroundCornerPoints" type="ns1:GroundCornersPointsType"/>
+                  <xs:element minOccurs="0" maxOccurs="1" name="Pulse" type="ns1:PulseType"/>
+                  <xs:element minOccurs="0" maxOccurs="unbounded" name="CoregPoly" type="ns1:polyCoregType"/>
+                  <xs:element minOccurs="0" maxOccurs="1" name="AntennaInfo" type="ns1:AntennaInfoType"/>
+                </xs:sequence>
+              </xs:extension>
+            </xs:complexContent>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ChannelType" mixed="false">
+    <xs:complexContent mixed="false">
+      <xs:extension base="ns1:TreeElementBaseType">
+        <xs:attribute name="ContentID" type="xs:string"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+</xs:schema>

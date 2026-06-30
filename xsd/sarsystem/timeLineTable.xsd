@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+  attributeFormDefault="unqualified">
+  <xs:element name="Sensor">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Version" type="xs:string" />
+        <xs:element name="Mode" type="ModeType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="SteeringVelocityType">
+    <xs:sequence>
+      <xs:element name="val" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:float">
+              <xs:attribute name="BeamID" use="required" />
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="unit" type="xs:string" use="required" fixed="rad/s" />
+  </xs:complexType>
+  <xs:simpleType name="EchoTypeType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Echo" />
+      <xs:enumeration value="WarmUp" />
+      <xs:enumeration value="Noise" />
+      <xs:enumeration value="InitCal" />
+      <xs:enumeration value="InitCal_TxCal" />
+      <xs:enumeration value="InitCal_RxCal" />
+      <xs:enumeration value="InitCal_EPDNCal" />
+      <xs:enumeration value="InitCal_TACal" />
+      <xs:enumeration value="InitCal_APDNCal" />
+      <xs:enumeration value="InitCal_TxCal100" />
+      <xs:enumeration value="InitCal_RxCal100" />
+      <xs:enumeration value="InitCal_EPDNCal100" />
+      <xs:enumeration value="InitCal_TACal100" />
+      <xs:enumeration value="InitCal_APDNCal100" />
+      <xs:enumeration value="InitCal_RFC_TxCal" />
+      <xs:enumeration value="InitCal_RFC_RxCal" />
+      <xs:enumeration value="InitCal_RFC_EPDNCal" />
+      <xs:enumeration value="InitCal_RFC_TACal" />
+      <xs:enumeration value="InitCal_RFC_APDNCal" />
+      <xs:enumeration value="InitCal_TxCalIso" />
+      <xs:enumeration value="InitCal_RxCalIso" />
+      <xs:enumeration value="InitCal_EPDNCalIso" />
+      <xs:enumeration value="InitCal_TACalIso" />
+      <xs:enumeration value="InitCal_APDNCalIso" />
+      <xs:enumeration value="InitCal_TxCal100Iso" />
+      <xs:enumeration value="InitCal_RxCal100Iso" />
+      <xs:enumeration value="InitCal_EPDNCal100Iso" />
+      <xs:enumeration value="InitCal_TACal100Iso" />
+      <xs:enumeration value="InitCal_APDNCal100Iso" />
+      <xs:enumeration value="InitCal_RFC_TxCalIso" />
+      <xs:enumeration value="InitCal_RFC_RxCalIso" />
+      <xs:enumeration value="InitCal_RFC_EPDNCalIso" />
+      <xs:enumeration value="InitCal_RFC_TACalIso" />
+      <xs:enumeration value="InitCal_RFC_APDNCalIso" />
+      <xs:enumeration value="Cal" />
+      <xs:enumeration value="Cal_TxCal" />
+      <xs:enumeration value="Cal_RxCal" />
+      <xs:enumeration value="Cal_EPDNCal" />
+      <xs:enumeration value="Cal_TACal" />
+      <xs:enumeration value="Cal_APDNCal" />
+      <xs:enumeration value="Cal_TxCal100" />
+      <xs:enumeration value="Cal_RxCal100" />
+      <xs:enumeration value="Cal_EPDNCal100" />
+      <xs:enumeration value="Cal_TACal100" />
+      <xs:enumeration value="Cal_APDNCal100" />
+      <xs:enumeration value="Cal_RFC_TxCal" />
+      <xs:enumeration value="Cal_RFC_RxCal" />
+      <xs:enumeration value="Cal_RFC_EPDNCal" />
+      <xs:enumeration value="Cal_RFC_TACal" />
+      <xs:enumeration value="Cal_RFC_APDNCal" />
+      <xs:enumeration value="Cal_TxCalIso" />
+      <xs:enumeration value="Cal_RxCalIso" />
+      <xs:enumeration value="Cal_EPDNCalIso" />
+      <xs:enumeration value="Cal_TACalIso" />
+      <xs:enumeration value="Cal_APDNCalIso" />
+      <xs:enumeration value="Cal_TxCal100Iso" />
+      <xs:enumeration value="Cal_RxCal100Iso" />
+      <xs:enumeration value="Cal_EPDNCal100Iso" />
+      <xs:enumeration value="Cal_TACal100Iso" />
+      <xs:enumeration value="Cal_APDNCal100Iso" />
+      <xs:enumeration value="Cal_RFC_TxCalIso" />
+      <xs:enumeration value="Cal_RFC_RxCalIso" />
+      <xs:enumeration value="Cal_RFC_EPDNCalIso" />
+      <xs:enumeration value="Cal_RFC_TACalIso" />
+      <xs:enumeration value="Cal_RFC_APDNCalIso" />
+      <xs:enumeration value="TXCal512" />
+      <xs:enumeration value="RXCal512" />
+      <xs:enumeration value="TXCalRFC" />
+      <xs:enumeration value="RXCalRFC" />
+      <xs:enumeration value="EPCal32" />
+      <xs:enumeration value="TACal32" />
+      <xs:enumeration value="APCal1" />
+      <xs:enumeration value="silent" />
+      <xs:enumeration value="P1" />
+      <xs:enumeration value="P2" />
+      <xs:enumeration value="P3" />
+      <xs:enumeration value="P4" />
+      <xs:enumeration value="P5" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="ModeType">
+    <xs:sequence>
+      <xs:element name="SteeringVelocity" type="SteeringVelocityType" />
+      <xs:element name="InitialCycle" type="CycleType" minOccurs="0" />
+      <xs:element name="AcquisitionCycle" type="CycleType" />
+      <xs:element name="EndCycle" type="CycleType" minOccurs="0" />
+    </xs:sequence>
+    <xs:attribute name="ModeID" use="required" />
+  </xs:complexType>
+  <xs:complexType name="CycleType">
+    <xs:sequence>
+      <xs:element name="TimelinePeriod" type="TimeLinePeriodType" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="TimeLinePeriodType">
+    <xs:sequence>
+      <xs:element name="BeamID" type="xs:string" />
+      <xs:element name="EchoType" type="EchoTypeType" />
+      <xs:element name="NumberOfEchoes" type="xs:int" />
+      <xs:element name="PatternListTX" type="PatternListType" minOccurs="0" />
+      <xs:element name="PatternListRX" type="PatternListType" minOccurs="0" />
+      <xs:element name="AzimuthSteeringIndexTX" type="IndexType" />
+      <xs:element name="AzimuthSteeringIndexRX" type="IndexType" />
+      <xs:element name="ChirpIndex" type="IndexType" />
+      <!-- <xs:element name="VaryingArmPolarCoordinates" type="..." minOccurs="0" /> -->
+    </xs:sequence>
+    <xs:attribute name="PeriodNumber" use="required" type="xs:int" />
+  </xs:complexType>
+  <xs:complexType name="IndexType">
+    <xs:sequence>
+      <xs:element name="val" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:int">
+              <xs:attribute name="N" type="xs:int" use="required" />
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="PatternListType">
+    <xs:sequence>
+      <xs:element name="Pattern" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="PatternIndex" type="xs:int" />
+            <xs:element name="TimeValidity" minOccurs="0">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="Start" type="xs:double" />
+                  <xs:element name="Stop" type="xs:double" />
+                </xs:sequence>
+                <xs:attribute name="Unit" type="xs:string" use="required" />
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+          <xs:attribute name="N" type="xs:int" use="required" />
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

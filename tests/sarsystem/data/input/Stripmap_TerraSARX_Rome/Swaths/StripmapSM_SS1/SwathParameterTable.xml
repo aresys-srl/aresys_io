@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ConfigurationFileDoc>
+   <Version>2.0</Version>
+   <Beam BeamID="StripmapSM_SS1">
+      <SamplingFrequency>188805204.4970664</SamplingFrequency>
+      <ParameterPeriod PeriodNumber="1">
+         <RelativeTimeStart>0</RelativeTimeStart>
+         <RelativeTimeStop>5692</RelativeTimeStop>
+         <PRF>2875</PRF>
+         <SWST>6.41912894641136e-05</SWST>
+         <SWL>0.000156005955574837</SWL>
+         <RANK>11</RANK>
+         <NoiseFigure>3.16227766016838</NoiseFigure>
+         <ReferenceTemperature>290</ReferenceTemperature>
+         <RadarCarrierFrequency>9650000000</RadarCarrierFrequency>
+         <TransmittedPower>2259.9936</TransmittedPower>
+      </ParameterPeriod>
+   </Beam>
+</ConfigurationFileDoc>

@@ -1,0 +1,1779 @@
+<?xml version='1.0' encoding='utf-8'?>
+<xs:schema xmlns:at="aresysTypes" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="aresysTypes">
+  <xs:simpleType name="CellTypeVerboseType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="FLOAT_COMPLEX" />
+      <xs:enumeration value="FLOAT32" />
+      <xs:enumeration value="DOUBLE_COMPLEX" />
+      <xs:enumeration value="FLOAT64" />
+      <xs:enumeration value="INT16" />
+      <xs:enumeration value="SHORT_COMPLEX" />
+      <xs:enumeration value="INT32" />
+      <xs:enumeration value="INT_COMPLEX" />
+      <xs:enumeration value="INT8" />
+      <xs:enumeration value="INT8_COMPLEX" />
+      <xs:enumeration value="CUSTOM" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="RasterFormatType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ARESYS_RASTER" />
+      <xs:enumeration value="ARESYS_GEOTIFF" />
+      <xs:enumeration value="RASTER" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="SensorNamesType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="NOT SET" />
+      <xs:enumeration value="ASAR" />
+      <xs:enumeration value="PALSAR" />
+      <xs:enumeration value="ERS1" />
+      <xs:enumeration value="ERS2" />
+      <xs:enumeration value="RADARSAT" />
+      <xs:enumeration value="TERRASARX" />
+      <xs:enumeration value="SENTINEL1" />
+      <xs:enumeration value="SENTINEL1A" />
+      <xs:enumeration value="SENTINEL1B" />
+      <xs:enumeration value="SENTINEL1C" />
+      <xs:enumeration value="SENTINEL1D" />
+      <xs:enumeration value="SAOCOM" />
+      <xs:enumeration value="SAOCOM-1A" />
+      <xs:enumeration value="SAOCOM-1B" />
+      <xs:enumeration value="UAVSAR" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="AcquisitionModeType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="NOT SET" />
+      <xs:enumeration value="STRIPMAP" />
+      <xs:enumeration value="DOUBLE POL" />
+      <xs:enumeration value="QUAD POL" />
+      <xs:enumeration value="SCANSAR" />
+      <xs:enumeration value="TOPSAR" />
+      <xs:enumeration value="SPOT" />
+      <xs:enumeration value="WAVE" />
+      <xs:enumeration value="GMTI" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="Endianity">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="BIGENDIAN" />
+      <xs:enumeration value="LITTLEENDIAN" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="TreeElementBaseType">
+    <xs:attribute name="Number" type="xs:unsignedInt" use="optional" />
+    <xs:attribute name="Total" type="xs:unsignedInt" use="optional" />
+  </xs:complexType>
+  <xs:simpleType name="AscendingDescendingType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ASCENDING" />
+      <xs:enumeration value="DESCENDING" />
+      <xs:enumeration value="NOT_AVAILABLE" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="units">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="" />
+      <xs:enumeration value="m" />
+      <xs:enumeration value="s" />
+      <xs:enumeration value="j" />
+      <xs:enumeration value="dB" />
+      <xs:enumeration value="rad" />
+      <xs:enumeration value="deg" />
+      <xs:enumeration value="m/s" />
+      <xs:enumeration value="m/s2" />
+      <xs:enumeration value="m/s3" />
+      <xs:enumeration value="m/s4" />
+      <xs:enumeration value="m/s5" />
+      <xs:enumeration value="m/s6" />
+      <xs:enumeration value="m/s7" />
+      <xs:enumeration value="m/s8" />
+      <xs:enumeration value="m/s9" />
+      <xs:enumeration value="s/s" />
+      <xs:enumeration value="s/s2" />
+      <xs:enumeration value="s/s3" />
+      <xs:enumeration value="s/s4" />
+      <xs:enumeration value="s/s5" />
+      <xs:enumeration value="Hz" />
+      <xs:enumeration value="Hz/s" />
+      <xs:enumeration value="Hz/s2" />
+      <xs:enumeration value="Hz/s3" />
+      <xs:enumeration value="Hz/s4" />
+      <xs:enumeration value="Hz/s5" />
+      <xs:enumeration value="Hz/s6" />
+      <xs:enumeration value="Hz/s7" />
+      <xs:enumeration value="Hz/s8" />
+      <xs:enumeration value="Hz/s9" />
+      <xs:enumeration value="rad/s" />
+      <xs:enumeration value="rad/s2" />
+      <xs:enumeration value="rad/s3" />
+      <xs:enumeration value="rad/s4" />
+      <xs:enumeration value="rad/s5" />
+      <xs:enumeration value="rad/s6" />
+      <xs:enumeration value="rad/s7" />
+      <xs:enumeration value="rad/s8" />
+      <xs:enumeration value="rad/s9" />
+      <xs:enumeration value="s85" />
+      <xs:enumeration value="Utc" />
+      <xs:enumeration value="b" />
+      <xs:enumeration value="K" />
+      <xs:enumeration value="s/m" />
+      <xs:enumeration value="s/m2" />
+      <xs:enumeration value="s/m3" />
+      <xs:enumeration value="s/m4" />
+      <xs:enumeration value="s/m5" />
+      <xs:enumeration value="s/m6" />
+      <xs:enumeration value="s/m7" />
+      <xs:enumeration value="s/m8" />
+      <xs:enumeration value="s/m9" />
+      <xs:enumeration value="deg/s" />
+      <xs:enumeration value="deg/s2" />
+      <xs:enumeration value="deg/s3" />
+      <xs:enumeration value="deg/s4" />
+      <xs:enumeration value="deg/s5" />
+      <xs:enumeration value="deg/s6" />
+      <xs:enumeration value="deg/s7" />
+      <xs:enumeration value="deg/s8" />
+      <xs:enumeration value="deg/s9" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="PolarizationType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="H/H" />
+      <xs:enumeration value="H/V" />
+      <xs:enumeration value="V/H" />
+      <xs:enumeration value="V/V" />
+      <xs:enumeration value="X/X" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="GlobalPolarizationType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="SINGLE POL" />
+      <xs:enumeration value="DUAL POL" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="LeftRightType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="LEFT" />
+      <xs:enumeration value="RIGHT" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="ReferenceFrameType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="GEOCENTRIC" />
+      <xs:enumeration value="GEODETIC" />
+      <xs:enumeration value="ZERODOPPLER" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="RotationOrderType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="YPR" />
+      <xs:enumeration value="YRP" />
+      <xs:enumeration value="PRY" />
+      <xs:enumeration value="PYR" />
+      <xs:enumeration value="RPY" />
+      <xs:enumeration value="RYP" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="AttitudeType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="NOMINAL" />
+      <xs:enumeration value="REFINED" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="ImageQuantityType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="BETA" />
+      <xs:enumeration value="GAMMA" />
+      <xs:enumeration value="SIGMA" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="doubleWithUnit">
+    <xs:simpleContent>
+      <xs:extension base="xs:double">
+        <xs:attribute name="unit" type="at:units" use="required" />
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="stringWithUnit">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="unit" type="at:units" use="required" />
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="PulseType">
+    <xs:annotation>
+      <xs:documentation>Transmitted pulse parameters</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent mixed="false">
+      <xs:extension base="at:TreeElementBaseType">
+        <xs:all>
+          <xs:element name="Direction" minOccurs="0">
+            <xs:annotation>
+              <xs:documentation>Pulse direction (UP, DOWN)</xs:documentation>
+            </xs:annotation>
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:enumeration value="UP" />
+                <xs:enumeration value="DOWN" />
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:element>
+          <xs:element name="PulseLength" type="at:doubleWithUnit">
+            <xs:annotation>
+              <xs:documentation>Pulse length [s]</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="Bandwidth" type="at:doubleWithUnit">
+            <xs:annotation>
+              <xs:documentation>Pulse bandwidth [Hz]</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="PulseEnergy" type="at:doubleWithUnit">
+            <xs:annotation>
+              <xs:documentation>Pulse energy [J]</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="PulseSamplingRate" type="at:doubleWithUnit">
+            <xs:annotation>
+              <xs:documentation>Pulse sampling rate [Hz]</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="PulseStartFrequency" type="at:doubleWithUnit">
+            <xs:annotation>
+              <xs:documentation>Pulse start frequency [Hz]</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="PulseStartPhase" type="at:doubleWithUnit">
+            <xs:annotation>
+              <xs:documentation>Pulse start phase [rad]</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:all>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="DataSetInfoType">
+    <xs:annotation>
+      <xs:documentation>Information regarding the dataset</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent mixed="false">
+      <xs:extension base="at:TreeElementBaseType">
+        <xs:all>
+          <xs:element name="SensorName" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Name of the sensor used to acquire the image: ASAR, PALSAR, ...</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="Description">
+            <xs:annotation>
+              <xs:documentation>Description of the image</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:string">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="SenseDate">
+            <xs:annotation>
+              <xs:documentation>Image acquisition date</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:string">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="AcquisitionMode">
+            <xs:annotation>
+              <xs:documentation>Image acquisition mode: STRIPMAP, TOPSAR, ...</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:string">
+                  <xs:attribute name="Polarization" type="at:GlobalPolarizationType" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="ImageType">
+            <xs:annotation>
+              <xs:documentation>Image type: RAW DATA, RANGE FOCUSED, AZIMUTH FOCUSED </xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:string">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Projection">
+            <xs:annotation>
+              <xs:documentation>Image projection: SLANT RANGE, GROUND RANGE</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:string">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element minOccurs="0" name="ProjectionParameters">
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:string">
+                  <xs:attribute name="Format" type="xs:string" use="required" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="ImageQuantity" type="at:ImageQuantityType" minOccurs="0" />
+          <xs:element name="AcquisitionStation">
+            <xs:annotation>
+              <xs:documentation>Image acquisition station</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:string">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="ProcessingCenter">
+            <xs:annotation>
+              <xs:documentation>Image processing center</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:string">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="ProcessingDate">
+            <xs:annotation>
+              <xs:documentation>Image processing date</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:string">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="ProcessingSoftware">
+            <xs:annotation>
+              <xs:documentation>Image processing software</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:string">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="fc_hz">
+            <xs:annotation>
+              <xs:documentation>Radar carrier frequency [Hz]</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:double">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="SideLooking" type="at:LeftRightType">
+            <xs:annotation>
+              <xs:documentation>Radar side looking: LEFT, RIGHT</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="ExternalCalibrationFactor" type="xs:double">
+            <xs:annotation>
+              <xs:documentation>External calibration factor</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="DataTakeID" type="xs:unsignedInt" />
+          <xs:element minOccurs="0" name="InstrumentConfID">
+            <xs:simpleType>
+              <xs:restriction base="xs:integer">
+                <xs:minInclusive value="0" />
+                <xs:maxInclusive value="99999999" />
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:element>
+        </xs:all>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="StateVectorDataType">
+    <xs:annotation>
+      <xs:documentation>Information regarding position and velocity of the sensor along the orbit (State Vector Data)</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent mixed="false">
+      <xs:extension base="at:TreeElementBaseType">
+        <xs:all>
+          <xs:element name="OrbitNumber" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Number of the orbit</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="Track" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Number of the track</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="OrbitDirection">
+            <xs:annotation>
+              <xs:documentation>Direction of the orbit: ASCENDING, DESCENDING</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="at:AscendingDescendingType" />
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="pSV_m">
+            <xs:annotation>
+              <xs:documentation>Orbit state vectors position coordinates (xyz) [m]</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" name="val">
+                  <xs:complexType>
+                    <xs:simpleContent>
+                      <xs:extension base="xs:double">
+                        <xs:attribute name="N" type="xs:int" use="optional" />
+                        <xs:attribute name="unit" type="at:units" use="optional" />
+                      </xs:extension>
+                    </xs:simpleContent>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="vSV_mOs">
+            <xs:annotation>
+              <xs:documentation>Orbit state vectors velocity coordinates [m/s]</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" name="val">
+                  <xs:complexType>
+                    <xs:simpleContent>
+                      <xs:extension base="xs:double">
+                        <xs:attribute name="N" type="xs:int" use="optional" />
+                        <xs:attribute name="unit" type="at:units" use="optional" />
+                      </xs:extension>
+                    </xs:simpleContent>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="t_ref_Utc" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Azimuth absolute start time for the first state vector [Utc]</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="dtSV_s">
+            <xs:annotation>
+              <xs:documentation>Azimuth time interval between two consecutive state vectors [s]</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:double">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="nSV_n">
+            <xs:annotation>
+              <xs:documentation>Number of state vectors</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:int">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element minOccurs="0" name="AscendingNodeTime" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Azimuth absolute time of the ascending node</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="AscendingNodeCoords">
+            <xs:annotation>
+              <xs:documentation>Coordinates of the ascending node</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element minOccurs="3" maxOccurs="3" name="val">
+                  <xs:complexType>
+                    <xs:simpleContent>
+                      <xs:extension base="xs:double">
+                        <xs:attribute name="N" type="xs:int" use="optional" />
+                        <xs:attribute name="unit" type="at:units" use="optional" />
+                      </xs:extension>
+                    </xs:simpleContent>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:all>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="AttitudeInfoType">
+    <xs:annotation>
+      <xs:documentation>Sensor attitude information</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent mixed="false">
+      <xs:extension base="at:TreeElementBaseType">
+        <xs:all>
+          <xs:element name="t_ref_Utc" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Azimuth absolute start time for the first attitude value [Utc]</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="dtYPR_s">
+            <xs:annotation>
+              <xs:documentation>Azimuth time interval between two consecutive attitude values [s]</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:double">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="nYPR_n">
+            <xs:annotation>
+              <xs:documentation>Number of attitude values</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:int">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="yaw_deg">
+            <xs:annotation>
+              <xs:documentation>Yaw angle values [deg]</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" name="val">
+                  <xs:complexType>
+                    <xs:simpleContent>
+                      <xs:extension base="xs:double">
+                        <xs:attribute name="N" type="xs:int" use="optional" />
+                        <xs:attribute name="unit" type="at:units" use="optional" />
+                      </xs:extension>
+                    </xs:simpleContent>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="pitch_deg">
+            <xs:annotation>
+              <xs:documentation>Pitch angle values [deg]</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" name="val">
+                  <xs:complexType>
+                    <xs:simpleContent>
+                      <xs:extension base="xs:double">
+                        <xs:attribute name="N" type="xs:int" use="optional" />
+                        <xs:attribute name="unit" type="at:units" use="optional" />
+                      </xs:extension>
+                    </xs:simpleContent>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="roll_deg">
+            <xs:annotation>
+              <xs:documentation>Roll angle values [deg]</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" name="val">
+                  <xs:complexType>
+                    <xs:simpleContent>
+                      <xs:extension base="xs:double">
+                        <xs:attribute name="N" type="xs:int" use="optional" />
+                        <xs:attribute name="unit" type="at:units" use="optional" />
+                      </xs:extension>
+                    </xs:simpleContent>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="referenceFrame" type="at:ReferenceFrameType">
+            <xs:annotation>
+              <xs:documentation>Reference frame: GEOCENTRIC, GEODETIC, ZERODOPPLER</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="rotationOrder" type="at:RotationOrderType">
+            <xs:annotation>
+              <xs:documentation>Rotation order: YPR, YRP, PRY, PYR, RPY, RYP</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="AttitudeType" type="at:AttitudeType">
+            <xs:annotation>
+              <xs:documentation>Attitude type: NOMINAL, REFINED</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:all>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="SwathInfoType">
+    <xs:annotation>
+      <xs:documentation>Swath general information</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent mixed="false">
+      <xs:extension base="at:TreeElementBaseType">
+        <xs:sequence>
+          <xs:element name="Swath">
+            <xs:annotation>
+              <xs:documentation>Swath name</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:string">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="SwathAcquisitionOrder">
+            <xs:annotation>
+              <xs:documentation>Swath acquisition order</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:unsignedInt">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Polarization" type="at:PolarizationType">
+            <xs:annotation>
+              <xs:documentation>Polarization: H/H, H/V, V/H, V/V</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="Rank">
+            <xs:annotation>
+              <xs:documentation>Rank</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:int">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="RangeDelayBias">
+            <xs:annotation>
+              <xs:documentation>Range delay bias [s]</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:double">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="AcquisitionStartTime">
+            <xs:annotation>
+              <xs:documentation>Acquisition start time [Utc]</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:string">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:choice>
+            <xs:sequence>
+              <xs:element name="AzimuthSteeringAngleReferenceTime" type="at:doubleWithUnit">
+                <xs:annotation>
+                  <xs:documentation>Azimuth antenna steering angle polynomial reference time [s]</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="AzimuthSteeringAnglePol">
+                <xs:annotation>
+                  <xs:documentation>Azimuth antenna steering angle polynomial coefficients: const [rad], az [rad/s], az^2 [rad/s^2], az^3 [rad/s^3]</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element minOccurs="4" maxOccurs="4" name="val">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:double">
+                            <xs:attribute name="N" type="xs:int" use="optional" />
+                            <xs:attribute name="unit" type="at:units" use="optional" />
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:sequence>
+              <xs:element name="AzimuthSteeringRateReferenceTime" type="at:doubleWithUnit">
+                <xs:annotation>
+                  <xs:documentation>Azimuth antenna steering rate polynomial reference time [s]</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="AzimuthSteeringRatePol">
+                <xs:annotation>
+                  <xs:documentation>Azimuth antenna steering rate polynomial coefficients: const [rad/s], az [rad/s^2], az^2 [rad/s^3]</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element minOccurs="3" maxOccurs="3" name="val">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:double">
+                            <xs:attribute name="N" type="xs:int" use="optional" />
+                            <xs:attribute name="unit" type="at:units" use="optional" />
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:choice>
+          <xs:element name="AcquisitionPRF" type="xs:double">
+            <xs:annotation>
+              <xs:documentation>Acquisition Pulse Repetition Frequency</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="EchoesPerBurst" type="xs:unsignedInt">
+            <xs:annotation>
+              <xs:documentation>Number of echoes for each burst</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="ChannelDelay" type="xs:double">
+            <xs:annotation>
+              <xs:documentation>Range channel delay time</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="RxGain" type="xs:float">
+            <xs:annotation>
+              <xs:documentation>Value of the commandable Rx attenuation in the receiver channel</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="AcquisitionTimelineType">
+    <xs:annotation>
+      <xs:documentation>Acquisition timeline definition</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent mixed="false">
+      <xs:extension base="at:TreeElementBaseType">
+        <xs:sequence>
+          <xs:element name="MissingLines_number">
+            <xs:annotation>
+              <xs:documentation>Number of missing lines</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:unsignedInt" />
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="MissingLines_azimuthtimes">
+            <xs:annotation>
+              <xs:documentation>Azimuth relative times for each missing line</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" name="val">
+                  <xs:complexType>
+                    <xs:simpleContent>
+                      <xs:extension base="xs:double">
+                        <xs:attribute name="unit" type="at:units" use="optional" />
+                        <xs:attribute name="N" type="xs:unsignedInt" use="optional" />
+                      </xs:extension>
+                    </xs:simpleContent>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element minOccurs="0" maxOccurs="1" name="DuplicatedLines_number">
+            <xs:annotation>
+              <xs:documentation>Number of duplicated lines</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:unsignedInt" />
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element minOccurs="0" maxOccurs="1" name="DuplicatedLines_azimuthtimes">
+            <xs:annotation>
+              <xs:documentation>Azimuth relative times for each duplicated line</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" name="val">
+                  <xs:complexType>
+                    <xs:simpleContent>
+                      <xs:extension base="xs:double">
+                        <xs:attribute name="unit" type="at:units" use="optional" />
+                        <xs:attribute name="N" type="xs:unsignedInt" use="optional" />
+                      </xs:extension>
+                    </xs:simpleContent>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element minOccurs="0" maxOccurs="1" name="PRF_changes_number">
+            <xs:annotation>
+              <xs:documentation>Number of PRF changes</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:unsignedInt" />
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element minOccurs="0" maxOccurs="1" name="PRF_changes_azimuthtimes">
+            <xs:annotation>
+              <xs:documentation>Azimuth relative times for each PRF change</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="val" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:simpleContent>
+                      <xs:extension base="xs:double">
+                        <xs:attribute name="unit" type="at:units" use="optional" />
+                        <xs:attribute name="N" type="xs:unsignedInt" use="optional" />
+                      </xs:extension>
+                    </xs:simpleContent>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element minOccurs="0" maxOccurs="1" name="PRF_changes_values">
+            <xs:annotation>
+              <xs:documentation>PRF changes values</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="val" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:simpleContent>
+                      <xs:extension base="xs:double">
+                        <xs:attribute name="unit" type="at:units" use="optional" />
+                        <xs:attribute name="N" type="xs:unsignedInt" use="optional" />
+                      </xs:extension>
+                    </xs:simpleContent>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Swst_changes_number">
+            <xs:annotation>
+              <xs:documentation>Number of SWST changes</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:unsignedInt" />
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Swst_changes_azimuthtimes">
+            <xs:annotation>
+              <xs:documentation>Azimuth relative times for each SWST change</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" name="val">
+                  <xs:complexType>
+                    <xs:simpleContent>
+                      <xs:extension base="xs:double">
+                        <xs:attribute name="unit" type="at:units" use="optional" />
+                        <xs:attribute name="N" type="xs:unsignedInt" use="optional" />
+                      </xs:extension>
+                    </xs:simpleContent>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Swst_changes_values">
+            <xs:annotation>
+              <xs:documentation>SWST changes values</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" name="val">
+                  <xs:complexType>
+                    <xs:simpleContent>
+                      <xs:extension base="xs:double">
+                        <xs:attribute name="unit" type="at:units" use="optional" />
+                        <xs:attribute name="N" type="xs:unsignedInt" use="optional" />
+                      </xs:extension>
+                    </xs:simpleContent>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="noise_packets_number" type="xs:unsignedInt">
+            <xs:annotation>
+              <xs:documentation>Number of noise packets</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="noise_packets_azimuthtimes">
+            <xs:annotation>
+              <xs:documentation>Azimuth relative times for each noise packet</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" name="val">
+                  <xs:complexType>
+                    <xs:simpleContent>
+                      <xs:extension base="xs:double">
+                        <xs:attribute name="N" type="xs:unsignedInt" use="optional" />
+                        <xs:attribute name="unit" type="at:units" use="optional" />
+                      </xs:extension>
+                    </xs:simpleContent>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Internal_calibration_number" type="xs:unsignedInt">
+            <xs:annotation>
+              <xs:documentation>Number of internal calibration packets</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="Internal_calibration_azimuthtimes">
+            <xs:annotation>
+              <xs:documentation>Azimuth relative times for each internal calibration packet</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" name="val">
+                  <xs:complexType>
+                    <xs:simpleContent>
+                      <xs:extension base="xs:double">
+                        <xs:attribute name="N" type="xs:unsignedInt" use="optional" />
+                        <xs:attribute name="unit" type="at:units" use="optional" />
+                      </xs:extension>
+                    </xs:simpleContent>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:sequence minOccurs="0">
+            <xs:element name="Swl_changes_number" type="xs:unsignedInt">
+              <xs:annotation>
+                <xs:documentation>Number of SWL changes</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="Swl_changes_azimuthtimes">
+              <xs:annotation>
+                <xs:documentation>Relative azimuth times for each SWL change</xs:documentation>
+              </xs:annotation>
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element minOccurs="0" maxOccurs="unbounded" name="val">
+                    <xs:complexType>
+                      <xs:simpleContent>
+                        <xs:extension base="xs:double">
+                          <xs:attribute name="unit" type="at:units" />
+                          <xs:attribute name="N" type="xs:unsignedInt" />
+                        </xs:extension>
+                      </xs:simpleContent>
+                    </xs:complexType>
+                  </xs:element>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+            <xs:element name="Swl_changes_values">
+              <xs:annotation>
+                <xs:documentation>SWL changes values</xs:documentation>
+              </xs:annotation>
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element minOccurs="0" maxOccurs="unbounded" name="val">
+                    <xs:complexType>
+                      <xs:simpleContent>
+                        <xs:extension base="xs:double">
+                          <xs:attribute name="unit" type="at:units" />
+                          <xs:attribute name="N" type="xs:unsignedInt" />
+                        </xs:extension>
+                      </xs:simpleContent>
+                    </xs:complexType>
+                  </xs:element>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+          <xs:element minOccurs="0" name="ChirpPeriod" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Periodic list of chirp indexes related to multi-chirp image acquisition</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="RasterInfoType">
+    <xs:annotation>
+      <xs:documentation>Information regarding binary file format and time coordinates of the image</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent mixed="false">
+      <xs:extension base="at:TreeElementBaseType">
+        <xs:all>
+          <xs:element name="FileName" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Name of the associated binary file</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="Lines" type="xs:unsignedInt">
+            <xs:annotation>
+              <xs:documentation>Total number of lines (azimuth) of the image</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="Samples" type="xs:unsignedInt">
+            <xs:annotation>
+              <xs:documentation>Total number of samples (range) of the image</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="HeaderOffsetBytes" type="xs:unsignedInt">
+            <xs:annotation>
+              <xs:documentation>Number of bytes at the beginning of the file containing the header information</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="RowPrefixBytes" type="xs:unsignedInt">
+            <xs:annotation>
+              <xs:documentation>Number of bytes at the beginning of each line containing header information</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="ByteOrder" type="at:Endianity">
+            <xs:annotation>
+              <xs:documentation>Endianity: BIGENDIAN or LITTLEENDIAN</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="CellType" type="at:CellTypeVerboseType">
+            <xs:annotation>
+              <xs:documentation>Byte format type: FLOAT_COMPLEX, FLOAT32, DOUBLE_COMPLEX, FLOAT64, INT16, SHORT_COMPLEX, INT32, INT_COMPLEX, INT8, INT8_COMPLEX</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="LinesStep" type="at:doubleWithUnit">
+            <xs:annotation>
+              <xs:documentation>Azimuth sampling step [s]</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="SamplesStep" type="at:doubleWithUnit">
+            <xs:annotation>
+              <xs:documentation>Range sampling step [s]</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="LinesStart" type="at:stringWithUnit">
+            <xs:annotation>
+              <xs:documentation>Azimuth absolute start time [Utc]</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="SamplesStart" type="at:stringWithUnit">
+            <xs:annotation>
+              <xs:documentation>Range absolute start time [s]</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="RasterFormat" type="at:RasterFormatType">
+            <xs:annotation>
+              <xs:documentation>Raster Format of the Data ( Default value is ARESYS_RASTER )</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="InvalidValue" type="at:DCOMPLEX" />
+        </xs:all>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="SamplingConstantsType">
+    <xs:annotation>
+      <xs:documentation>Bandwidths and sampling frequencies</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent mixed="false">
+      <xs:extension base="at:TreeElementBaseType">
+        <xs:all>
+          <xs:element name="frg_hz">
+            <xs:annotation>
+              <xs:documentation>Range sampling frequency [Hz]</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:double">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Brg_hz">
+            <xs:annotation>
+              <xs:documentation>Range bandwidth [Hz]</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:double">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="faz_hz">
+            <xs:annotation>
+              <xs:documentation>Azimuth sampling frequency [Hz]</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:double">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Baz_hz">
+            <xs:annotation>
+              <xs:documentation>Azimuth bandwidth [Hz]</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:double">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+        </xs:all>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="DataStatisticsType">
+    <xs:annotation>
+      <xs:documentation>Statistics computed from data</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent mixed="false">
+      <xs:extension base="at:TreeElementBaseType">
+        <xs:all>
+          <xs:element name="NumSamples">
+            <xs:annotation>
+              <xs:documentation>Number of samples analyzed</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:unsignedLong">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="MaxI">
+            <xs:annotation>
+              <xs:documentation>Max of I (real) samples</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:double">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="MinI">
+            <xs:annotation>
+              <xs:documentation>Min of I (real) samples</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:double">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="MaxQ">
+            <xs:annotation>
+              <xs:documentation>Max of Q (imaginary) samples</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:double">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="MinQ">
+            <xs:annotation>
+              <xs:documentation>Min of Q (imaginary) samples</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:double">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="SumI">
+            <xs:annotation>
+              <xs:documentation>Sum of I (real) samples</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:double">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="SumQ">
+            <xs:annotation>
+              <xs:documentation>Sum of Q (imaginary) samples</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:double">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Sum2I">
+            <xs:annotation>
+              <xs:documentation>Square Sum of I (real) samples</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:double">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Sum2Q">
+            <xs:annotation>
+              <xs:documentation>Square Sum of Q (imaginary) samples</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:double">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="StdDevI">
+            <xs:annotation>
+              <xs:documentation>Standard Deviation of I (real) samples</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:double">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="StdDevQ">
+            <xs:annotation>
+              <xs:documentation>Standard Deviation of Q (imaginary) samples</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:double">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element minOccurs="0" name="StatisticsList">
+            <xs:complexType>
+              <xs:sequence maxOccurs="unbounded">
+                <xs:element name="DataBlockStatistic" type="at:DataBlockStatisticsType" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:all>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="DataBlockStatisticsType">
+    <xs:annotation>
+      <xs:documentation>Statistics computed from data</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent mixed="false">
+      <xs:extension base="at:TreeElementBaseType">
+        <xs:all>
+          <xs:element name="NumSamples">
+            <xs:annotation>
+              <xs:documentation>Number of samples analyzed</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:unsignedLong">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="MaxI">
+            <xs:annotation>
+              <xs:documentation>Max of I (real) samples</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:double">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="MinI">
+            <xs:annotation>
+              <xs:documentation>Min of I (real) samples</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:double">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="MaxQ">
+            <xs:annotation>
+              <xs:documentation>Max of Q (imaginary) samples</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:double">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="MinQ">
+            <xs:annotation>
+              <xs:documentation>Min of Q (imaginary) samples</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:double">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="SumI">
+            <xs:annotation>
+              <xs:documentation>Sum of I (real) samples</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:double">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="SumQ">
+            <xs:annotation>
+              <xs:documentation>Sum of Q (imaginary) samples</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:double">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Sum2I">
+            <xs:annotation>
+              <xs:documentation>Square Sum of I (real) samples</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:double">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Sum2Q">
+            <xs:annotation>
+              <xs:documentation>Square Sum of Q (imaginary) samples</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:double">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+        </xs:all>
+        <xs:attribute name="lineStart" type="xs:unsignedLong" use="required" />
+        <xs:attribute name="lineStop" type="xs:unsignedLong" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="polyType">
+    <xs:annotation>
+      <xs:documentation>Polynomial parametrization of the geometry parameter</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent mixed="false">
+      <xs:extension base="at:TreeElementBaseType">
+        <xs:sequence>
+          <xs:element name="pol">
+            <xs:annotation>
+              <xs:documentation>Polynomial coefficients: const, rg, az, az*rg, rg^2, rg^3, rg^4 [Optional: rg^5 rg^6 .... rg^N]</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element minOccurs="7" maxOccurs="unbounded" name="val">
+                  <xs:complexType>
+                    <xs:simpleContent>
+                      <xs:extension base="xs:double">
+                        <xs:attribute name="N" type="xs:int" use="optional" />
+                        <xs:attribute name="unit" type="at:units" use="optional" />
+                      </xs:extension>
+                    </xs:simpleContent>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="trg0_s">
+            <xs:annotation>
+              <xs:documentation>Polynomial range reference time [s]</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:double">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="taz0_Utc">
+            <xs:annotation>
+              <xs:documentation>Polynomial azimuth reference time [Utc]</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:string">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="polyCoregType">
+    <xs:annotation>
+      <xs:documentation>Polynomial parametrization of the coregistration parameters</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent mixed="false">
+      <xs:extension base="at:TreeElementBaseType">
+        <xs:sequence>
+          <xs:element name="polRg">
+            <xs:annotation>
+              <xs:documentation>Polynomial coefficients of Range</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element minOccurs="4" maxOccurs="4" name="val">
+                  <xs:complexType>
+                    <xs:simpleContent>
+                      <xs:extension base="xs:double">
+                        <xs:attribute name="N" type="xs:int" use="optional" />
+                        <xs:attribute name="unit" type="at:units" use="optional" />
+                      </xs:extension>
+                    </xs:simpleContent>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="polAz">
+            <xs:annotation>
+              <xs:documentation>Polynomial coefficients of Azimuth</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element minOccurs="4" maxOccurs="4" name="val">
+                  <xs:complexType>
+                    <xs:simpleContent>
+                      <xs:extension base="xs:double">
+                        <xs:attribute name="N" type="xs:int" use="optional" />
+                        <xs:attribute name="unit" type="at:units" use="optional" />
+                      </xs:extension>
+                    </xs:simpleContent>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="trg0_s">
+            <xs:annotation>
+              <xs:documentation>Polynomial range reference time [s]</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:double">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="taz0_Utc">
+            <xs:annotation>
+              <xs:documentation>Polynomial azimuth reference time [Utc]</xs:documentation>
+            </xs:annotation>
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:string">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="GroundCornersPointsType">
+    <xs:complexContent mixed="false">
+      <xs:extension base="at:TreeElementBaseType">
+        <xs:all>
+          <xs:element name="EastingGridSize">
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:double">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="NorthingGridSize">
+            <xs:complexType>
+              <xs:simpleContent>
+                <xs:extension base="xs:double">
+                  <xs:attribute name="unit" type="at:units" use="optional" />
+                </xs:extension>
+              </xs:simpleContent>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="NorthWest">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Point" type="at:PointType" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="NorthEast">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Point" type="at:PointType" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="SouthWest">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Point" type="at:PointType" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="SouthEast">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Point" type="at:PointType" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Center">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Point" type="at:PointType" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:all>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="PointType">
+    <xs:sequence minOccurs="5" maxOccurs="5">
+      <xs:element name="val">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:double">
+              <xs:attribute name="unit" type="at:units" use="optional" />
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="BurstInfoType">
+    <xs:annotation>
+      <xs:documentation>Bursts information</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent mixed="false">
+      <xs:extension base="at:TreeElementBaseType">
+        <xs:sequence>
+          <xs:element name="NumberOfBursts" type="xs:unsignedInt">
+            <xs:annotation>
+              <xs:documentation>Number of bursts in the swath</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:choice>
+            <xs:element name="LinesPerBurst" type="xs:unsignedInt">
+              <xs:annotation>
+                <xs:documentation>Number of lines in each burst</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+            <xs:element name="LinesPerBurstChangeList">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element maxOccurs="unbounded" name="Lines">
+                    <xs:complexType>
+                      <xs:simpleContent>
+                        <xs:extension base="xs:unsignedInt">
+                          <xs:attribute name="FromBurst" type="xs:unsignedInt" use="required" />
+                        </xs:extension>
+                      </xs:simpleContent>
+                    </xs:complexType>
+                  </xs:element>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:choice>
+          <xs:element name="BurstRepetitionFrequency" type="at:doubleWithUnit">
+            <xs:annotation>
+              <xs:documentation>Burst repetition frequency [Hz]</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element maxOccurs="unbounded" name="Burst" type="at:BurstType">
+            <xs:annotation>
+              <xs:documentation>Time coordinates of each burst</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="AntennaInfoType">
+    <xs:annotation>
+      <xs:documentation>Antenna pattern information</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent mixed="false">
+      <xs:extension base="at:TreeElementBaseType">
+        <xs:sequence>
+          <xs:element name="SensorName" type="at:SensorNamesType">
+            <xs:annotation>
+              <xs:documentation>Sensor name: ASAR, PALSAR, ...</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="AcquisitionMode" type="at:AcquisitionModeType">
+            <xs:annotation>
+              <xs:documentation>Acquisition mode: STRIPMAP, TOPSAR, ...</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="BeamName" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>Acquisition beam name</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="Polarization" type="at:PolarizationType">
+            <xs:annotation>
+              <xs:documentation>Antenna polarization (H/H, H/V...)</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element minOccurs="0" name="LinesPerPattern" type="xs:unsignedInt">
+            <xs:annotation>
+              <xs:documentation>Contains number of lines for each pattern</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="BurstType">
+    <xs:sequence>
+      <xs:element name="RangeStartTime" type="at:doubleWithUnit">
+        <xs:annotation>
+          <xs:documentation>Range absolute start time [s]</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="AzimuthStartTime" type="at:stringWithUnit">
+        <xs:annotation>
+          <xs:documentation>Azimuth start time absolute value [Utc]</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element minOccurs="0" name="BurstCenterAzimuthShift" type="at:doubleWithUnit" />
+    </xs:sequence>
+    <xs:attribute name="N" type="xs:unsignedInt" use="required" />
+  </xs:complexType>
+  <xs:complexType name="DCOMPLEX">
+    <xs:sequence>
+      <xs:element name="RealValue" type="xs:double" />
+      <xs:element name="ImaginaryValue" type="xs:double" />
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Sensor>
+   <Version>2.0</Version>
+   <Mode ModeID="StripmapSM">
+      <SteeringVelocity unit="rad/s">
+         <val BeamID="StripmapSM_SS1">0</val>
+      </SteeringVelocity>
+      <AcquisitionCycle>
+         <TimelinePeriod PeriodNumber="1">
+            <BeamID>StripmapSM_SS1</BeamID>
+            <EchoType>Echo</EchoType>
+            <NumberOfEchoes>1</NumberOfEchoes>
+            <PatternListTX>
+               <Pattern N="1">
+                  <PatternIndex>0</PatternIndex>
+                  <TimeValidity Unit="percentage">
+                     <Start>0</Start>
+                     <Stop>1</Stop>
+                  </TimeValidity>
+               </Pattern>
+            </PatternListTX>
+            <PatternListRX>
+               <Pattern N="1">
+                  <PatternIndex>0</PatternIndex>
+                  <TimeValidity Unit="percentage">
+                     <Start>0</Start>
+                     <Stop>1</Stop>
+                  </TimeValidity>
+               </Pattern>
+            </PatternListRX>
+            <AzimuthSteeringIndexTX>
+               <val N="1">0</val>
+            </AzimuthSteeringIndexTX>
+            <AzimuthSteeringIndexRX>
+               <val N="1">0</val>
+            </AzimuthSteeringIndexRX>
+            <ChirpIndex>
+               <val N="1">0</val>
+            </ChirpIndex>
+         </TimelinePeriod>
+      </AcquisitionCycle>
+   </Mode>
+</Sensor>

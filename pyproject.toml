@@ -1,0 +1,79 @@
+[project]
+name = "aresys_io"
+description = "Python library for reading and writing Aresys EO/SAR product formats.."
+authors = [{ name = "Aresys S.R.L.", email = "info@aresys.it" }]
+requires-python = ">=3.11"
+readme = "README.md"
+license = { file = "LICENSE.txt" }
+dependencies = [
+    "lxml",
+    "numpy",
+    "numpydantic",
+    "perseo-core",
+    "pydantic",
+    "scipy",
+    "xsdata>=26.2",
+]
+dynamic = ["version"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Education",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Topic :: Utilities",
+    "Topic :: Scientific/Engineering",
+    "Typing :: Typed",
+]
+
+[project.optional-dependencies]
+dev = ["ruff==0.15.20"]
+test = ["pytest", "pytest-cov"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "src/aresys_io/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+only-include = ["src", "tests", "docs"]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--strict-config",
+    "--tb=short",
+    "--cov=aresys_io",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--no-cov-on-fail",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["src"]
+
+[tool.coverage.report]
+skip_covered = true
+show_missing = true
+fail_under = 70
+
+[tool.pyrefly]
+project-includes = ["**/*.py*"]
+min-severity = "warn"
+
+[tool.pyrefly.errors]
+unused-ignore = true

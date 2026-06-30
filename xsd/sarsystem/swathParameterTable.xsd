@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:element name="ConfigurationFileDoc">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Version" type="xs:string" />
+        <xs:element name="Beam" type="BeamType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="ParameterPeriodType">
+    <xs:sequence>
+      <xs:element name="RelativeTimeStart" type="xs:float" />
+      <xs:element name="RelativeTimeStop" type="xs:float" />
+      <xs:element name="PRF" type="xs:float" />
+      <xs:element name="SWST" type="xs:float" />
+      <xs:element name="SWL" type="xs:float" />
+      <xs:element name="RANK" type="xs:int" />
+      <xs:element name="NoiseFigure" type="xs:float" />
+      <xs:element name="ReferenceTemperature" type="xs:float" />
+      <xs:element name="RadarCarrierFrequency" type="xs:float" />
+      <xs:element name="TransmittedPower" type="xs:float" />
+    </xs:sequence>
+    <xs:attribute name="PeriodNumber" type="xs:int" use="required" />
+  </xs:complexType>
+  <xs:complexType name="BeamType">
+    <xs:sequence>
+      <xs:element name="SamplingFrequency" type="xs:float" />
+      <xs:element name="ParameterPeriod" type="ParameterPeriodType" maxOccurs="unbounded" />
+    </xs:sequence>
+    <xs:attribute name="BeamID" type="xs:string" use="required" />
+  </xs:complexType>
+</xs:schema>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+  attributeFormDefault="unqualified">
+  <xs:element name="AresysXmlDoc">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="NumberOfChannels" type="xs:int" />
+        <xs:element name="VersionNumber" type="xs:string" />
+        <xs:element name="Description" type="xs:string" />
+        <xs:element name="Channel" type="ChannelType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GSSTrajectoryFile">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="VersionNumber" type="xs:string" />
+        <xs:element name="Channel" type="ChannelType" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="ValueArrayType">
+    <xs:sequence>
+      <xs:element name="val" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:float">
+              <xs:attribute name="N" use="required" />
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="StateVectorDataType">
+    <xs:sequence>
+      <xs:element name="OrbitNumber" type="xs:string" />
+      <xs:element name="Track" type="xs:string" />
+      <xs:element name="OrbitDirection">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="ASCENDING" />
+            <xs:enumeration value="DESCENDING" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="pSV_m" type="ValueArrayType" />
+      <xs:element name="vSV_mOs" type="ValueArrayType" />
+      <xs:element name="t_ref_Utc" type="xs:string" />
+      <xs:element name="dtSV_s" type="xs:float" />
+      <xs:element name="nSV_n" type="xs:int" />
+      <xs:element name="AscendingNodeTime" type="xs:string" />
+      <xs:element name="AscendingNodeCoords" type="ValueArrayType" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="AttitudeInfoType">
+    <xs:sequence>
+      <xs:element name="t_ref_Utc" type="xs:string" />
+      <xs:element name="dtYPR_s" type="xs:float" />
+      <xs:element name="nYPR_n" type="xs:int" />
+      <xs:element name="yaw_deg" type="ValueArrayType" />
+      <xs:element name="pitch_deg" type="ValueArrayType" />
+      <xs:element name="roll_deg" type="ValueArrayType" />
+      <xs:element name="referenceFrame">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="ZERODOPPLER" />
+            <xs:enumeration value="GEODETIC" />
+            <xs:enumeration value="GEOCENTRIC" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="rotationOrder">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="YPR" />
+            <xs:enumeration value="YRP" />
+            <xs:enumeration value="PYR" />
+            <xs:enumeration value="PRY" />
+            <xs:enumeration value="RYP" />
+            <xs:enumeration value="RPY" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element name="AttitudeType">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="NOMINAL" />
+            <xs:enumeration value="REFINED" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ChannelType">
+    <xs:sequence>
+      <xs:element name="Description" type="xs:string" minOccurs="0" />
+      <xs:element name="fullOrbitCycleLength" minOccurs="0">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:float">
+              <xs:attribute name="unit" type="xs:string" use="required" fixed="s" />
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="StateVectorData" type="StateVectorDataType" />
+      <xs:element name="AttitudeInfo" type="AttitudeInfoType" />
+      <xs:element name="AntennaPhaseCentrePositionTowardsBodyMassCenter">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="TX" type="ValueArrayType" />
+            <xs:element name="RX" type="ValueArrayType" />
+          </xs:sequence>
+          <xs:attribute name="unit" type="xs:string" use="required" fixed="m" />
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="AntennaRotationYPR">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="TX" type="ValueArrayType" />
+            <xs:element name="RX" type="ValueArrayType" />
+          </xs:sequence>
+          <xs:attribute name="unit" use="required" fixed="deg" />
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="Number" use="required" />
+    <xs:attribute name="Total" use="required" />
+  </xs:complexType>
+</xs:schema>

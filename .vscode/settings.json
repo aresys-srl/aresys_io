@@ -1,0 +1,13 @@
+{
+    "[python]": {
+        "editor.detectIndentation": false,
+        "editor.formatOnSave": true,
+        "editor.rulers": [
+            99
+        ],
+        "files.trimTrailingWhitespace": true
+    },
+    "python.analysis.typeCheckingMode": "off",
+    "python.pyrefly.typeCheckingMode": "default",
+    "python.pyrefly.diagnosticMode": "workspace"
+}

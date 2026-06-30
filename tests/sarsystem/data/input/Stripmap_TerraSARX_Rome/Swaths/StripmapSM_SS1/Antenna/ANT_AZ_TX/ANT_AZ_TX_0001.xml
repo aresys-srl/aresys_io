@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AresysXmlDoc xmlns:at="aresysTypes">
+   <NumberOfChannels>1</NumberOfChannels>
+   <VersionNumber>2.1</VersionNumber>
+   <Description>Aresys XML metadata file</Description>
+   <Channel Number="1" Total="1">
+      <RasterInfo>
+         <FileName>ANT_AZ_TX_0001</FileName>
+         <Lines>1</Lines>
+         <Samples>18202</Samples>
+         <HeaderOffsetBytes>0</HeaderOffsetBytes>
+         <RowPrefixBytes>0</RowPrefixBytes>
+         <ByteOrder>LITTLEENDIAN</ByteOrder>
+         <CellType>FLOAT32</CellType>
+         <LinesStep unit="deg">0.00659268212285014</LinesStep>
+         <SamplesStep unit="deg">0</SamplesStep>
+         <LinesStart unit="deg">-60</LinesStart>
+         <SamplesStart unit="deg">0</SamplesStart>
+      </RasterInfo>
+      <AntennaInfo>
+         <SensorName>NOT SET</SensorName>
+         <AcquisitionMode>STRIPMAP</AcquisitionMode>
+         <BeamName>StripmapSM_SS1</BeamName>
+         <Polarization>H/H</Polarization>
+      </AntennaInfo>
+   </Channel>
+</AresysXmlDoc>

@@ -1,0 +1,57 @@
+indent-width = 4
+line-length = 99
+target-version = "py311"
+output-format = "concise"
+
+[format]
+docstring-code-format = true
+docstring-code-line-length = 99
+indent-style = "space"
+line-ending = "lf"
+quote-style = "double"
+
+[lint]
+preview = true
+select = ["ALL"]
+
+ignore = [
+  "D203",    # incorrect-blank-line-before-class
+  "D213",    # multi-line-summary-second-line
+  "PLR2004", # magic-value-comparison
+  "S101",    # assert
+  "COM812",  # missing-trailing-comma
+]
+
+[lint.flake8-copyright]
+notice-rgx = "(?m)^# SPDX-FileCopyrightText: Aresys S\\.r\\.l\\. <info@aresys\\.it>\\r?\\n# SPDX-License-Identifier: MIT\\r?$"
+
+[lint.per-file-ignores]
+"**/__init__.py" = ["F403"] # undefined-local-with-import-star
+"scripts/**/*.py" = [
+  "INP001", # implicit-namespace-package
+  "S314",   # suspicious-xml-element-tree-usage
+  "S404",   # suspicious-subprocess-import
+  "S405",   # suspicious-xml-etree-import
+  "S603",   # subprocess-without-shell-equals-true
+  "S607",   # start-process-with-partial-path
+]
+"src/aresys_io/sarsystem/**/*.py" = ["PLW1641"] # eq-without-hash
+"tests/**/*.py" = [
+  "D",       # all pydocstyle docstring rules
+  "PLC1901", # compare-to-empty-string
+  "SLF001",  # private-member-access
+]
+"src/aresys_io/**/models/*.py" = [
+  "D",    # all pydocstyle docstring rules
+  "E501", # line-too-long
+]
+
+[lint.pydoclint]
+ignore-one-line-docstrings = true # one-line-docstring
+
+[lint.pydocstyle]
+convention = "numpy"
+ignore-var-parameters = true # var-parameter-names-in-docstrings
+
+[lint.pylint]
+max-public-methods = 23 # too-many-public-methods
