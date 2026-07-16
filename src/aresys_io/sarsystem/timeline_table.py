@@ -161,18 +161,16 @@ class TimeLinePeriod(BaseModel):
     @staticmethod
     def from_model(model: model_timeline.TimeLinePeriodType) -> "TimeLinePeriod":
         """Construct a TimeLinePeriod instance from a model object."""
-        pattern_list_tx = None
-        pattern_list_rx = None
-        if model.pattern_list_tx is not None:
-            pattern_list_tx = [
-                Pattern.from_model(pattern_model)
-                for pattern_model in model.pattern_list_tx.pattern
-            ]
-        if model.pattern_list_rx is not None:
-            pattern_list_rx = [
-                Pattern.from_model(pattern_model)
-                for pattern_model in model.pattern_list_rx.pattern
-            ]
+        pattern_list_tx = (
+            [Pattern.from_model(p) for p in model.pattern_list_tx.pattern]
+            if model.pattern_list_tx is not None
+            else None
+        )
+        pattern_list_rx = (
+            [Pattern.from_model(p) for p in model.pattern_list_rx.pattern]
+            if model.pattern_list_rx is not None
+            else None
+        )
         azimuth_steering_index_rx = index_type_to_array(model.azimuth_steering_index_rx)
         azimuth_steering_index_tx = index_type_to_array(model.azimuth_steering_index_tx)
         chirp_index = index_type_to_array(model.chirp_index)
