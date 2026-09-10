@@ -5,12 +5,12 @@
 
 from __future__ import annotations
 
-from typing import ClassVar, Generic, Literal, TypeVar
+from typing import Any, ClassVar, Generic, Literal, TypeVar, get_args
 
 import numpy as np
 import numpy.typing as npt
 from perseo_core.timing import PreciseDateTime
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import BaseModel, Field, PrivateAttr, field_validator, model_validator
 
 RasterByteOrder = Literal["BIGENDIAN", "LITTLEENDIAN"]
 RasterCellType = Literal[
@@ -59,6 +59,7 @@ MetaDataElementName = Literal[
     "DataStatistics",
     "CoregPolyVector",
 ]
+METADATA_ELEMENT_NAMES: set[MetaDataElementName] = set(get_args(MetaDataElementName))
 
 
 class MetaDataPydanticModel(BaseModel):
@@ -357,6 +358,23 @@ class StateVectors(MetaDataPydanticModel):
     track_number: int | None = None
     anx_time: PreciseDateTime | None = None
     anx_position: tuple[float, float, float] | None = None
+    _annotated_orbit_direction: OrbitDirection | None = PrivateAttr()
+
+    @property
+    def annotated_orbit_direction(self) -> OrbitDirection | None:
+        """Annotated orbit direction.
+
+        Might be different from the orbit direction which is derived from velocity.
+        """
+        return self._annotated_orbit_direction
+
+    @annotated_orbit_direction.setter
+    def annotated_orbit_direction(self, value: OrbitDirection | None) -> None:
+        self._annotated_orbit_direction = value
+
+    def model_post_init(self, _: Any) -> None:  # noqa: ANN401
+        """Post-initialization for the model."""
+        self._annotated_orbit_direction = self.orbit_direction
 
     @field_validator("position_vector", "velocity_vector", mode="before")
     @classmethod

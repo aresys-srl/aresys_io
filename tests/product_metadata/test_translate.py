@@ -1553,8 +1553,25 @@ class TestStateVectors:
     def test_translate_state_vectors_orbit_direction_mismatch(self) -> None:
         self.state_vectors_model.orbit_direction = models.AscendingDescendingType.DESCENDING
 
-        with pytest.raises(ValueError, match=r".*"):
-            translate.translate_state_vectors_from_model(self.state_vectors_model)
+        with pytest.warns(UserWarning, match=r".*"):
+            state_vectors = translate.translate_state_vectors_from_model(self.state_vectors_model)
+
+        state_vectors_model = translate.translate_state_vectors_to_model(state_vectors)
+        assert state_vectors_model == self.state_vectors_model
+
+        assert state_vectors.annotated_orbit_direction == "DESCENDING"
+        assert state_vectors.orbit_direction == "ASCENDING"
+
+    def test_translate_state_vectors_annotated_orbit_not_available(self) -> None:
+        self.state_vectors_model.orbit_direction = models.AscendingDescendingType.NOT_AVAILABLE
+
+        with pytest.warns(UserWarning, match=r".*"):
+            state_vectors = translate.translate_state_vectors_from_model(self.state_vectors_model)
+        assert state_vectors.annotated_orbit_direction is None
+        assert state_vectors.orbit_direction == "ASCENDING"
+
+        state_vectors_model = translate.translate_state_vectors_to_model(state_vectors)
+        assert state_vectors_model == self.state_vectors_model
 
 
 def assert_equal_poly2d(

@@ -3,6 +3,7 @@
 
 """Translate."""
 
+import warnings
 from collections.abc import Sequence
 from typing import Protocol, TypeVar
 
@@ -1120,14 +1121,13 @@ def translate_state_vectors_from_model(
 ) -> metadata_elements.StateVectors:
     """Translate state vectors from model."""
     number_of_state_vectors = state_vectors.n_sv_n.value
-    expected_components = number_of_state_vectors * 3
     if (
-        len(state_vectors.p_sv_m.val) != expected_components
-        or len(state_vectors.v_sv_m_os.val) != expected_components
+        len(state_vectors.p_sv_m.val) != len(state_vectors.v_sv_m_os.val)
+        or len(state_vectors.v_sv_m_os.val) != number_of_state_vectors * 3
     ):
         msg = (
             "StateVectorData components do not match n_sv_n "
-            f"(expected {expected_components}, "
+            f"(expected {number_of_state_vectors * 3}, "
             f"got p={len(state_vectors.p_sv_m.val)}, "
             f"v={len(state_vectors.v_sv_m_os.val)})"
         )
@@ -1147,19 +1147,6 @@ def translate_state_vectors_from_model(
         positions[state_vector_index, component_index] = pos.value
         velocities[state_vector_index, component_index] = vel.value
 
-    expected_orbit_direction = (
-        models.AscendingDescendingType.ASCENDING
-        if velocities[0, 2] > 0
-        else models.AscendingDescendingType.DESCENDING
-    )
-    if state_vectors.orbit_direction != expected_orbit_direction:
-        msg = (
-            "StateVectorData orbit_direction does not agree with velocity sign "
-            f"(orbit_direction={state_vectors.orbit_direction.value}, "
-            f"inferred={expected_orbit_direction.value})"
-        )
-        raise ValueError(msg)
-
     anx_position = None
     if state_vectors.ascending_node_coords is not None:
         assert len(state_vectors.ascending_node_coords.val) == 3
@@ -1177,7 +1164,7 @@ def translate_state_vectors_from_model(
     # NOT_AVAILABLE is legal in the XML schema; map it to None in metadata.
     track_number = None if state_vectors.track == "NOT_AVAILABLE" else int(state_vectors.track)
 
-    return metadata_elements.StateVectors(
+    output_sv = metadata_elements.StateVectors(
         position_vector=positions,
         velocity_vector=velocities,
         reference_time=PreciseDateTime.from_utc_string(state_vectors.t_ref_utc),
@@ -1187,6 +1174,28 @@ def translate_state_vectors_from_model(
         anx_time=anx_time,
         anx_position=anx_position,
     )
+
+    expected_orbit_direction = (
+        models.AscendingDescendingType.ASCENDING
+        if velocities[0, 2] > 0
+        else models.AscendingDescendingType.DESCENDING
+    )
+
+    if state_vectors.orbit_direction != expected_orbit_direction:
+        msg = (
+            "StateVectorData orbit_direction does not agree with velocity sign "
+            f"(orbit_direction={state_vectors.orbit_direction.value}, "
+            f"inferred={expected_orbit_direction.value})"
+        )
+        warnings.warn(msg, UserWarning, stacklevel=2)
+
+        output_sv.annotated_orbit_direction = (
+            None
+            if state_vectors.orbit_direction is models.AscendingDescendingType.NOT_AVAILABLE
+            else state_vectors.orbit_direction.value
+        )
+
+    return output_sv
 
 
 def translate_state_vectors_to_model(
@@ -1226,7 +1235,9 @@ def translate_state_vectors_to_model(
             if state_vectors.track_number is None
             else str(state_vectors.track_number)
         ),
-        orbit_direction=translate_orbit_direction_to_model(state_vectors.orbit_direction),
+        orbit_direction=translate_orbit_direction_to_model(
+            state_vectors.annotated_orbit_direction
+        ),
         t_ref_utc=str(state_vectors.reference_time),
         dt_sv_s=models.StateVectorDataType.DtSvS(
             value=state_vectors.time_step,
