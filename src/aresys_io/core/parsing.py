@@ -45,7 +45,7 @@ class _NormalizedXmlSerializer(XmlSerializer):
     """XmlSerializer that coerces float values assigned to int-typed fields."""
 
     @classmethod
-    def encode_primitive(cls, value: Any, var: Any) -> Any:  # noqa: ANN401
+    def encode_primitive(cls, value: Any, var: Any) -> Any:  # ruff: ignore[any-type]
         if int in var.types and isinstance(value, (float, np.floating)):
             value = _float_to_int_lossless(float(value))
         return super().encode_primitive(value, var)
@@ -68,11 +68,11 @@ class _NumpyConverter(Converter):
         self._xml_type = xml_type
         self._xml_converter = converter.type_converter(xml_type)
 
-    def deserialize(self, value: Any, **kwargs) -> Any:  # noqa: ANN003, ANN401
+    def deserialize(self, value: Any, **kwargs) -> Any:  # ruff: ignore[missing-type-kwargs, any-type]
         parsed_value = self._xml_converter.deserialize(value, **kwargs)
         return self._numpy_type(parsed_value)
 
-    def serialize(self, value: Any, **kwargs) -> str:  # noqa: ANN003, ANN401
+    def serialize(self, value: Any, **kwargs) -> str:  # ruff: ignore[missing-type-kwargs, any-type]
         return self._xml_converter.serialize(self._xml_type(value), **kwargs)
 
 
@@ -114,7 +114,7 @@ def parse(xml_string: str, model: type[ModelT]) -> ModelT:
     return model_obj
 
 
-def serialize(model: Any, **kwargs) -> str:  # noqa: ANN003, ANN401
+def serialize(model: Any, **kwargs) -> str:  # ruff: ignore[missing-type-kwargs, any-type]
     """Serialize an XSD object to a string.
 
     Parameters

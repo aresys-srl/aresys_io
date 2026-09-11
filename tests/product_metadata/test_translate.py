@@ -426,7 +426,7 @@ def test_translate_str_with_unit() -> None:
 
 
 def test_translate_dcomplex() -> None:
-    assert translate.translate_dcomplex_from_model(  # noqa: RUF069
+    assert translate.translate_dcomplex_from_model(  # ruff: ignore[float-equality-comparison]
         models.Dcomplex(real_value=2.3, imaginary_value=-4.3),
     ) == complex(2.3, -4.3)
     assert translate.translate_dcomplex_to_model(complex(2.3, -4.3)) == models.Dcomplex(

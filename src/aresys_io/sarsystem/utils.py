@@ -18,13 +18,13 @@ from aresys_io.sarsystem.models import time_line_table as model_timeline
 from aresys_io.sarsystem.models import trajectory_file as model_trajectory
 
 # Shape typing
-VectorShape: TypeAlias = Shape["*"]  # noqa: F722  # pyright: ignore[reportInvalidTypeArguments]  # pyrefly: ignore[not-a-type]
+VectorShape: TypeAlias = Shape["*"]  # ruff: ignore[forward-annotation-syntax-error]  # pyright: ignore[reportInvalidTypeArguments]  # pyrefly: ignore[not-a-type]
 Vector: TypeAlias = NDArray[VectorShape, np.float32 | np.float64]  # pyright: ignore[reportInvalidTypeArguments]
-QuaternionShape: TypeAlias = Shape["*, 4"]  # noqa: F722  # pyright: ignore[reportInvalidTypeArguments]  # pyrefly: ignore[not-a-type]
+QuaternionShape: TypeAlias = Shape["*, 4"]  # ruff: ignore[forward-annotation-syntax-error]  # pyright: ignore[reportInvalidTypeArguments]  # pyrefly: ignore[not-a-type]
 Quaternion: TypeAlias = NDArray[QuaternionShape, np.float32 | np.float64]  # pyright: ignore[reportInvalidTypeArguments]
-StateVectorShape: TypeAlias = Shape["*, 3"]  # noqa: F722  # pyright: ignore[reportInvalidTypeArguments]  # pyrefly: ignore[not-a-type]
+StateVectorShape: TypeAlias = Shape["*, 3"]  # ruff: ignore[forward-annotation-syntax-error]  # pyright: ignore[reportInvalidTypeArguments]  # pyrefly: ignore[not-a-type]
 StateVector: TypeAlias = NDArray[StateVectorShape, np.float32 | np.float64]  # pyright: ignore[reportInvalidTypeArguments]
-SingleStateVectorShape: TypeAlias = Shape["3"]  # noqa: TC008  # pyright: ignore[reportInvalidTypeArguments]  # pyrefly: ignore[not-a-type]
+SingleStateVectorShape: TypeAlias = Shape["3"]  # ruff: ignore[quoted-type-alias]  # pyright: ignore[reportInvalidTypeArguments]  # pyrefly: ignore[not-a-type]
 SingleStateVector: TypeAlias = NDArray[SingleStateVectorShape, np.float32 | np.float64]  # pyright: ignore[reportInvalidTypeArguments]
 VectorInt: TypeAlias = NDArray[VectorShape, np.int64]  # pyright: ignore[reportInvalidTypeArguments]
 

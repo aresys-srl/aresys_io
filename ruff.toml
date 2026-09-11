@@ -16,35 +16,35 @@ preview = true
 select = ["ALL"]
 
 ignore = [
-  "D203",    # incorrect-blank-line-before-class
-  "D213",    # multi-line-summary-second-line
-  "PLR2004", # magic-value-comparison
-  "S101",    # assert
-  "COM812",  # missing-trailing-comma
+  "incorrect-blank-line-before-class",    # incorrect-blank-line-before-class
+  "multi-line-summary-second-line",    # multi-line-summary-second-line
+  "magic-value-comparison", # magic-value-comparison
+  "assert",    # assert
+  "missing-trailing-comma",  # missing-trailing-comma
 ]
 
 [lint.flake8-copyright]
 notice-rgx = "(?m)^# SPDX-FileCopyrightText: Aresys S\\.r\\.l\\. <info@aresys\\.it>\\r?\\n# SPDX-License-Identifier: MIT\\r?$"
 
 [lint.per-file-ignores]
-"**/__init__.py" = ["F403"] # undefined-local-with-import-star
+"**/__init__.py" = ["undefined-local-with-import-star"] # undefined-local-with-import-star
 "scripts/**/*.py" = [
-  "INP001", # implicit-namespace-package
-  "S314",   # suspicious-xml-element-tree-usage
-  "S404",   # suspicious-subprocess-import
-  "S405",   # suspicious-xml-etree-import
-  "S603",   # subprocess-without-shell-equals-true
-  "S607",   # start-process-with-partial-path
+  "implicit-namespace-package", # implicit-namespace-package
+  "suspicious-xml-element-tree-usage",   # suspicious-xml-element-tree-usage
+  "suspicious-subprocess-import",   # suspicious-subprocess-import
+  "suspicious-xml-etree-import",   # suspicious-xml-etree-import
+  "subprocess-without-shell-equals-true",   # subprocess-without-shell-equals-true
+  "start-process-with-partial-path",   # start-process-with-partial-path
 ]
-"src/aresys_io/sarsystem/**/*.py" = ["PLW1641"] # eq-without-hash
+"src/aresys_io/sarsystem/**/*.py" = ["eq-without-hash"] # eq-without-hash
 "tests/**/*.py" = [
   "D",       # all pydocstyle docstring rules
-  "PLC1901", # compare-to-empty-string
-  "SLF001",  # private-member-access
+  "compare-to-empty-string", # compare-to-empty-string
+  "private-member-access",  # private-member-access
 ]
 "src/aresys_io/**/models/*.py" = [
   "D",    # all pydocstyle docstring rules
-  "E501", # line-too-long
+  "line-too-long", # line-too-long
 ]
 
 [lint.pydoclint]

@@ -331,7 +331,7 @@ class Trajectory(BaseModel):
         Antenna rotation information.
     antenna_phase_centre_position_towards_body_mass_center : AntennaPhaseCentrePositionTowardsBodyMassCenter
         Antenna phase centre positions towards the body mass center.
-    """  # noqa: E501
+    """  # ruff: ignore[line-too-long]
 
     attitude_info: AttitudeInfo
     state_vector: StateVectorData

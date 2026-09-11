@@ -83,7 +83,7 @@ def test_parse_float_field_returns_python_float_not_numpy_float64() -> None:
 
     assert isinstance(parsed.value, float)
     assert not isinstance(parsed.value, np.float64)
-    assert parsed.value == 7.0  # noqa: RUF069
+    assert parsed.value == 7.0  # ruff: ignore[float-equality-comparison]
 
 
 @pytest.mark.parametrize(

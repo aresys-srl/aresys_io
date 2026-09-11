@@ -157,7 +157,7 @@ METADATA = """<?xml version="1.0" encoding="utf-8"?>
         </Pulse>
     </Channel>
 </AresysXmlDoc>
-"""  # noqa: E501
+"""  # ruff: ignore[line-too-long]
 
 
 def test_metadata_element_access_is_consistent() -> None:

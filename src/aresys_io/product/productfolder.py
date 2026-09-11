@@ -327,7 +327,7 @@ def is_product_folder(pf_path: str | Path) -> bool:
     pf_path = Path(pf_path)
     try:
         Manifest.from_file(ProductFolderLayout.generate_manifest_path(pf_path=pf_path))
-    except Exception:  # noqa: BLE001
+    except Exception:  # ruff: ignore[blind-except]
         return False
 
     return True
@@ -369,7 +369,7 @@ def is_valid_product_folder(pf_path: str | Path) -> bool:
     manifest_path = layout.generate_manifest_path(pf_path=pf_path)
     try:
         manifest = Manifest.from_file(manifest_path)
-    except Exception:  # noqa: BLE001
+    except Exception:  # ruff: ignore[blind-except]
         return False
 
     if manifest.datafile_extension is None:
@@ -402,7 +402,7 @@ def _check_channel_data_pairing_condition(path: Path, raster_extension: RasterEx
     files = [f.name for f in path.iterdir()]
 
     tiff_raster_on_disk = [f for f in files if f.startswith(path.name) and f.endswith(".tiff")]
-    if tiff_raster_on_disk and raster_extension == "":  # noqa: PLC1901
+    if tiff_raster_on_disk and raster_extension == "":  # ruff: ignore[compare-to-empty-string]
         return False
 
     raw_raster_on_disk = [

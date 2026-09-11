@@ -220,14 +220,14 @@ class SwathInfo(MetaDataPydanticModel):
     def _enforce_steering_exclusivity(self) -> SwathInfo:
         # Usage of __setattr__ is necessary to avoid recursive validation
         if self.azimuth_steering_angle_reference_time is not None:
-            object.__setattr__(self, "azimuth_steering_rate_reference_time", None)  # noqa: PLC2801
+            object.__setattr__(self, "azimuth_steering_rate_reference_time", None)  # ruff: ignore[unnecessary-dunder-call]
         elif self.azimuth_steering_rate_reference_time is not None:
-            object.__setattr__(self, "azimuth_steering_angle_reference_time", None)  # noqa: PLC2801
+            object.__setattr__(self, "azimuth_steering_angle_reference_time", None)  # ruff: ignore[unnecessary-dunder-call]
 
         if self.azimuth_steering_angle_pol is not None:
-            object.__setattr__(self, "azimuth_steering_rate_pol", None)  # noqa: PLC2801
+            object.__setattr__(self, "azimuth_steering_rate_pol", None)  # ruff: ignore[unnecessary-dunder-call]
         elif self.azimuth_steering_rate_pol is not None:
-            object.__setattr__(self, "azimuth_steering_angle_pol", None)  # noqa: PLC2801
+            object.__setattr__(self, "azimuth_steering_angle_pol", None)  # ruff: ignore[unnecessary-dunder-call]
 
         return self
 
@@ -372,7 +372,7 @@ class StateVectors(MetaDataPydanticModel):
     def annotated_orbit_direction(self, value: OrbitDirection | None) -> None:
         self._annotated_orbit_direction = value
 
-    def model_post_init(self, _: Any) -> None:  # noqa: ANN401
+    def model_post_init(self, _: Any) -> None:  # ruff: ignore[any-type]
         """Post-initialization for the model."""
         self._annotated_orbit_direction = self.orbit_direction
 
