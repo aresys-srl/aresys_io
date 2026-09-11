@@ -5,4 +5,3 @@
 
 from aresys_io.point_target.nominal_point_targets import *
 from aresys_io.point_target.point_target_binary import *
-from aresys_io.point_target.point_target_file import *
