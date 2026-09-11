@@ -7,7 +7,7 @@ readme = "README.md"
 license = { file = "LICENSE.txt" }
 dependencies = [
     "lxml",
-    "numpy",
+    "numpy>2",
     "numpydantic",
     "perseo-core",
     "pydantic",
