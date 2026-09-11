@@ -9,5 +9,10 @@
     },
     "python.analysis.typeCheckingMode": "off",
     "python.pyrefly.typeCheckingMode": "default",
-    "python.pyrefly.diagnosticMode": "workspace"
+    "python.pyrefly.diagnosticMode": "workspace",
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
 }
