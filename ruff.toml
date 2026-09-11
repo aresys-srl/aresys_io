@@ -2,6 +2,7 @@ indent-width = 4
 line-length = 99
 target-version = "py311"
 output-format = "concise"
+required-version = ">=0.16.7"
 
 [format]
 docstring-code-format = true

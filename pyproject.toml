@@ -32,7 +32,7 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-dev = ["ruff==0.15.20"]
+dev = ["ruff>=0.16.7"]
 test = ["pytest", "pytest-cov"]
 
 [build-system]
