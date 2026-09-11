@@ -9,6 +9,8 @@ from aresys_io.core.parsing import serialize
 from aresys_io.sarsystem.models import swath_parameter_table as swathtable_model
 from aresys_io.sarsystem.swathtable import SwathTable
 
+__all__ = ["write_swath_table_xml"]
+
 
 def swathtable_to_model(
     swathtable: SwathTable,
@@ -83,6 +85,3 @@ def write_swath_table_xml(swathtable: SwathTable, xml_dir_path: str | Path) -> N
     xml_path = xml_dir_path.joinpath("SwathParameterTable.xml")
     xml_path.parent.mkdir(parents=True, exist_ok=True)
     Path(xml_path).write_text(serialize(swathtable_model), encoding="utf-8")
-
-
-__all__ = ["write_swath_table_xml"]

@@ -24,6 +24,8 @@ from aresys_io.product_metadata.raster_io_from_metadata import (
     read_raster_with_raster_info,
 )
 
+__all__ = ["CoordinatesMemmap", "PointSetProduct", "RCSMemmap"]
+
 COORDINATES_RASTER_FILENAMES = [
     "PointTargetPosX",
     "PointTargetPosY",
@@ -435,6 +437,3 @@ class PointSetProduct:
             num_points=num_points,
             data_type=rcs_data_type,
         )
-
-
-__all__ = ["CoordinatesMemmap", "PointSetProduct", "RCSMemmap"]

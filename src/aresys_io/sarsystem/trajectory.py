@@ -19,6 +19,18 @@ from aresys_io.sarsystem.utils import (
     ypr_to_quaternion,
 )
 
+__all__ = [
+    "AntennaPhaseCentrePositionTowardsBodyMassCenter",
+    "AntennaRotation",
+    "AscendingNode",
+    "AttitudeInfo",
+    "AttitudeType",
+    "OrbitDirection",
+    "StateVectorData",
+    "Trajectory",
+]
+
+
 _ROTATION_ORDER_FROM_MODEL: dict[model_trajectory.AttitudeInfoTypeRotationOrder, RotationOrder] = {
     model_trajectory.AttitudeInfoTypeRotationOrder.YPR: "YPR",
     model_trajectory.AttitudeInfoTypeRotationOrder.YRP: "YRP",
@@ -341,15 +353,3 @@ class Trajectory(BaseModel):
         AntennaPhaseCentrePositionTowardsBodyMassCenter | None
     )
     model_config = {"arbitrary_types_allowed": True}
-
-
-__all__ = [
-    "AntennaPhaseCentrePositionTowardsBodyMassCenter",
-    "AntennaRotation",
-    "AscendingNode",
-    "AttitudeInfo",
-    "AttitudeType",
-    "OrbitDirection",
-    "StateVectorData",
-    "Trajectory",
-]

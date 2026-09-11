@@ -19,6 +19,8 @@ from aresys_io.sarsystem.utils import (
     value_array_type_to_array,
 )
 
+__all__ = ["read_trajectory"]
+
 TrajectoryFormat = Literal["GSS", "RDB"]
 
 
@@ -98,6 +100,3 @@ def read_trajectory(filename: Path, traj_format: TrajectoryFormat = "GSS") -> Tr
         antenna_rotation=antenna_rotation,
         antenna_phase_centre_position_towards_body_mass_center=antenna_phase_centre_position_towards_body_mass_center,
     )
-
-
-__all__ = ["read_trajectory"]

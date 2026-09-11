@@ -14,6 +14,8 @@ from aresys_io.sarsystem.utils import (
     index_type_to_array,
 )
 
+__all__ = ["Echo", "Pattern", "SteeringVelocity", "TimeLine", "TimeLinePeriod"]
+
 
 class Pattern(BaseModel):
     """
@@ -274,6 +276,3 @@ class TimeLine(BaseModel):
             acquisition_cycle=acquisition_cycle,
             mode_id=str(model.mode.mode_id),
         )
-
-
-__all__ = ["Echo", "Pattern", "SteeringVelocity", "TimeLine", "TimeLinePeriod"]

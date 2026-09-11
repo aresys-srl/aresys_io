@@ -8,6 +8,8 @@ from pydantic import BaseModel
 from aresys_io.sarsystem.swathtable import SwathTable
 from aresys_io.sarsystem.timeline_table import SteeringVelocity, TimeLine, TimeLinePeriod
 
+__all__ = ["BeamNumberEachPeriod", "SatTable"]
+
 
 class BeamNumberEachPeriod(BaseModel):
     """Beam period."""
@@ -26,6 +28,3 @@ class SatTable(BaseModel):
     beam_number_each_period: BeamNumberEachPeriod
 
     model_config = {"arbitrary_types_allowed": True}
-
-
-__all__ = ["BeamNumberEachPeriod", "SatTable"]

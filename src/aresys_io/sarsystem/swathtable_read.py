@@ -10,6 +10,8 @@ from aresys_io.core.parsing import parse
 from aresys_io.sarsystem.models import swath_parameter_table as swathtable_model
 from aresys_io.sarsystem.swathtable import ParameterPeriod, SwathTable
 
+__all__ = ["read_swath_table"]
+
 
 def read_swath_table(filename: PathLike) -> SwathTable:
     """Read a swath table XML file and returns a SwathTable object.
@@ -37,6 +39,3 @@ def read_swath_table(filename: PathLike) -> SwathTable:
         freq_sampling=file_content.beam.sampling_frequency,
         parameter_period=parameter_period,
     )
-
-
-__all__ = ["read_swath_table"]

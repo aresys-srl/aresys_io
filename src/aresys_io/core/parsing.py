@@ -22,6 +22,8 @@ from xsdata.formats.dataclass.parsers.config import ParserConfig
 from xsdata.formats.dataclass.serializers import XmlSerializer
 from xsdata.formats.dataclass.serializers.config import SerializerConfig
 
+__all__ = ["parse", "serialize"]
+
 
 def _float_to_int_lossless(value: float) -> int:
     """Convert a float to int, raising ValueError if there is any loss of precision."""
@@ -130,6 +132,3 @@ def serialize(model: Any, **kwargs) -> str:  # ruff: ignore[missing-type-kwargs,
         XML string
     """
     return _SERIALIZER.render(model, **kwargs)
-
-
-__all__ = ["parse", "serialize"]

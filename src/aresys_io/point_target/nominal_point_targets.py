@@ -8,6 +8,8 @@ from dataclasses import dataclass
 import numpy as np
 import numpy.typing as npt
 
+__all__ = ["NominalPointTarget", "convert_array_to_point_target_structure"]
+
 
 @dataclass
 class NominalPointTarget:
@@ -90,6 +92,3 @@ def convert_array_to_point_target_structure(
         )
 
     return out
-
-
-__all__ = ["NominalPointTarget", "convert_array_to_point_target_structure"]

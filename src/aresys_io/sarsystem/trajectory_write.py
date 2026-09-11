@@ -19,6 +19,8 @@ from aresys_io.sarsystem.trajectory import (
 )
 from aresys_io.sarsystem.utils import SingleStateVector, Vector, quaternion_to_ypr
 
+__all__ = ["write_trajectory_xml"]
+
 TrajectoryFormat = Literal["GSS", "RDB"]
 
 
@@ -249,6 +251,3 @@ def write_trajectory_xml(
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(serialize(trajectory_model), encoding="utf-8")
-
-
-__all__ = ["write_trajectory_xml"]

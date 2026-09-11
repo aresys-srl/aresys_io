@@ -10,6 +10,9 @@ from aresys_io.product_metadata.metadata import MetaData
 from aresys_io.product_metadata.metadata_elements import SwathPolarization
 from aresys_io.product_metadata.metadata_io import read_metadata
 
+__all__ = ["iter_channels"]
+
+
 MetaDataFilter = Callable[[MetaData], bool]
 
 
@@ -129,6 +132,3 @@ def iter_channels(
         filtering = SwathIDFilter(polarization=polarization, swath=swath)
 
     yield from iter_channels_generator(product=product, filter_func=filtering)
-
-
-__all__ = ["iter_channels"]

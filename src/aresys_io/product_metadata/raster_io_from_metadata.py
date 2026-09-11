@@ -23,6 +23,18 @@ from aresys_io.core.raster_io import (
 )
 from aresys_io.product_metadata.metadata_elements import RasterInfo
 
+__all__ = [
+    "MemmappedNDArray",
+    "read_binary_header_with_raster_info",
+    "read_raster_as_memmap_with_raster_info",
+    "read_raster_with_raster_info",
+    "read_row_prefix_with_raster_info",
+    "retrieve_data_layout",
+    "write_binary_header_with_raster_info",
+    "write_raster_with_raster_info",
+    "write_row_prefix_with_raster_info",
+]
+
 
 def retrieve_data_layout(raster_info: RasterInfo) -> DataLayout:
     """Retrieve the data layout from a RasterInfo object.
@@ -290,16 +302,3 @@ def write_row_prefix_with_raster_info(
         row_prefix=row_prefix,
         data_layout=data_layout,
     )
-
-
-__all__ = [
-    "MemmappedNDArray",
-    "read_binary_header_with_raster_info",
-    "read_raster_as_memmap_with_raster_info",
-    "read_raster_with_raster_info",
-    "read_row_prefix_with_raster_info",
-    "retrieve_data_layout",
-    "write_binary_header_with_raster_info",
-    "write_raster_with_raster_info",
-    "write_row_prefix_with_raster_info",
-]

@@ -9,6 +9,8 @@ from aresys_io.sarsystem.sat_table import BeamNumberEachPeriod, SatTable, TimeLi
 from aresys_io.sarsystem.swathtable_read import read_swath_table
 from aresys_io.sarsystem.timeline_table_read import read_timeline_table
 
+__all__ = ["read_sat_table"]
+
 
 def timeline_to_beamnumbereachperiod(timeline_table: TimeLine) -> BeamNumberEachPeriod:
     """Extract beam acquisition cycle data from the given `TimelineTable` instance."""
@@ -78,6 +80,3 @@ def read_sat_table(
         swath_table=swath_table,
         beam_name2number=beam_name2number,
     )
-
-
-__all__ = ["read_sat_table"]

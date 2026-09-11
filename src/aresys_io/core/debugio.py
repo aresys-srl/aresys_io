@@ -8,6 +8,8 @@ from pathlib import Path
 
 import numpy as np
 
+__all__ = ["read_debug"]
+
 # The debug data file binary header is expected to be a sequence of three 32-bit integers,
 # representing:
 # * the cell type identifier
@@ -61,6 +63,3 @@ def read_debug(filename: str | Path) -> np.ndarray:
             return np.empty((lines, samples), dtype)
 
         return np.fromfile(fdesc, dtype).reshape((lines, samples))
-
-
-__all__ = ["read_debug"]

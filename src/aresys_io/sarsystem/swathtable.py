@@ -7,6 +7,8 @@ from pydantic import BaseModel
 
 from aresys_io.sarsystem.models import swath_parameter_table as swathtable_model
 
+__all__ = ["ParameterPeriod", "SwathTable"]
+
 
 class ParameterPeriod(BaseModel):
     """
@@ -88,6 +90,3 @@ class SwathTable(BaseModel):
     parameter_period: list[ParameterPeriod]
 
     model_config = {"arbitrary_types_allowed": True}
-
-
-__all__ = ["ParameterPeriod", "SwathTable"]

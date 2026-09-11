@@ -11,6 +11,8 @@ from aresys_io.core.parsing import serialize
 from aresys_io.sarsystem.models import time_line_table as model_timeline
 from aresys_io.sarsystem.timeline_table import Pattern, SteeringVelocity, TimeLine, TimeLinePeriod
 
+__all__ = ["write_timeline_table_xml"]
+
 
 def array_to_indextype(array: np.ndarray) -> model_timeline.IndexType:
     """Convert a numpy integer array to a model_timeline.IndexType dataclass."""
@@ -116,6 +118,3 @@ def write_timeline_table_xml(timeline: TimeLine, file: str | Path) -> None:
 
     """
     Path(file).write_text(serialize(timeline_to_sensor(timeline=timeline)), encoding="utf-8")
-
-
-__all__ = ["write_timeline_table_xml"]

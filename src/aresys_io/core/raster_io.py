@@ -13,6 +13,17 @@ from typing import ClassVar, Literal, SupportsInt, TypeAlias
 import numpy as np
 import numpy.typing as npt
 
+__all__ = [
+    "DataLayout",
+    "read_binary_header",
+    "read_raster",
+    "read_raster_as_memmap",
+    "read_row_prefix",
+    "write_binary_header",
+    "write_raster",
+    "write_row_prefix",
+]
+
 SupportedSampleType: TypeAlias = Literal[
     "INT8",
     "UINT8",
@@ -599,15 +610,3 @@ def write_row_prefix(
             offset_byte = data_layout.start_line_offset(line_index)
             file.seek(offset_byte)
             file.write(current_row_prefix)
-
-
-__all__ = [
-    "DataLayout",
-    "read_binary_header",
-    "read_raster",
-    "read_raster_as_memmap",
-    "read_row_prefix",
-    "write_binary_header",
-    "write_raster",
-    "write_row_prefix",
-]
