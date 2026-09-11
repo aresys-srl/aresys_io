@@ -7,21 +7,8 @@ from __future__ import annotations
 
 import warnings
 from dataclasses import dataclass, field
-from typing import get_args
 
 from aresys_io.product_metadata import metadata_elements
-
-
-def get_supported_metadata_elements() -> list[metadata_elements.MetaDataElementName]:
-    """Retrieve the list of the supported channel elements.
-
-    Returns
-    -------
-    list[metadata_elements.MetaDataElementName]
-        list of element names.
-
-    """
-    return list(get_args(metadata_elements.MetaDataElementName))
 
 
 @dataclass
@@ -59,9 +46,8 @@ class MetaDataChannel:
             if the element is already present and overwrite_ok is False
         """
         element_name = element.element_name
-        supported_elements = get_args(metadata_elements.MetaDataElementName)
 
-        if element_name not in supported_elements:
+        if element_name not in metadata_elements.METADATA_ELEMENT_NAMES:
             msg = f"The element {element_name} is not supported in the current metadata channel"
             raise RuntimeError(msg)
 
@@ -115,158 +101,170 @@ class MetaDataChannel:
 
         return element
 
-    def get_sampling_constants(self) -> metadata_elements.SamplingConstants:
-        """SamplingConstants getter method.
+    @property
+    def sampling_constants(self) -> metadata_elements.SamplingConstants:
+        """SamplingConstants.
 
         Returns
         -------
         metadata_elements.SamplingConstants
-            SamplingConstants MetaDataElement instance.
+            SamplingConstants metadata element.
 
         """
         sampling_constants = self.get_element("SamplingConstants")
         assert isinstance(sampling_constants, metadata_elements.SamplingConstants)
         return sampling_constants
 
-    def get_pulse(self) -> metadata_elements.Pulse:
-        """Pulse getter method.
+    @property
+    def pulse(self) -> metadata_elements.Pulse:
+        """Pulse.
 
         Returns
         -------
         metadata_elements.Pulse
-            Pulse MetaDataElement instance.
+            Pulse metadata element.
 
         """
         pulse = self.get_element("Pulse")
         assert isinstance(pulse, metadata_elements.Pulse)
         return pulse
 
-    def get_raster_info(self) -> metadata_elements.RasterInfo:
-        """RasterInfo getter method.
+    @property
+    def raster_info(self) -> metadata_elements.RasterInfo:
+        """RasterInfo.
 
         Returns
         -------
         metadata_elements.RasterInfo
-            RasterInfo MetaDataElement instance.
+            RasterInfo metadata element.
 
         """
         raster_info = self.get_element("RasterInfo")
         assert isinstance(raster_info, metadata_elements.RasterInfo)
         return raster_info
 
-    def get_dataset_info(self) -> metadata_elements.DataSetInfo:
-        """DataSetInfo getter method.
+    @property
+    def data_set_info(self) -> metadata_elements.DataSetInfo:
+        """DataSetInfo.
 
         Returns
         -------
         metadata_elements.DataSetInfo
-            DataSetInfo MetaDataElement instance.
+            DataSetInfo metadata element.
 
         """
         data_set_info = self.get_element("DataSetInfo")
         assert isinstance(data_set_info, metadata_elements.DataSetInfo)
         return data_set_info
 
-    def get_state_vectors(self) -> metadata_elements.StateVectors:
-        """StateVectors getter method.
+    @property
+    def state_vector_data(self) -> metadata_elements.StateVectors:
+        """StateVectors.
 
         Returns
         -------
         metadata_elements.StateVectors
-            StateVectors MetaDataElement instance.
+            StateVectors metadata element.
 
         """
         state_vectors = self.get_element("StateVectors")
         assert isinstance(state_vectors, metadata_elements.StateVectors)
         return state_vectors
 
-    def get_attitude_info(self) -> metadata_elements.AttitudeInfo:
-        """AttitudeInfo getter method.
+    @property
+    def attitude_info(self) -> metadata_elements.AttitudeInfo:
+        """AttitudeInfo.
 
         Returns
         -------
         metadata_elements.AttitudeInfo
-            AttitudeInfo MetaDataElement instance.
+            AttitudeInfo metadata element.
 
         """
         attitude_info = self.get_element("AttitudeInfo")
         assert isinstance(attitude_info, metadata_elements.AttitudeInfo)
         return attitude_info
 
-    def get_acquisition_time_line(self) -> metadata_elements.AcquisitionTimeLine:
-        """AcquisitionTimeLine getter method.
+    @property
+    def acquisition_time_line(self) -> metadata_elements.AcquisitionTimeLine:
+        """AcquisitionTimeLine.
 
         Returns
         -------
         metadata_elements.AcquisitionTimeLine
-            AcquisitionTimeLine MetaDataElement instance.
+            AcquisitionTimeLine metadata element.
 
         """
         acquisition_time_line = self.get_element("AcquisitionTimeLine")
         assert isinstance(acquisition_time_line, metadata_elements.AcquisitionTimeLine)
         return acquisition_time_line
 
-    def get_ground_corner_points(self) -> metadata_elements.GroundCornerPoints:
-        """GroundCornerPoints getter method.
+    @property
+    def ground_corner_points(self) -> metadata_elements.GroundCornerPoints:
+        """GroundCornerPoints.
 
         Returns
         -------
         metadata_elements.GroundCornerPoints
-            GroundCornerPoints MetaDataElement instance.
+            GroundCornerPoints metadata element.
 
         """
         ground_corner_points = self.get_element("GroundCornerPoints")
         assert isinstance(ground_corner_points, metadata_elements.GroundCornerPoints)
         return ground_corner_points
 
-    def get_burst_info(self) -> metadata_elements.BurstInfo:
-        """BurstInfo getter method.
+    @property
+    def burst_info(self) -> metadata_elements.BurstInfo:
+        """BurstInfo.
 
         Returns
         -------
         metadata_elements.BurstInfo
-            BurstInfo MetaDataElement instance.
+            BurstInfo metadata element.
 
         """
         burst_info = self.get_element("BurstInfo")
         assert isinstance(burst_info, metadata_elements.BurstInfo)
         return burst_info
 
-    def get_doppler_centroid(self) -> metadata_elements.DopplerCentroidVector:
-        """DopplerCentroidVector getter method.
+    @property
+    def doppler_centroid(self) -> metadata_elements.DopplerCentroidVector:
+        """DopplerCentroidVector.
 
         Returns
         -------
         metadata_elements.DopplerCentroidVector
-            DopplerCentroidVector MetaDataElement instance.
+            DopplerCentroidVector metadata element.
 
         """
         doppler_centroid = self.get_element("DopplerCentroidVector")
         assert isinstance(doppler_centroid, metadata_elements.DopplerCentroidVector)
         return doppler_centroid
 
-    def get_doppler_rate(self) -> metadata_elements.DopplerRateVector:
-        """DopplerRateVector getter method.
+    @property
+    def doppler_rate(self) -> metadata_elements.DopplerRateVector:
+        """DopplerRateVector.
 
         Returns
         -------
         metadata_elements.DopplerRateVector
-            DopplerRateVector MetaDataElement instance.
+            DopplerRateVector metadata element.
 
         """
         doppler_rate = self.get_element("DopplerRateVector")
         assert isinstance(doppler_rate, metadata_elements.DopplerRateVector)
         return doppler_rate
 
-    def get_tops_azimuth_modulation_rate(
+    @property
+    def tops_azimuth_modulation_rate(
         self,
     ) -> metadata_elements.TopsAzimuthModulationRateVector:
-        """TopsAzimuthModulationRateVector getter method.
+        """TopsAzimuthModulationRateVector.
 
         Returns
         -------
         metadata_elements.TopsAzimuthModulationRateVector
-            TopsAzimuthModulationRateVector MetaDataElement instance.
+            TopsAzimuthModulationRateVector metadata element.
 
         """
         tops_azimuth_modulation_rate = self.get_element("TopsAzimuthModulationRateVector")
@@ -276,104 +274,112 @@ class MetaDataChannel:
         )
         return tops_azimuth_modulation_rate
 
-    def get_slant_to_ground(self) -> metadata_elements.SlantToGroundVector:
-        """SlantToGroundVector getter method.
+    @property
+    def slant_to_ground(self) -> metadata_elements.SlantToGroundVector:
+        """SlantToGroundVector.
 
         Returns
         -------
         metadata_elements.SlantToGroundVector
-            SlantToGroundVector MetaDataElement instance.
+            SlantToGroundVector metadata element.
 
         """
         slant_to_ground = self.get_element("SlantToGroundVector")
         assert isinstance(slant_to_ground, metadata_elements.SlantToGroundVector)
         return slant_to_ground
 
-    def get_ground_to_slant(self) -> metadata_elements.GroundToSlantVector:
-        """GroundToSlantVector getter method.
+    @property
+    def ground_to_slant(self) -> metadata_elements.GroundToSlantVector:
+        """GroundToSlantVector.
 
         Returns
         -------
         metadata_elements.GroundToSlantVector
-            GroundToSlantVector MetaDataElement instance.
+            GroundToSlantVector metadata element.
 
         """
         ground_to_slant = self.get_element("GroundToSlantVector")
         assert isinstance(ground_to_slant, metadata_elements.GroundToSlantVector)
         return ground_to_slant
 
-    def get_slant_to_incidence(self) -> metadata_elements.SlantToIncidenceVector:
-        """SlantToIncidenceVector getter method.
+    @property
+    def slant_to_incidence(self) -> metadata_elements.SlantToIncidenceVector:
+        """SlantToIncidenceVector.
 
         Returns
         -------
         metadata_elements.SlantToIncidenceVector
-            SlantToIncidenceVector MetaDataElement instance.
+            SlantToIncidenceVector metadata element.
 
         """
         slant_to_incidence = self.get_element("SlantToIncidenceVector")
         assert isinstance(slant_to_incidence, metadata_elements.SlantToIncidenceVector)
         return slant_to_incidence
 
-    def get_slant_to_elevation(self) -> metadata_elements.SlantToElevationVector:
-        """SlantToElevationVector getter method.
+    @property
+    def slant_to_elevation(self) -> metadata_elements.SlantToElevationVector:
+        """SlantToElevationVector.
 
         Returns
         -------
         metadata_elements.SlantToElevationVector
-            SlantToElevationVector MetaDataElement instance.
+            SlantToElevationVector metadata element.
 
         """
         slant_to_elevation = self.get_element("SlantToElevationVector")
         assert isinstance(slant_to_elevation, metadata_elements.SlantToElevationVector)
         return slant_to_elevation
 
-    def get_antenna_info(self) -> metadata_elements.AntennaInfo:
-        """AntennaInfo getter method.
+    @property
+    def antenna_info(self) -> metadata_elements.AntennaInfo:
+        """AntennaInfo.
 
         Returns
         -------
         metadata_elements.AntennaInfo
-            AntennaInfo MetaDataElement instance.
+            AntennaInfo metadata element.
 
         """
         antenna_info = self.get_element("AntennaInfo")
         assert isinstance(antenna_info, metadata_elements.AntennaInfo)
         return antenna_info
 
-    def get_data_statistics(self) -> metadata_elements.DataStatistics:
-        """DataStatistics getter method.
+    @property
+    def data_statistics(self) -> metadata_elements.DataStatistics:
+        """DataStatistics.
 
         Returns
         -------
         metadata_elements.DataStatistics
-            DataStatistics MetaDataElement instance.
+            DataStatistics metadata element.
 
         """
         data_statistics = self.get_element("DataStatistics")
         assert isinstance(data_statistics, metadata_elements.DataStatistics)
         return data_statistics
 
-    def get_swath_info(self) -> metadata_elements.SwathInfo:
-        """SwathInfo getter method.
+    @property
+    def swath_info(self) -> metadata_elements.SwathInfo:
+        """SwathInfo.
 
         Returns
         -------
         metadata_elements.SwathInfo
-            SwathInfo MetaDataElement instance.
+            SwathInfo metadata element.
 
         """
         swath_info = self.get_element("SwathInfo")
         assert isinstance(swath_info, metadata_elements.SwathInfo)
         return swath_info
 
-    def get_coreg_poly(self) -> metadata_elements.CoregPolyVector:
-        """CoregPolyVector getter method.
+    @property
+    def coreg_poly(self) -> metadata_elements.CoregPolyVector:
+        """CoregPolyVector.
 
         Returns
         -------
         metadata_elements.CoregPolyVector
-            CoregPolyVector MetaDataElement instance.
+            CoregPolyVector metadata element.
 
         """
         coreg_poly = self.get_element("CoregPolyVector")
@@ -412,377 +418,274 @@ class MetaData:
     channels: list[MetaDataChannel] = field(default_factory=list)
     description: str = ""
 
+    def __getitem__(self, index: int) -> MetaDataChannel:
+        """Retrieve the metadata channel at the specified index."""
+        return self.channels[index]
+
     def insert_element(
         self,
         element: metadata_elements.MetaDataPydanticModel,
-        channel_index: int = 0,
     ) -> None:
-        """Insert a new metadata element into the selected metadata channel.
+        """Insert a new metadata element into the first metadata channel.
 
         Parameters
         ----------
         element : metadata_elements.MetaDataPydanticModel
-            metadata element to be inserted
-        channel_index : int, optional
-            metadata channel number where to insert, by default 0.
+            metadata element to be inserted into the first metadata channel.
 
         """
-        self.channels[channel_index].insert_element(element)
+        self.channels[0].insert_element(element)
 
     def remove_element(
         self,
         element_type: metadata_elements.MetaDataElementName,
-        channel_index: int = 0,
     ) -> None:
-        """Remove the specified metadata element from the selected metadata channel.
+        """Remove the specified metadata element from the first metadata channel.
 
         Parameters
         ----------
         element_type : metadata_elements.MetaDataElementName
-            metadata element name to be removed
-        channel_index : int, optional
-            metadata channel number where to remove, by default 0.
+            metadata element name to be removed from the first metadata channel.
 
         """
-        self.channels[channel_index].remove_element(element_type)
+        self.channels[0].remove_element(element_type)
 
-    def get_sampling_constants(
-        self,
-        channel_index: int = 0,
-    ) -> metadata_elements.SamplingConstants:
-        """SamplingConstants getter method.
-
-        Parameters
-        ----------
-        channel_index : int, optional
-            index of the metadata channel, by default 0.
+    @property
+    def sampling_constants(self) -> metadata_elements.SamplingConstants:
+        """SamplingConstants from the first metadata channel.
 
         Returns
         -------
         metadata_elements.SamplingConstants
-            SamplingConstants MetaDataElement instance
+            SamplingConstants metadata element from the first metadata channel.
 
         """
-        return self.channels[channel_index].get_sampling_constants()
+        return self.channels[0].sampling_constants
 
-    def get_pulse(self, channel_index: int = 0) -> metadata_elements.Pulse:
-        """Pulse getter method.
-
-        Parameters
-        ----------
-        channel_index : int, optional
-            index of the metadata channel, by default 0.
+    @property
+    def pulse(self) -> metadata_elements.Pulse:
+        """Pulse from the first metadata channel.
 
         Returns
         -------
         metadata_elements.Pulse
-            Pulse MetaDataElement instance
+            Pulse metadata element from the first metadata channel.
 
         """
-        return self.channels[channel_index].get_pulse()
+        return self.channels[0].pulse
 
-    def get_raster_info(self, channel_index: int = 0) -> metadata_elements.RasterInfo:
-        """RasterInfo getter method.
-
-        Parameters
-        ----------
-        channel_index : int, optional
-            index of the metadata channel, by default 0.
+    @property
+    def raster_info(self) -> metadata_elements.RasterInfo:
+        """RasterInfo from the first metadata channel.
 
         Returns
         -------
         metadata_elements.RasterInfo
-            RasterInfo MetaDataElement instance
+            RasterInfo metadata element from the first metadata channel.
 
         """
-        return self.channels[channel_index].get_raster_info()
+        return self.channels[0].raster_info
 
-    def get_dataset_info(self, channel_index: int = 0) -> metadata_elements.DataSetInfo:
-        """DataSetInfo getter method.
-
-        Parameters
-        ----------
-        channel_index : int, optional
-            index of the metadata channel, by default 0.
+    @property
+    def data_set_info(self) -> metadata_elements.DataSetInfo:
+        """DataSetInfo from the first metadata channel.
 
         Returns
         -------
         metadata_elements.DataSetInfo
-            DataSetInfo MetaDataElement instance
+            DataSetInfo metadata element from the first metadata channel.
 
         """
-        return self.channels[channel_index].get_dataset_info()
+        return self.channels[0].data_set_info
 
-    def get_state_vectors(self, channel_index: int = 0) -> metadata_elements.StateVectors:
-        """StateVectors getter method.
-
-        Parameters
-        ----------
-        channel_index : int, optional
-            index of the metadata channel, by default 0.
+    @property
+    def state_vector_data(self) -> metadata_elements.StateVectors:
+        """StateVectors from the first metadata channel.
 
         Returns
         -------
         metadata_elements.StateVectors
-            StateVectors MetaDataElement instance
+            StateVectors metadata element from the first metadata channel.
 
         """
-        return self.channels[channel_index].get_state_vectors()
+        return self.channels[0].state_vector_data
 
-    def get_attitude_info(self, channel_index: int = 0) -> metadata_elements.AttitudeInfo:
-        """AttitudeInfo getter method.
-
-        Parameters
-        ----------
-        channel_index : int, optional
-            index of the metadata channel, by default 0.
+    @property
+    def attitude_info(self) -> metadata_elements.AttitudeInfo:
+        """AttitudeInfo from the first metadata channel.
 
         Returns
         -------
         metadata_elements.AttitudeInfo
-            AttitudeInfo MetaDataElement instance
+            AttitudeInfo metadata element from the first metadata channel.
 
         """
-        return self.channels[channel_index].get_attitude_info()
+        return self.channels[0].attitude_info
 
-    def get_acquisition_time_line(
-        self,
-        channel_index: int = 0,
-    ) -> metadata_elements.AcquisitionTimeLine:
-        """AcquisitionTimeLine getter method.
-
-        Parameters
-        ----------
-        channel_index : int, optional
-            index of the metadata channel, by default 0.
+    @property
+    def acquisition_time_line(self) -> metadata_elements.AcquisitionTimeLine:
+        """AcquisitionTimeLine from the first metadata channel.
 
         Returns
         -------
         metadata_elements.AcquisitionTimeLine
-            AcquisitionTimeLine MetaDataElement instance
+            AcquisitionTimeLine metadata element from the first metadata channel.
 
         """
-        return self.channels[channel_index].get_acquisition_time_line()
+        return self.channels[0].acquisition_time_line
 
-    def get_ground_corner_points(
-        self,
-        channel_index: int = 0,
-    ) -> metadata_elements.GroundCornerPoints:
-        """GroundCornerPoints getter method.
-
-        Parameters
-        ----------
-        channel_index : int, optional
-            index of the metadata channel, by default 0.
+    @property
+    def ground_corner_points(self) -> metadata_elements.GroundCornerPoints:
+        """GroundCornerPoints from the first metadata channel.
 
         Returns
         -------
         metadata_elements.GroundCornerPoints
-            GroundCornerPoints MetaDataElement instance
+            GroundCornerPoints metadata element from the first metadata channel.
 
         """
-        return self.channels[channel_index].get_ground_corner_points()
+        return self.channels[0].ground_corner_points
 
-    def get_burst_info(self, channel_index: int = 0) -> metadata_elements.BurstInfo:
-        """BurstInfo getter method.
-
-        Parameters
-        ----------
-        channel_index : int, optional
-            index of the metadata channel, by default 0.
+    @property
+    def burst_info(self) -> metadata_elements.BurstInfo:
+        """BurstInfo from the first metadata channel.
 
         Returns
         -------
         metadata_elements.BurstInfo
-            BurstInfo MetaDataElement instance
+            BurstInfo metadata element from the first metadata channel.
 
         """
-        return self.channels[channel_index].get_burst_info()
+        return self.channels[0].burst_info
 
-    def get_doppler_centroid(
-        self,
-        channel_index: int = 0,
-    ) -> metadata_elements.DopplerCentroidVector:
-        """DopplerCentroidVector getter method.
-
-        Parameters
-        ----------
-        channel_index : int, optional
-            index of the metadata channel, by default 0.
+    @property
+    def doppler_centroid(self) -> metadata_elements.DopplerCentroidVector:
+        """DopplerCentroidVector from the first metadata channel.
 
         Returns
         -------
         metadata_elements.DopplerCentroidVector
-            DopplerCentroidVector MetaDataElement instance
+            DopplerCentroidVector metadata element from the first metadata channel.
 
         """
-        return self.channels[channel_index].get_doppler_centroid()
+        return self.channels[0].doppler_centroid
 
-    def get_doppler_rate(self, channel_index: int = 0) -> metadata_elements.DopplerRateVector:
-        """DopplerRateVector getter method.
-
-        Parameters
-        ----------
-        channel_index : int, optional
-            index of the metadata channel, by default 0.
+    @property
+    def doppler_rate(self) -> metadata_elements.DopplerRateVector:
+        """DopplerRateVector from the first metadata channel.
 
         Returns
         -------
         metadata_elements.DopplerRateVector
-            DopplerRateVector MetaDataElement instance
+            DopplerRateVector metadata element from the first metadata channel.
 
         """
-        return self.channels[channel_index].get_doppler_rate()
+        return self.channels[0].doppler_rate
 
-    def get_tops_azimuth_modulation_rate(
-        self,
-        channel_index: int = 0,
-    ) -> metadata_elements.TopsAzimuthModulationRateVector:
-        """TopsAzimuthModulationRateVector getter method.
-
-        Parameters
-        ----------
-        channel_index : int, optional
-            index of the metadata channel, by default 0.
+    @property
+    def tops_azimuth_modulation_rate(self) -> metadata_elements.TopsAzimuthModulationRateVector:
+        """TopsAzimuthModulationRateVector from the first metadata channel.
 
         Returns
         -------
         metadata_elements.TopsAzimuthModulationRateVector
-            TopsAzimuthModulationRateVector MetaDataElement instance
+            TopsAzimuthModulationRateVector metadata element from the first metadata channel.
 
         """
-        return self.channels[channel_index].get_tops_azimuth_modulation_rate()
+        return self.channels[0].tops_azimuth_modulation_rate
 
-    def get_slant_to_ground(self, channel_index: int = 0) -> metadata_elements.SlantToGroundVector:
-        """SlantToGroundVector getter method.
-
-        Parameters
-        ----------
-        channel_index : int, optional
-            index of the metadata channel, by default 0.
+    @property
+    def slant_to_ground(self) -> metadata_elements.SlantToGroundVector:
+        """SlantToGroundVector from the first metadata channel.
 
         Returns
         -------
         metadata_elements.SlantToGroundVector
-            SlantToGroundVector MetaDataElement instance
+            SlantToGroundVector metadata element from the first metadata channel.
 
         """
-        return self.channels[channel_index].get_slant_to_ground()
+        return self.channels[0].slant_to_ground
 
-    def get_ground_to_slant(self, channel_index: int = 0) -> metadata_elements.GroundToSlantVector:
-        """GroundToSlantVector getter method.
-
-        Parameters
-        ----------
-        channel_index : int, optional
-            index of the metadata channel, by default 0.
+    @property
+    def ground_to_slant(self) -> metadata_elements.GroundToSlantVector:
+        """GroundToSlantVector from the first metadata channel.
 
         Returns
         -------
         metadata_elements.GroundToSlantVector
-            GroundToSlantVector MetaDataElement instance
+            GroundToSlantVector metadata element from the first metadata channel.
 
         """
-        return self.channels[channel_index].get_ground_to_slant()
+        return self.channels[0].ground_to_slant
 
-    def get_slant_to_incidence(
-        self,
-        channel_index: int = 0,
-    ) -> metadata_elements.SlantToIncidenceVector:
-        """SlantToIncidenceVector getter method.
-
-        Parameters
-        ----------
-        channel_index : int, optional
-            index of the metadata channel, by default 0.
+    @property
+    def slant_to_incidence(self) -> metadata_elements.SlantToIncidenceVector:
+        """SlantToIncidenceVector from the first metadata channel.
 
         Returns
         -------
         metadata_elements.SlantToIncidenceVector
-            SlantToIncidenceVector MetaDataElement instance
+            SlantToIncidenceVector metadata element from the first metadata channel.
 
         """
-        return self.channels[channel_index].get_slant_to_incidence()
+        return self.channels[0].slant_to_incidence
 
-    def get_slant_to_elevation(
-        self,
-        channel_index: int = 0,
-    ) -> metadata_elements.SlantToElevationVector:
-        """SlantToElevationVector getter method.
-
-        Parameters
-        ----------
-        channel_index : int, optional
-            index of the metadata channel, by default 0.
+    @property
+    def slant_to_elevation(self) -> metadata_elements.SlantToElevationVector:
+        """SlantToElevationVector from the first metadata channel.
 
         Returns
         -------
         metadata_elements.SlantToElevationVector
-            SlantToElevationVector MetaDataElement instance
+            SlantToElevationVector metadata element from the first metadata channel.
 
         """
-        return self.channels[channel_index].get_slant_to_elevation()
+        return self.channels[0].slant_to_elevation
 
-    def get_antenna_info(self, channel_index: int = 0) -> metadata_elements.AntennaInfo:
-        """AntennaInfo getter method.
-
-        Parameters
-        ----------
-        channel_index : int, optional
-            index of the metadata channel, by default 0.
+    @property
+    def antenna_info(self) -> metadata_elements.AntennaInfo:
+        """AntennaInfo from the first metadata channel.
 
         Returns
         -------
         metadata_elements.AntennaInfo
-            AntennaInfo MetaDataElement instance
+            AntennaInfo metadata element from the first metadata channel.
 
         """
-        return self.channels[channel_index].get_antenna_info()
+        return self.channels[0].antenna_info
 
-    def get_data_statistics(self, channel_index: int = 0) -> metadata_elements.DataStatistics:
-        """DataStatistics getter method.
-
-        Parameters
-        ----------
-        channel_index : int, optional
-            index of the metadata channel, by default 0.
+    @property
+    def data_statistics(self) -> metadata_elements.DataStatistics:
+        """DataStatistics from the first metadata channel.
 
         Returns
         -------
         metadata_elements.DataStatistics
-            DataStatistics MetaDataElement instance
+            DataStatistics metadata element from the first metadata channel.
 
         """
-        return self.channels[channel_index].get_data_statistics()
+        return self.channels[0].data_statistics
 
-    def get_swath_info(self, channel_index: int = 0) -> metadata_elements.SwathInfo:
-        """SwathInfo getter method.
-
-        Parameters
-        ----------
-        channel_index : int, optional
-            index of the metadata channel, by default 0.
+    @property
+    def swath_info(self) -> metadata_elements.SwathInfo:
+        """SwathInfo from the first metadata channel.
 
         Returns
         -------
         metadata_elements.SwathInfo
-            SwathInfo MetaDataElement instance
+            SwathInfo metadata element from the first metadata channel.
 
         """
-        return self.channels[channel_index].get_swath_info()
+        return self.channels[0].swath_info
 
-    def get_coreg_poly(self, channel_index: int = 0) -> metadata_elements.CoregPolyVector:
-        """CoregPolyVector getter method.
-
-        Parameters
-        ----------
-        channel_index : int, optional
-            index of the metadata channel, by default 0.
+    @property
+    def coreg_poly(self) -> metadata_elements.CoregPolyVector:
+        """CoregPolyVector from the first metadata channel.
 
         Returns
         -------
         metadata_elements.CoregPolyVector
-            CoregPolyVector MetaDataElement instance
+            CoregPolyVector metadata element from the first metadata channel.
 
         """
-        return self.channels[channel_index].get_coreg_poly()
+        return self.channels[0].coreg_poly

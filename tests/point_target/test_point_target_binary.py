@@ -61,7 +61,7 @@ def _check_product_files(path: Path) -> None:
 
     lines = []
     for file in metadata:
-        raster_info = read_metadata(file).get_raster_info()
+        raster_info = read_metadata(file).raster_info
         lines.append(raster_info.lines)
         assert raster_info.samples == 1
 

@@ -153,7 +153,7 @@ class PointSetProduct:
         lines = []
         raster_infos = []
         for file in metadata:
-            raster_info = read_metadata(file).get_raster_info()
+            raster_info = read_metadata(file).raster_info
             lines.append(raster_info.lines)
             raster_infos.append(raster_info)
             if raster_info.samples != 1:

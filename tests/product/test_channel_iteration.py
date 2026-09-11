@@ -130,7 +130,7 @@ def test_iter_channels_generator_no_filter(channel_test_data: ChannelTestData) -
             assert isinstance(item, tuple)
             assert isinstance(item[0], int)
             assert isinstance(item[1], MetaData)
-            assert item[1].get_swath_info().polarization == pols[idx].replace("/", "")
+            assert item[1].swath_info.polarization == pols[idx].replace("/", "")
 
 
 def test_iter_channels_generator_filter(channel_test_data: ChannelTestData) -> None:
@@ -147,7 +147,7 @@ def test_iter_channels_generator_filter(channel_test_data: ChannelTestData) -> N
             assert isinstance(item, tuple)
             assert isinstance(item[0], int)
             assert isinstance(item[1], MetaData)
-            assert item[1].get_swath_info().polarization == pols[1].replace("/", "")
+            assert item[1].swath_info.polarization == pols[1].replace("/", "")
 
 
 def test_iter_channels_generator_filter_1(channel_test_data: ChannelTestData) -> None:
@@ -164,7 +164,7 @@ def test_iter_channels_generator_filter_1(channel_test_data: ChannelTestData) ->
             assert isinstance(item, tuple)
             assert isinstance(item[0], int)
             assert isinstance(item[1], MetaData)
-            assert item[1].get_swath_info().polarization == pols[1].replace("/", "")
+            assert item[1].swath_info.polarization == pols[1].replace("/", "")
 
 
 def test_iter_channels_generator_filter_2(channel_test_data: ChannelTestData) -> None:
@@ -185,7 +185,7 @@ def test_iter_channels_generator_filter_2(channel_test_data: ChannelTestData) ->
             assert isinstance(item, tuple)
             assert isinstance(item[0], int)
             assert isinstance(item[1], MetaData)
-            assert item[1].get_swath_info().swath == swaths[1]
+            assert item[1].swath_info.swath == swaths[1]
 
 
 def test_iter_channels_generator_filter_3(channel_test_data: ChannelTestData) -> None:
@@ -206,8 +206,8 @@ def test_iter_channels_generator_filter_3(channel_test_data: ChannelTestData) ->
             assert isinstance(item, tuple)
             assert isinstance(item[0], int)
             assert isinstance(item[1], MetaData)
-            assert item[1].get_swath_info().polarization == pols[1].replace("/", "")
-            assert item[1].get_swath_info().swath == swaths[1]
+            assert item[1].swath_info.polarization == pols[1].replace("/", "")
+            assert item[1].swath_info.swath == swaths[1]
 
 
 def test_iter_channels_generator_filter_4(channel_test_data: ChannelTestData) -> None:
@@ -231,7 +231,7 @@ def test_iter_channels_generator_filter_4(channel_test_data: ChannelTestData) ->
             assert isinstance(item, tuple)
             assert isinstance(item[0], int)
             assert isinstance(item[1], MetaData)
-            assert item[1].get_swath_info().polarization == pols[idx].replace("/", "")
+            assert item[1].swath_info.polarization == pols[idx].replace("/", "")
             count += 1
         assert count == 2
 
@@ -258,8 +258,8 @@ def test_iter_channels_generator_filter_5(channel_test_data: ChannelTestData) ->
             assert isinstance(item, tuple)
             assert isinstance(item[0], int)
             assert isinstance(item[1], MetaData)
-            assert item[1].get_swath_info().polarization == pols[idx].replace("/", "")
-            assert item[1].get_swath_info().swath == swaths[1]
+            assert item[1].swath_info.polarization == pols[idx].replace("/", "")
+            assert item[1].swath_info.swath == swaths[1]
             count += 1
         assert count == 2
 
@@ -276,7 +276,7 @@ def test_iter_channels_filter_1(channel_test_data: ChannelTestData) -> None:
             assert isinstance(item, tuple)
             assert isinstance(item[0], int)
             assert isinstance(item[1], MetaData)
-            assert item[1].get_swath_info().polarization == pols[2].replace("/", "")
+            assert item[1].swath_info.polarization == pols[2].replace("/", "")
             count += 1
         assert count == 1
 
@@ -296,7 +296,7 @@ def test_iter_channels_filter_2(channel_test_data: ChannelTestData) -> None:
             assert isinstance(item, tuple)
             assert isinstance(item[0], int)
             assert isinstance(item[1], MetaData)
-            assert item[1].get_swath_info().swath == swaths[2]
+            assert item[1].swath_info.swath == swaths[2]
 
 
 def test_iter_channels_filter_3(channel_test_data: ChannelTestData) -> None:
@@ -319,8 +319,8 @@ def test_iter_channels_filter_3(channel_test_data: ChannelTestData) -> None:
             assert isinstance(item, tuple)
             assert isinstance(item[0], int)
             assert isinstance(item[1], MetaData)
-            assert item[1].get_swath_info().polarization == pols[3].replace("/", "")
-            assert item[1].get_swath_info().swath == swaths[2]
+            assert item[1].swath_info.polarization == pols[3].replace("/", "")
+            assert item[1].swath_info.swath == swaths[2]
             count += 1
         assert count == 1
 
@@ -344,7 +344,7 @@ def test_iter_channels_filter_4(channel_test_data: ChannelTestData) -> None:
             assert isinstance(item, tuple)
             assert isinstance(item[0], int)
             assert isinstance(item[1], MetaData)
-            assert item[1].get_swath_info().polarization == pols[idx].replace("/", "")
+            assert item[1].swath_info.polarization == pols[idx].replace("/", "")
             count += 1
         assert count == 3
 
@@ -369,7 +369,7 @@ def test_iter_channels_filter_5(channel_test_data: ChannelTestData) -> None:
             assert isinstance(item, tuple)
             assert isinstance(item[0], int)
             assert isinstance(item[1], MetaData)
-            assert item[1].get_swath_info().polarization == pols[idx].replace("/", "")
-            assert item[1].get_swath_info().swath == swaths[2]
+            assert item[1].swath_info.polarization == pols[idx].replace("/", "")
+            assert item[1].swath_info.swath == swaths[2]
             count += 1
         assert count == 2

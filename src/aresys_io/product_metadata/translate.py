@@ -1730,106 +1730,30 @@ CHANNEL_FIELDS_FROM_MODEL = (
 
 
 CHANNEL_FIELDS_TO_MODEL = (
-    ("RasterInfo", "raster_info", "get_raster_info", translate_raster_info_to_model),
-    (
-        "SamplingConstants",
-        "sampling_constants",
-        "get_sampling_constants",
-        translate_sampling_constants_to_model,
-    ),
-    ("Pulse", "pulse", "get_pulse", translate_pulse_to_model),
-    ("SwathInfo", "swath_info", "get_swath_info", translate_swath_info_to_model),
-    (
-        "DataSetInfo",
-        "data_set_info",
-        "get_dataset_info",
-        translate_dataset_info_to_model,
-    ),
-    (
-        "StateVectors",
-        "state_vector_data",
-        "get_state_vectors",
-        translate_state_vectors_to_model,
-    ),
-    (
-        "AttitudeInfo",
-        "attitude_info",
-        "get_attitude_info",
-        translate_attitude_to_model,
-    ),
-    (
-        "AcquisitionTimeLine",
-        "acquisition_time_line",
-        "get_acquisition_time_line",
-        translate_acquisition_time_line_to_model,
-    ),
-    (
-        "GroundCornerPoints",
-        "ground_corner_points",
-        "get_ground_corner_points",
-        translate_ground_corner_points_to_model,
-    ),
-    ("BurstInfo", "burst_info", "get_burst_info", translate_burst_info_to_model),
-    (
-        "DopplerCentroidVector",
-        "doppler_centroid",
-        "get_doppler_centroid",
-        _translate_poly_vector_to_model,
-    ),
-    (
-        "DopplerRateVector",
-        "doppler_rate",
-        "get_doppler_rate",
-        _translate_poly_vector_to_model,
-    ),
+    ("RasterInfo", "raster_info", translate_raster_info_to_model),
+    ("SamplingConstants", "sampling_constants", translate_sampling_constants_to_model),
+    ("Pulse", "pulse", translate_pulse_to_model),
+    ("SwathInfo", "swath_info", translate_swath_info_to_model),
+    ("DataSetInfo", "data_set_info", translate_dataset_info_to_model),
+    ("StateVectors", "state_vector_data", translate_state_vectors_to_model),
+    ("AttitudeInfo", "attitude_info", translate_attitude_to_model),
+    ("AcquisitionTimeLine", "acquisition_time_line", translate_acquisition_time_line_to_model),
+    ("GroundCornerPoints", "ground_corner_points", translate_ground_corner_points_to_model),
+    ("BurstInfo", "burst_info", translate_burst_info_to_model),
+    ("DopplerCentroidVector", "doppler_centroid", _translate_poly_vector_to_model),
+    ("DopplerRateVector", "doppler_rate", _translate_poly_vector_to_model),
     (
         "TopsAzimuthModulationRateVector",
         "tops_azimuth_modulation_rate",
-        "get_tops_azimuth_modulation_rate",
         _translate_poly_vector_to_model,
     ),
-    (
-        "SlantToGroundVector",
-        "slant_to_ground",
-        "get_slant_to_ground",
-        _translate_poly_vector_to_model,
-    ),
-    (
-        "GroundToSlantVector",
-        "ground_to_slant",
-        "get_ground_to_slant",
-        _translate_poly_vector_to_model,
-    ),
-    (
-        "SlantToElevationVector",
-        "slant_to_elevation",
-        "get_slant_to_elevation",
-        _translate_poly_vector_to_model,
-    ),
-    (
-        "SlantToIncidenceVector",
-        "slant_to_incidence",
-        "get_slant_to_incidence",
-        _translate_poly_vector_to_model,
-    ),
-    (
-        "AntennaInfo",
-        "antenna_info",
-        "get_antenna_info",
-        translate_antenna_info_to_model,
-    ),
-    (
-        "DataStatistics",
-        "data_statistics",
-        "get_data_statistics",
-        translate_data_statistics_to_model,
-    ),
-    (
-        "CoregPolyVector",
-        "coreg_poly",
-        "get_coreg_poly",
-        _translate_coreg_poly_vector_to_model,
-    ),
+    ("SlantToGroundVector", "slant_to_ground", _translate_poly_vector_to_model),
+    ("GroundToSlantVector", "ground_to_slant", _translate_poly_vector_to_model),
+    ("SlantToElevationVector", "slant_to_elevation", _translate_poly_vector_to_model),
+    ("SlantToIncidenceVector", "slant_to_incidence", _translate_poly_vector_to_model),
+    ("AntennaInfo", "antenna_info", translate_antenna_info_to_model),
+    ("DataStatistics", "data_statistics", translate_data_statistics_to_model),
+    ("CoregPolyVector", "coreg_poly", _translate_coreg_poly_vector_to_model),
 )
 
 
@@ -1885,13 +1809,9 @@ def translate_metadata_channel_to_model(
         content_id=metadata_channel.content_id,
     )
 
-    for element_name, field_name, getter_name, translator in CHANNEL_FIELDS_TO_MODEL:
+    for element_name, field_name, translator in CHANNEL_FIELDS_TO_MODEL:
         if element_name in metadata_channel.elements:
-            setattr(
-                channel_model,
-                field_name,
-                translator(getattr(metadata_channel, getter_name)()),
-            )
+            setattr(channel_model, field_name, translator(getattr(metadata_channel, field_name)))
 
     return channel_model
 

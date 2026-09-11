@@ -59,7 +59,7 @@ class SwathIDFilter:
         bool
             boolean matching result
         """
-        swath_info = metadata.get_swath_info()
+        swath_info = metadata.swath_info
         if self.polarization is not None:
             pol_condition = swath_info.polarization in self.polarization
             if self.swath is not None:
