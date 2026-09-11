@@ -77,3 +77,19 @@ min-severity = "warn"
 
 [tool.pyrefly.errors]
 unused-ignore = true
+
+[tool.pdm]
+distribution = true
+
+[tool.pdm.resolution]
+respect-source-order = true
+
+[tool.pdm.scripts]
+format_check = "ruff format --check"
+format = "ruff format"
+sort = "ruff check --select I --fix-only"
+lint_check = "ruff check"
+lint_fix = "ruff check --show-fixes --fix-only"
+test = "python -m pytest ./tests -v"
+check_code = { composite = ["format_check", "lint_check"] }
+fix_format = { composite = ["format", "sort", "lint_fix"] }
