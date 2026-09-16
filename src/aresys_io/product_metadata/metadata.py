@@ -689,3 +689,6 @@ class MetaData:
 
         """
         return self.channels[0].coreg_poly
+
+
+__all__ = ["MetaData", "MetaDataChannel", "create_new_metadata"]

@@ -76,3 +76,11 @@ def parse_metadata(metadata_content: str) -> metadata.MetaData:
         Metadata representation object
     """
     return translate_metadata_from_model(parse(metadata_content, models.AresysXmlDoc))
+
+
+__all__ = [
+    "parse_metadata",
+    "read_metadata",
+    "serialize_metadata",
+    "write_metadata",
+]
