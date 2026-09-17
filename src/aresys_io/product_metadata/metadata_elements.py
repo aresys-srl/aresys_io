@@ -148,6 +148,30 @@ class RasterInfo(MetaDataPydanticModel):
     format_type: RasterFormat | None = None
 
     @property
+    def azimuth_axis(self) -> npt.NDArray:
+        """The azimuth axis of the raster.
+
+        Returns
+        -------
+        npt.NDArray
+            The azimuth axis of the raster.
+
+        """
+        return np.arange(0, self.lines, 1) * self.lines_step + self.lines_start  # pyrefly: ignore[unsupported-operation]
+
+    @property
+    def range_axis(self) -> npt.NDArray:
+        """The range axis of the raster.
+
+        Returns
+        -------
+        npt.NDArray
+            The range axis of the raster.
+
+        """
+        return np.arange(0, self.samples, 1) * self.samples_step + self.samples_start  # pyrefly: ignore[unsupported-operation]
+
+    @property
     def lines_start_date(self) -> PreciseDateTime:
         """The start date of the lines.
 
