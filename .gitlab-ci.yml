@@ -41,6 +41,14 @@ ruff:
     - python3.12 -m pip install -e .[dev]
     - python3.12 -m ruff check
 
+pyrefly:
+  stage: analysis
+  extends:
+    - .tags_manylinux_2_28
+  script:
+    - python3.12 -m pip install -e .[typecheck]
+    - python3.12 -m pyrefly check --python-interpreter-path $(python3.12 -c "import sys; print(sys.executable)")
+
 # === test - unit test ========================================================
 # ============================================================================
 .unittest:
