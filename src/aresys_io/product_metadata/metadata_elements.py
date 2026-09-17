@@ -351,6 +351,18 @@ class AttitudeInfo(MetaDataPydanticModel):
             raise ValueError(msg)
         return value
 
+    @property
+    def times(self) -> npt.NDArray:
+        """The time axis of the attitude data.
+
+        Returns
+        -------
+        npt.NDArray
+            The time axis of the attitude data.
+
+        """
+        return np.arange(self.ypr_deg.shape[0]) * self.time_step + self.reference_time  # pyrefly: ignore[unsupported-operation]
+
 
 class Burst(MetaDataPydanticModel):
     """Single burst metadata."""
