@@ -5,7 +5,7 @@ import numpy as np
 from perseo_core.geometry.pointing import compute_sensor_local_axis
 from perseo_core.timing import PreciseDateTime
 
-from aresys_io.product import (
+from aresys_io.product_metadata import (
     create_attitude_from_attitude_info_and_trajectory,
     create_trajectory_from_state_vectors,
     metadata_elements,

@@ -7,18 +7,16 @@ from math import isclose
 import numpy as np
 from perseo_core.timing import PreciseDateTime
 
-from aresys_io.product.polynomials import (
-    PiecewisePolynomial2D,
-    PiecewisePolynomialPair2D,
-    Polynomial2D,
-    PolynomialPair2D,
-)
-from aresys_io.product_metadata.metadata_elements import (
+from aresys_io.product_metadata import (
     CoregPoly,
     CoregPolyVector,
     DopplerCentroid,
     DopplerCentroidVector,
     DopplerRate,
+    PiecewisePolynomial2D,
+    PiecewisePolynomialPair2D,
+    Polynomial2D,
+    PolynomialPair2D,
 )
 
 

@@ -5,8 +5,7 @@ import numpy as np
 import pytest
 from perseo_core.timing import PreciseDateTime
 
-from aresys_io.product import create_trajectory_from_state_vectors
-from aresys_io.product_metadata import metadata_elements
+from aresys_io.product_metadata import create_trajectory_from_state_vectors, metadata_elements
 
 
 def test_create_orbit_returns_trajectory_with_expected_axes() -> None:

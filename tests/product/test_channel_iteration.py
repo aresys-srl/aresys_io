@@ -8,10 +8,8 @@ from types import GeneratorType
 
 import pytest
 
-from aresys_io.product import channel_iteration
-from aresys_io.product.productfolder import create_product_folder
-from aresys_io.product_metadata.metadata import MetaData
-from aresys_io.product_metadata.metadata_elements import SwathPolarization
+from aresys_io.product import channel_iteration, create_product_folder
+from aresys_io.product_metadata import MetaData, SwathPolarization
 
 swaths = ["S1", "S2", "S3"]
 pols = ["H/H", "V/V", "V/H", "H/V"]
