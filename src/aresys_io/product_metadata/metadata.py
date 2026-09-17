@@ -7,13 +7,23 @@ from __future__ import annotations
 
 import warnings
 from dataclasses import dataclass, field
+from typing import TYPE_CHECKING
 
 from aresys_io.product_metadata import metadata_elements
+from aresys_io.product_metadata.create_attitude import (
+    create_attitude_from_attitude_info_and_trajectory,
+)
+from aresys_io.product_metadata.create_orbit import create_trajectory_from_state_vectors
+from aresys_io.product_metadata.polynomials import PiecewisePolynomial2D, PiecewisePolynomialPair2D
+
+if TYPE_CHECKING:
+    from perseo_core.geometry.navigation import CubicSplineTrajectory
+    from perseo_core.geometry.pointing import Attitude
 
 __all__ = ["MetaData", "MetaDataChannel", "create_new_metadata"]
 
 
-@dataclass
+@dataclass  # ruff: ignore[too-many-public-methods]
 class MetaDataChannel:
     """MetaDataChannel class."""
 
@@ -388,6 +398,48 @@ class MetaDataChannel:
         assert isinstance(coreg_poly, metadata_elements.CoregPolyVector)
         return coreg_poly
 
+    def trajectory(self) -> CubicSplineTrajectory:
+        """Create a CubicSplineTrajectory from the state vector data."""
+        return create_trajectory_from_state_vectors(self.state_vector_data)
+
+    def attitude(self) -> Attitude:
+        """Create an Attitude object from the attitude data."""
+        return create_attitude_from_attitude_info_and_trajectory(
+            self.trajectory(), self.attitude_info
+        )
+
+    def doppler_centroid_poly(self) -> PiecewisePolynomial2D:
+        """Create a PiecewisePolynomial2D from the doppler centroid metadata element."""
+        return PiecewisePolynomial2D.from_metadata(self.doppler_centroid)
+
+    def doppler_rate_poly(self) -> PiecewisePolynomial2D:
+        """Create a PiecewisePolynomial2D from the doppler rate metadata element."""
+        return PiecewisePolynomial2D.from_metadata(self.doppler_rate)
+
+    def tops_azimuth_modulation_rate_poly(self) -> PiecewisePolynomial2D:
+        """Create a PiecewisePolynomial2D from the tops azimuth mod rate metadata element."""
+        return PiecewisePolynomial2D.from_metadata(self.tops_azimuth_modulation_rate)
+
+    def ground_to_slant_poly(self) -> PiecewisePolynomial2D:
+        """Create a PiecewisePolynomial2D from the ground to slant metadata element."""
+        return PiecewisePolynomial2D.from_metadata(self.ground_to_slant)
+
+    def slant_to_ground_poly(self) -> PiecewisePolynomial2D:
+        """Create a PiecewisePolynomial2D from the slant to ground metadata element."""
+        return PiecewisePolynomial2D.from_metadata(self.slant_to_ground)
+
+    def slant_to_incidence_poly(self) -> PiecewisePolynomial2D:
+        """Create a PiecewisePolynomial2D from the slant to incidence metadata element."""
+        return PiecewisePolynomial2D.from_metadata(self.slant_to_incidence)
+
+    def slant_to_elevation_poly(self) -> PiecewisePolynomial2D:
+        """Create a PiecewisePolynomial2D from the slant to elevation metadata element."""
+        return PiecewisePolynomial2D.from_metadata(self.slant_to_elevation)
+
+    def coregistration_poly(self) -> PiecewisePolynomialPair2D:
+        """Create a PiecewisePolynomialPair2D from the coreg_poly metadata element."""
+        return PiecewisePolynomialPair2D.from_metadata(self.coreg_poly)
+
 
 def create_new_metadata(
     num_metadata_channels: int = 1,
@@ -413,7 +465,7 @@ def create_new_metadata(
     )
 
 
-@dataclass
+@dataclass  # ruff: ignore[too-many-public-methods]
 class MetaData:
     """Metadata."""
 
@@ -691,3 +743,113 @@ class MetaData:
 
         """
         return self.channels[0].coreg_poly
+
+    def trajectory(self) -> CubicSplineTrajectory:
+        """CubicSplineTrajectory from the first metadata channel.
+
+        Returns
+        -------
+        CubicSplineTrajectory
+            CubicSplineTrajectory metadata element from the first metadata channel.
+
+        """
+        return self.channels[0].trajectory()
+
+    def attitude(self) -> Attitude:
+        """Attitude from the first metadata channel.
+
+        Returns
+        -------
+        Attitude
+            Attitude metadata element from the first metadata channel.
+
+        """
+        return self.channels[0].attitude()
+
+    def doppler_centroid_poly(self) -> PiecewisePolynomial2D:
+        """Create a PiecewisePolynomial2D from the first metadata channel's doppler centroid.
+
+        Returns
+        -------
+        PiecewisePolynomial2D
+            PiecewisePolynomial2D metadata element from the first metadata channel.
+
+        """
+        return self.channels[0].doppler_centroid_poly()
+
+    def doppler_rate_poly(self) -> PiecewisePolynomial2D:
+        """Create a PiecewisePolynomial2D from the first metadata channel's doppler rate.
+
+        Returns
+        -------
+        PiecewisePolynomial2D
+            PiecewisePolynomial2D metadata element from the first metadata channel.
+
+        """
+        return self.channels[0].doppler_rate_poly()
+
+    def tops_azimuth_modulation_rate_poly(self) -> PiecewisePolynomial2D:
+        """Create a PiecewisePolynomial2D from the first metadata channel's tops azimuth mod rate.
+
+        Returns
+        -------
+        PiecewisePolynomial2D
+            PiecewisePolynomial2D metadata element from the first metadata channel.
+
+        """
+        return self.channels[0].tops_azimuth_modulation_rate_poly()
+
+    def ground_to_slant_poly(self) -> PiecewisePolynomial2D:
+        """Create a PiecewisePolynomial2D from the first metadata channel's ground to slant range.
+
+        Returns
+        -------
+        PiecewisePolynomial2D
+            PiecewisePolynomial2D metadata element from the first metadata channel.
+
+        """
+        return self.channels[0].ground_to_slant_poly()
+
+    def slant_to_ground_poly(self) -> PiecewisePolynomial2D:
+        """Create a PiecewisePolynomial2D from the first metadata channel's slant to ground range.
+
+        Returns
+        -------
+        PiecewisePolynomial2D
+            PiecewisePolynomial2D metadata element from the first metadata channel.
+
+        """
+        return self.channels[0].slant_to_ground_poly()
+
+    def slant_to_incidence_poly(self) -> PiecewisePolynomial2D:
+        """Create a PiecewisePolynomial2D from the first metadata channel's slant to incidence.
+
+        Returns
+        -------
+        PiecewisePolynomial2D
+            PiecewisePolynomial2D metadata element from the first metadata channel.
+
+        """
+        return self.channels[0].slant_to_incidence_poly()
+
+    def slant_to_elevation_poly(self) -> PiecewisePolynomial2D:
+        """Create a PiecewisePolynomial2D from the first metadata channel's slant to elevation.
+
+        Returns
+        -------
+        PiecewisePolynomial2D
+            PiecewisePolynomial2D metadata element from the first metadata channel.
+
+        """
+        return self.channels[0].slant_to_elevation_poly()
+
+    def coregistration_poly(self) -> PiecewisePolynomialPair2D:
+        """Create a PiecewisePolynomialPair2D from the first metadata channel's coregistration.
+
+        Returns
+        -------
+        PiecewisePolynomialPair2D
+            PiecewisePolynomialPair2D metadata element from the first metadata channel.
+
+        """
+        return self.channels[0].coregistration_poly()
