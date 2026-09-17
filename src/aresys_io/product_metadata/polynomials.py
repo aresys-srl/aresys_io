@@ -5,6 +5,7 @@
 
 from __future__ import annotations
 
+import bisect
 from dataclasses import dataclass, field
 from typing import Generic, TypeAlias
 
@@ -41,7 +42,7 @@ Poly2DVector: TypeAlias = (
 PolynomialPairVector: TypeAlias = CoregPolyVector
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, eq=False)
 class Polynomial2D(Generic[ReferenceAzimuthTimeT]):
     """2D polynomial built from a metadata ``Poly2D`` instance."""
 
@@ -49,6 +50,26 @@ class Polynomial2D(Generic[ReferenceAzimuthTimeT]):
     coefficient_matrix: np.ndarray = field(
         default_factory=lambda: np.zeros((0, 0), dtype=float),
     )
+
+    __hash__ = None
+
+    def __eq__(self, other: object) -> bool:
+        """Check equality of reference values and coefficient matrix."""
+        if not isinstance(other, Polynomial2D):
+            return False
+        return self.reference_values == other.reference_values and np.array_equal(
+            self.coefficient_matrix, other.coefficient_matrix
+        )
+
+    @property
+    def ref_azimuth_time(self) -> ReferenceAzimuthTimeT:
+        """Reference azimuth value or time."""
+        return self.reference_values[0]
+
+    @property
+    def ref_range_time(self) -> float:
+        """Reference range value or time."""
+        return self.reference_values[1]
 
     @classmethod
     def from_metadata(
@@ -92,7 +113,11 @@ class PiecewisePolynomial2D(Generic[ReferenceAzimuthTimeT]):
 
     def __post_init__(self) -> None:
         """Ensure the input list is always sorted after initialization."""
-        self._sorted_poly_list.sort(key=lambda poly: poly.reference_values[0])
+        object.__setattr__(
+            self,
+            "_sorted_poly_list",
+            sorted(self._sorted_poly_list, key=lambda poly: poly.reference_values[0]),
+        )
 
     @classmethod
     def from_metadata(
@@ -116,14 +141,13 @@ class PiecewisePolynomial2D(Generic[ReferenceAzimuthTimeT]):
             raise ValueError(msg)
 
         reference_value = values[0]
-        previous_poly = self._sorted_poly_list[0]
-
-        for poly in self._sorted_poly_list:
-            if poly.reference_values[0] > reference_value:
-                break
-            previous_poly = poly
-
-        return previous_poly.evaluate(values)
+        idx = bisect.bisect_right(
+            self._sorted_poly_list,
+            reference_value,
+            key=lambda poly: poly.reference_values[0],
+        )
+        selected_poly = self._sorted_poly_list[max(0, idx - 1)]
+        return selected_poly.evaluate(values)
 
 
 @dataclass(frozen=True)
@@ -132,6 +156,8 @@ class PolynomialPair2D:
 
     azimuth_poly: Polynomial2D[PreciseDateTime]
     range_poly: Polynomial2D[PreciseDateTime]
+
+    __hash__ = None
 
     @classmethod
     def from_metadata(cls, poly: CoregPoly) -> PolynomialPair2D:
@@ -182,8 +208,13 @@ class PiecewisePolynomialPair2D:
 
     def __post_init__(self) -> None:
         """Ensure the input list is always sorted after initialization."""
-        self._sorted_poly_list.sort(
-            key=lambda poly: poly.azimuth_poly.reference_values[0],
+        object.__setattr__(
+            self,
+            "_sorted_poly_list",
+            sorted(
+                self._sorted_poly_list,
+                key=lambda poly: poly.azimuth_poly.reference_values[0],
+            ),
         )
 
     @classmethod
@@ -208,14 +239,13 @@ class PiecewisePolynomialPair2D:
             raise ValueError(msg)
 
         reference_value = values[0]
-        previous_poly = self._sorted_poly_list[0]
-
-        for poly in self._sorted_poly_list:
-            if poly.azimuth_poly.reference_values[0] > reference_value:
-                break
-            previous_poly = poly
-
-        return previous_poly.evaluate(values)
+        idx = bisect.bisect_right(
+            self._sorted_poly_list,
+            reference_value,
+            key=lambda poly: poly.azimuth_poly.reference_values[0],
+        )
+        selected_poly = self._sorted_poly_list[max(0, idx - 1)]
+        return selected_poly.evaluate(values)
 
 
 def _coefficients_to_matrix(
