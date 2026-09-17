@@ -496,6 +496,23 @@ class StateVectors(MetaDataPydanticModel):
             return "ASCENDING"
         return "DESCENDING"
 
+    @property
+    def num_state_vectors(self) -> int:
+        """Number of state vectors."""
+        return self.position_vector.shape[0]
+
+    @property
+    def times(self) -> npt.NDArray:
+        """The time axis of the state vector data.
+
+        Returns
+        -------
+        npt.NDArray
+            The time axis of the state vector data.
+
+        """
+        return np.arange(self.position_vector.shape[0]) * self.time_step + self.reference_time  # pyrefly: ignore[unsupported-operation]
+
 
 ReferenceAzimuthTimeT = TypeVar("ReferenceAzimuthTimeT", PreciseDateTime, float)
 
