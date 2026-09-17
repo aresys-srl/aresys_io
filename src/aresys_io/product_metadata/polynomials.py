@@ -26,9 +26,21 @@ from aresys_io.product_metadata.metadata_elements import (
     TopsAzimuthModulationRateVector,
 )
 
-AzimuthReference: TypeAlias = PreciseDateTime | float
-EvaluationPoint: TypeAlias = tuple[AzimuthReference, float]
-PolynomialPairEvaluationPoint: TypeAlias = EvaluationPoint
+__all__ = [
+    "CoregistrationPoly",
+    "DopplerCentroidPoly",
+    "DopplerRatePoly",
+    "GroundToSlantPoly",
+    "PiecewisePolynomial2D",
+    "Polynomial2D",
+    "PolynomialPair2D",
+    "PolynomialPairEvaluationResult",
+    "SlantToElevationPoly",
+    "SlantToGroundPoly",
+    "SlantToIncidencePoly",
+    "TopsAzimuthModulationRatePoly",
+]
+
 PolynomialPairEvaluationResult: TypeAlias = tuple[float, float]
 Poly2DVector: TypeAlias = (
     DopplerCentroidVector
@@ -39,8 +51,6 @@ Poly2DVector: TypeAlias = (
     | SlantToIncidenceVector
     | SlantToElevationVector
 )
-
-__all__ = ["CoregistrationPoly", "PiecewisePolynomial2D"]
 
 
 @dataclass(frozen=True, eq=False)
@@ -149,6 +159,125 @@ class PiecewisePolynomial2D(Generic[ReferenceAzimuthTimeT]):
         )
         selected_poly = self._sorted_poly_list[max(0, idx - 1)]
         return selected_poly.evaluate(values)
+
+
+@dataclass(frozen=True)
+class DopplerCentroidPoly(PiecewisePolynomial2D[PreciseDateTime]):
+    """Doppler centroid piecewise 2D polynomial."""
+
+    @classmethod
+    def from_metadata(  # pyrefly: ignore[bad-override]
+        cls: type[DopplerCentroidPoly],
+        poly2d_vector: DopplerCentroidVector,
+    ) -> DopplerCentroidPoly:
+        """Create a Doppler centroid polynomial from product metadata."""
+        return cls(
+            _sorted_poly_list=[
+                Polynomial2D.from_metadata(poly) for poly in poly2d_vector.poly_list
+            ],
+        )
+
+
+@dataclass(frozen=True)
+class DopplerRatePoly(PiecewisePolynomial2D[PreciseDateTime]):
+    """Doppler rate piecewise 2D polynomial."""
+
+    @classmethod
+    def from_metadata(  # pyrefly: ignore[bad-override]
+        cls: type[DopplerRatePoly],
+        poly2d_vector: DopplerRateVector,
+    ) -> DopplerRatePoly:
+        """Create a Doppler rate polynomial from product metadata."""
+        return cls(
+            _sorted_poly_list=[
+                Polynomial2D.from_metadata(poly) for poly in poly2d_vector.poly_list
+            ],
+        )
+
+
+@dataclass(frozen=True)
+class SlantToGroundPoly(PiecewisePolynomial2D[PreciseDateTime]):
+    """Slant-to-ground range piecewise 2D polynomial."""
+
+    @classmethod
+    def from_metadata(  # pyrefly: ignore[bad-override]
+        cls: type[SlantToGroundPoly],
+        poly2d_vector: SlantToGroundVector,
+    ) -> SlantToGroundPoly:
+        """Create a slant-to-ground polynomial from product metadata."""
+        return cls(
+            _sorted_poly_list=[
+                Polynomial2D.from_metadata(poly) for poly in poly2d_vector.poly_list
+            ],
+        )
+
+
+@dataclass(frozen=True)
+class GroundToSlantPoly(PiecewisePolynomial2D[PreciseDateTime]):
+    """Ground-to-slant range piecewise 2D polynomial."""
+
+    @classmethod
+    def from_metadata(  # pyrefly: ignore[bad-override]
+        cls: type[GroundToSlantPoly],
+        poly2d_vector: GroundToSlantVector,
+    ) -> GroundToSlantPoly:
+        """Create a ground-to-slant polynomial from product metadata."""
+        return cls(
+            _sorted_poly_list=[
+                Polynomial2D.from_metadata(poly) for poly in poly2d_vector.poly_list
+            ],
+        )
+
+
+@dataclass(frozen=True)
+class SlantToIncidencePoly(PiecewisePolynomial2D[PreciseDateTime]):
+    """Slant range to incidence angle piecewise 2D polynomial."""
+
+    @classmethod
+    def from_metadata(  # pyrefly: ignore[bad-override]
+        cls: type[SlantToIncidencePoly],
+        poly2d_vector: SlantToIncidenceVector,
+    ) -> SlantToIncidencePoly:
+        """Create a slant-to-incidence polynomial from product metadata."""
+        return cls(
+            _sorted_poly_list=[
+                Polynomial2D.from_metadata(poly) for poly in poly2d_vector.poly_list
+            ],
+        )
+
+
+@dataclass(frozen=True)
+class SlantToElevationPoly(PiecewisePolynomial2D[PreciseDateTime]):
+    """Slant range to elevation angle piecewise 2D polynomial."""
+
+    @classmethod
+    def from_metadata(  # pyrefly: ignore[bad-override]
+        cls: type[SlantToElevationPoly],
+        poly2d_vector: SlantToElevationVector,
+    ) -> SlantToElevationPoly:
+        """Create a slant-to-elevation polynomial from product metadata."""
+        return cls(
+            _sorted_poly_list=[
+                Polynomial2D.from_metadata(poly) for poly in poly2d_vector.poly_list
+            ],
+        )
+
+
+@dataclass(frozen=True)
+class TopsAzimuthModulationRatePoly(PiecewisePolynomial2D[PreciseDateTime]):
+    """TOPS azimuth modulation rate piecewise 2D polynomial."""
+
+    @classmethod
+    def from_metadata(  # pyrefly: ignore[bad-override]
+        cls: type[TopsAzimuthModulationRatePoly],
+        poly2d_vector: TopsAzimuthModulationRateVector,
+    ) -> TopsAzimuthModulationRatePoly:
+        """Create a TOPS azimuth modulation rate polynomial from product metadata."""
+        return cls(
+            _sorted_poly_list=[
+                Polynomial2D.from_metadata(poly) for poly in poly2d_vector.poly_list
+            ],
+        )
 
 
 @dataclass(frozen=True)

@@ -10,16 +10,36 @@ from perseo_core.timing import PreciseDateTime
 
 from aresys_io.product_metadata import (
     CoregistrationPoly,
+    DopplerCentroidPoly,
+    DopplerRatePoly,
+    GroundToSlantPoly,
+    PiecewisePolynomial2D,
+    Polynomial2D,
+    PolynomialPair2D,
+    SlantToElevationPoly,
+    SlantToGroundPoly,
+    SlantToIncidencePoly,
+    TopsAzimuthModulationRatePoly,
+)
+from aresys_io.product_metadata.metadata_elements import (
     CoregPoly,
     CoregPolyVector,
     DopplerCentroid,
     DopplerCentroidVector,
     DopplerRate,
-    PiecewisePolynomial2D,
+    DopplerRateVector,
+    GroundToSlant,
+    GroundToSlantVector,
+    SlantToElevation,
+    SlantToElevationVector,
+    SlantToGround,
+    SlantToGroundVector,
+    SlantToIncidence,
+    SlantToIncidenceVector,
+    TopsAzimuthModulationRate,
+    TopsAzimuthModulationRateVector,
 )
 from aresys_io.product_metadata.polynomials import (
-    Polynomial2D,
-    PolynomialPair2D,
     _coefficients_to_matrix,  # ruff: ignore[import-private-name]
 )
 
@@ -508,3 +528,43 @@ def test_coefficients_to_matrix_empty() -> None:
     mat = _coefficients_to_matrix([], (0, 1), (0, 1))
     assert mat.shape == (0, 0)
     assert mat.dtype == float
+
+
+def test_concrete_polynomial_classes() -> None:
+    cases = [
+        (DopplerCentroidVector, DopplerCentroid, DopplerCentroidPoly),
+        (DopplerRateVector, DopplerRate, DopplerRatePoly),
+        (SlantToGroundVector, SlantToGround, SlantToGroundPoly),
+        (GroundToSlantVector, GroundToSlant, GroundToSlantPoly),
+        (SlantToIncidenceVector, SlantToIncidence, SlantToIncidencePoly),
+        (SlantToElevationVector, SlantToElevation, SlantToElevationPoly),
+        (
+            TopsAzimuthModulationRateVector,
+            TopsAzimuthModulationRate,
+            TopsAzimuthModulationRatePoly,
+        ),
+    ]
+
+    for vector_cls, elem_cls, poly_cls in cases:
+        vector = vector_cls()
+        vector.poly_list = [
+            elem_cls(
+                t_ref_az=POLY_DATA_SORTED_SECOND.ref_az,
+                t_ref_rg=POLY_DATA_SORTED_SECOND.ref_rg,
+                coefficients=POLY_DATA_SORTED_SECOND.coefficients,
+            ),
+            elem_cls(
+                t_ref_az=POLY_DATA_SORTED_FIRST.ref_az,
+                t_ref_rg=POLY_DATA_SORTED_FIRST.ref_rg,
+                coefficients=POLY_DATA_SORTED_FIRST.coefficients,
+            ),
+        ]
+
+        poly_obj = poly_cls.from_metadata(vector)
+        assert isinstance(poly_obj, poly_cls)
+        assert isinstance(poly_obj, PiecewisePolynomial2D)
+
+        res = poly_obj.evaluate(
+            (PreciseDateTime.from_utc_string("09-JUL-2006 21:00:03.0"), 4.0),
+        )
+        assert isclose(res, 3.5)
