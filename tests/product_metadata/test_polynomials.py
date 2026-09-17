@@ -208,7 +208,7 @@ def test_sorted_poly_list_from_metadata() -> None:
         [POLY_DATA_SORTED_SECOND, POLY_DATA_SORTED_FIRST],
     )
 
-    sorted_poly_list = PiecewisePolynomial2D.from_metadata(poly_list)
+    sorted_poly_list = DopplerCentroidPoly.from_metadata(poly_list)
     sorted_polys = _sorted_polys(sorted_poly_list)
 
     assert np.array_equal(
@@ -226,7 +226,7 @@ def test_from_metadata_sorts_and_selects_previous_poly() -> None:
         [POLY_DATA_SORTED_SECOND, POLY_DATA_SORTED_FIRST],
     )
 
-    sorted_poly_list = PiecewisePolynomial2D.from_metadata(poly_list)
+    sorted_poly_list = DopplerCentroidPoly.from_metadata(poly_list)
 
     assert [poly.reference_values[0] for poly in _sorted_polys(sorted_poly_list)] == [
         POLY_DATA_SORTED_FIRST.ref_az,
@@ -375,7 +375,7 @@ def test_piecewise_evaluate_before_first_reference() -> None:
     poly_list = _doppler_centroid_vector_from_data(
         [POLY_DATA_SORTED_SECOND, POLY_DATA_SORTED_FIRST],
     )
-    sorted_poly_list = PiecewisePolynomial2D.from_metadata(poly_list)
+    sorted_poly_list = DopplerCentroidPoly.from_metadata(poly_list)
 
     # Evaluate before the first polynomial's azimuth time: should pick the first polynomial
     res = sorted_poly_list.evaluate(
@@ -530,41 +530,64 @@ def test_coefficients_to_matrix_empty() -> None:
     assert mat.dtype == float
 
 
-def test_concrete_polynomial_classes() -> None:
-    cases = [
-        (DopplerCentroidVector, DopplerCentroid, DopplerCentroidPoly),
-        (DopplerRateVector, DopplerRate, DopplerRatePoly),
-        (SlantToGroundVector, SlantToGround, SlantToGroundPoly),
-        (GroundToSlantVector, GroundToSlant, GroundToSlantPoly),
-        (SlantToIncidenceVector, SlantToIncidence, SlantToIncidencePoly),
-        (SlantToElevationVector, SlantToElevation, SlantToElevationPoly),
-        (
-            TopsAzimuthModulationRateVector,
-            TopsAzimuthModulationRate,
-            TopsAzimuthModulationRatePoly,
+def _assert_concrete_poly(vector_cls: type, elem_cls: type, poly_cls: type) -> None:
+    vector = vector_cls()
+    vector.poly_list = [
+        elem_cls(
+            t_ref_az=POLY_DATA_SORTED_SECOND.ref_az,
+            t_ref_rg=POLY_DATA_SORTED_SECOND.ref_rg,
+            coefficients=POLY_DATA_SORTED_SECOND.coefficients,
+        ),
+        elem_cls(
+            t_ref_az=POLY_DATA_SORTED_FIRST.ref_az,
+            t_ref_rg=POLY_DATA_SORTED_FIRST.ref_rg,
+            coefficients=POLY_DATA_SORTED_FIRST.coefficients,
         ),
     ]
 
-    for vector_cls, elem_cls, poly_cls in cases:
-        vector = vector_cls()
-        vector.poly_list = [
-            elem_cls(
-                t_ref_az=POLY_DATA_SORTED_SECOND.ref_az,
-                t_ref_rg=POLY_DATA_SORTED_SECOND.ref_rg,
-                coefficients=POLY_DATA_SORTED_SECOND.coefficients,
-            ),
-            elem_cls(
-                t_ref_az=POLY_DATA_SORTED_FIRST.ref_az,
-                t_ref_rg=POLY_DATA_SORTED_FIRST.ref_rg,
-                coefficients=POLY_DATA_SORTED_FIRST.coefficients,
-            ),
-        ]
+    poly_obj = poly_cls.from_metadata(vector)
+    assert isinstance(poly_obj, poly_cls)
+    assert isinstance(poly_obj, PiecewisePolynomial2D)
 
-        poly_obj = poly_cls.from_metadata(vector)
-        assert isinstance(poly_obj, poly_cls)
-        assert isinstance(poly_obj, PiecewisePolynomial2D)
+    # Elements must be sorted by azimuth reference time
+    assert [poly.reference_values[0] for poly in _sorted_polys(poly_obj)] == [
+        POLY_DATA_SORTED_FIRST.ref_az,
+        POLY_DATA_SORTED_SECOND.ref_az,
+    ]
 
-        res = poly_obj.evaluate(
-            (PreciseDateTime.from_utc_string("09-JUL-2006 21:00:03.0"), 4.0),
-        )
-        assert isclose(res, 3.5)
+    res = poly_obj.evaluate(
+        (PreciseDateTime.from_utc_string("09-JUL-2006 21:00:03.0"), 4.0),
+    )
+    assert isclose(res, 3.5)
+
+
+def test_doppler_centroid_poly() -> None:
+    _assert_concrete_poly(DopplerCentroidVector, DopplerCentroid, DopplerCentroidPoly)
+
+
+def test_doppler_rate_poly() -> None:
+    _assert_concrete_poly(DopplerRateVector, DopplerRate, DopplerRatePoly)
+
+
+def test_slant_to_ground_poly() -> None:
+    _assert_concrete_poly(SlantToGroundVector, SlantToGround, SlantToGroundPoly)
+
+
+def test_ground_to_slant_poly() -> None:
+    _assert_concrete_poly(GroundToSlantVector, GroundToSlant, GroundToSlantPoly)
+
+
+def test_slant_to_incidence_poly() -> None:
+    _assert_concrete_poly(SlantToIncidenceVector, SlantToIncidence, SlantToIncidencePoly)
+
+
+def test_slant_to_elevation_poly() -> None:
+    _assert_concrete_poly(SlantToElevationVector, SlantToElevation, SlantToElevationPoly)
+
+
+def test_tops_azimuth_modulation_rate_poly() -> None:
+    _assert_concrete_poly(
+        TopsAzimuthModulationRateVector,
+        TopsAzimuthModulationRate,
+        TopsAzimuthModulationRatePoly,
+    )

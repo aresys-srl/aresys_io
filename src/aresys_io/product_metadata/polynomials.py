@@ -42,15 +42,6 @@ __all__ = [
 ]
 
 PolynomialPairEvaluationResult: TypeAlias = tuple[float, float]
-Poly2DVector: TypeAlias = (
-    DopplerCentroidVector
-    | DopplerRateVector
-    | TopsAzimuthModulationRateVector
-    | SlantToGroundVector
-    | GroundToSlantVector
-    | SlantToIncidenceVector
-    | SlantToElevationVector
-)
 
 
 @dataclass(frozen=True, eq=False)
@@ -130,18 +121,6 @@ class PiecewisePolynomial2D(Generic[ReferenceAzimuthTimeT]):
             sorted(self._sorted_poly_list, key=lambda poly: poly.reference_values[0]),
         )
 
-    @classmethod
-    def from_metadata(
-        cls: type[PiecewisePolynomial2D[ReferenceAzimuthTimeT]],
-        poly2d_vector: Poly2DVector,
-    ) -> PiecewisePolynomial2D[ReferenceAzimuthTimeT]:
-        """Create a piecewise 2D polynomial from product metadata."""
-        return cls(
-            _sorted_poly_list=[
-                Polynomial2D.from_metadata(poly) for poly in poly2d_vector.poly_list
-            ],
-        )
-
     def evaluate(
         self,
         values: tuple[ReferenceAzimuthTimeT, float],
@@ -166,7 +145,7 @@ class DopplerCentroidPoly(PiecewisePolynomial2D[PreciseDateTime]):
     """Doppler centroid piecewise 2D polynomial."""
 
     @classmethod
-    def from_metadata(  # pyrefly: ignore[bad-override]
+    def from_metadata(
         cls: type[DopplerCentroidPoly],
         poly2d_vector: DopplerCentroidVector,
     ) -> DopplerCentroidPoly:
@@ -183,7 +162,7 @@ class DopplerRatePoly(PiecewisePolynomial2D[PreciseDateTime]):
     """Doppler rate piecewise 2D polynomial."""
 
     @classmethod
-    def from_metadata(  # pyrefly: ignore[bad-override]
+    def from_metadata(
         cls: type[DopplerRatePoly],
         poly2d_vector: DopplerRateVector,
     ) -> DopplerRatePoly:
@@ -200,7 +179,7 @@ class SlantToGroundPoly(PiecewisePolynomial2D[PreciseDateTime]):
     """Slant-to-ground range piecewise 2D polynomial."""
 
     @classmethod
-    def from_metadata(  # pyrefly: ignore[bad-override]
+    def from_metadata(
         cls: type[SlantToGroundPoly],
         poly2d_vector: SlantToGroundVector,
     ) -> SlantToGroundPoly:
@@ -217,7 +196,7 @@ class GroundToSlantPoly(PiecewisePolynomial2D[PreciseDateTime]):
     """Ground-to-slant range piecewise 2D polynomial."""
 
     @classmethod
-    def from_metadata(  # pyrefly: ignore[bad-override]
+    def from_metadata(
         cls: type[GroundToSlantPoly],
         poly2d_vector: GroundToSlantVector,
     ) -> GroundToSlantPoly:
@@ -234,7 +213,7 @@ class SlantToIncidencePoly(PiecewisePolynomial2D[PreciseDateTime]):
     """Slant range to incidence angle piecewise 2D polynomial."""
 
     @classmethod
-    def from_metadata(  # pyrefly: ignore[bad-override]
+    def from_metadata(
         cls: type[SlantToIncidencePoly],
         poly2d_vector: SlantToIncidenceVector,
     ) -> SlantToIncidencePoly:
@@ -251,7 +230,7 @@ class SlantToElevationPoly(PiecewisePolynomial2D[PreciseDateTime]):
     """Slant range to elevation angle piecewise 2D polynomial."""
 
     @classmethod
-    def from_metadata(  # pyrefly: ignore[bad-override]
+    def from_metadata(
         cls: type[SlantToElevationPoly],
         poly2d_vector: SlantToElevationVector,
     ) -> SlantToElevationPoly:
@@ -268,7 +247,7 @@ class TopsAzimuthModulationRatePoly(PiecewisePolynomial2D[PreciseDateTime]):
     """TOPS azimuth modulation rate piecewise 2D polynomial."""
 
     @classmethod
-    def from_metadata(  # pyrefly: ignore[bad-override]
+    def from_metadata(
         cls: type[TopsAzimuthModulationRatePoly],
         poly2d_vector: TopsAzimuthModulationRateVector,
     ) -> TopsAzimuthModulationRatePoly:

@@ -9,12 +9,24 @@ import warnings
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
-from aresys_io.product_metadata import metadata_elements
+from aresys_io.product_metadata import (
+    metadata_elements,
+)
 from aresys_io.product_metadata.create_attitude import (
     create_attitude_from_attitude_info_and_trajectory,
 )
 from aresys_io.product_metadata.create_orbit import create_trajectory_from_state_vectors
-from aresys_io.product_metadata.polynomials import CoregistrationPoly, PiecewisePolynomial2D
+from aresys_io.product_metadata.polynomials import (
+    CoregistrationPoly,
+    DopplerCentroidPoly,
+    DopplerRatePoly,
+    GroundToSlantPoly,
+    PiecewisePolynomial2D,
+    SlantToElevationPoly,
+    SlantToGroundPoly,
+    SlantToIncidencePoly,
+    TopsAzimuthModulationRatePoly,
+)
 
 if TYPE_CHECKING:
     from perseo_core.geometry.navigation import CubicSplineTrajectory
@@ -408,33 +420,33 @@ class MetaDataChannel:
             self.trajectory(), self.attitude_info
         )
 
-    def doppler_centroid_poly(self) -> PiecewisePolynomial2D:
-        """Create a PiecewisePolynomial2D from the doppler centroid metadata element."""
-        return PiecewisePolynomial2D.from_metadata(self.doppler_centroid)
+    def doppler_centroid_poly(self) -> DopplerCentroidPoly:
+        """Create a DopplerCentroidPoly from the doppler centroid metadata element."""
+        return DopplerCentroidPoly.from_metadata(self.doppler_centroid)
 
-    def doppler_rate_poly(self) -> PiecewisePolynomial2D:
-        """Create a PiecewisePolynomial2D from the doppler rate metadata element."""
-        return PiecewisePolynomial2D.from_metadata(self.doppler_rate)
+    def doppler_rate_poly(self) -> DopplerRatePoly:
+        """Create a DopplerRatePoly from the doppler rate metadata element."""
+        return DopplerRatePoly.from_metadata(self.doppler_rate)
 
-    def tops_azimuth_modulation_rate_poly(self) -> PiecewisePolynomial2D:
-        """Create a PiecewisePolynomial2D from the tops azimuth mod rate metadata element."""
-        return PiecewisePolynomial2D.from_metadata(self.tops_azimuth_modulation_rate)
+    def tops_azimuth_modulation_rate_poly(self) -> TopsAzimuthModulationRatePoly:
+        """Create a TopsAzimuthModulationRatePoly from the tops azimuth rate metadata element."""
+        return TopsAzimuthModulationRatePoly.from_metadata(self.tops_azimuth_modulation_rate)
 
-    def ground_to_slant_poly(self) -> PiecewisePolynomial2D:
-        """Create a PiecewisePolynomial2D from the ground to slant metadata element."""
-        return PiecewisePolynomial2D.from_metadata(self.ground_to_slant)
+    def ground_to_slant_poly(self) -> GroundToSlantPoly:
+        """Create a GroundToSlantPoly from the ground to slant metadata element."""
+        return GroundToSlantPoly.from_metadata(self.ground_to_slant)
 
-    def slant_to_ground_poly(self) -> PiecewisePolynomial2D:
-        """Create a PiecewisePolynomial2D from the slant to ground metadata element."""
-        return PiecewisePolynomial2D.from_metadata(self.slant_to_ground)
+    def slant_to_ground_poly(self) -> SlantToGroundPoly:
+        """Create a SlantToGroundPoly from the slant to ground metadata element."""
+        return SlantToGroundPoly.from_metadata(self.slant_to_ground)
 
-    def slant_to_incidence_poly(self) -> PiecewisePolynomial2D:
-        """Create a PiecewisePolynomial2D from the slant to incidence metadata element."""
-        return PiecewisePolynomial2D.from_metadata(self.slant_to_incidence)
+    def slant_to_incidence_poly(self) -> SlantToIncidencePoly:
+        """Create a SlantToIncidencePoly from the slant to incidence metadata element."""
+        return SlantToIncidencePoly.from_metadata(self.slant_to_incidence)
 
-    def slant_to_elevation_poly(self) -> PiecewisePolynomial2D:
-        """Create a PiecewisePolynomial2D from the slant to elevation metadata element."""
-        return PiecewisePolynomial2D.from_metadata(self.slant_to_elevation)
+    def slant_to_elevation_poly(self) -> SlantToElevationPoly:
+        """Create a SlantToElevationPoly from the slant to elevation metadata element."""
+        return SlantToElevationPoly.from_metadata(self.slant_to_elevation)
 
     def coregistration_poly(self) -> CoregistrationPoly:
         """Create a CoregistrationPoly from the coreg_poly metadata element."""
