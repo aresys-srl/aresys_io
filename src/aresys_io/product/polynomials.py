@@ -11,38 +11,50 @@ from typing import Generic, TypeAlias
 import numpy as np
 from perseo_core.timing import PreciseDateTime
 
-from aresys_io.product_metadata import metadata_elements
+from aresys_io.product_metadata.metadata_elements import (
+    CoregPoly,
+    CoregPolyVector,
+    DopplerCentroidVector,
+    DopplerRateVector,
+    GroundToSlantVector,
+    Poly2D,
+    ReferenceAzimuthTimeT,
+    SlantToElevationVector,
+    SlantToGroundVector,
+    SlantToIncidenceVector,
+    TopsAzimuthModulationRateVector,
+)
 
 AzimuthReference: TypeAlias = PreciseDateTime | float
 EvaluationPoint: TypeAlias = tuple[AzimuthReference, float]
 PolynomialPairEvaluationPoint: TypeAlias = EvaluationPoint
 PolynomialPairEvaluationResult: TypeAlias = tuple[float, float]
 Poly2DVector: TypeAlias = (
-    metadata_elements.DopplerCentroidVector
-    | metadata_elements.DopplerRateVector
-    | metadata_elements.TopsAzimuthModulationRateVector
-    | metadata_elements.SlantToGroundVector
-    | metadata_elements.GroundToSlantVector
-    | metadata_elements.SlantToIncidenceVector
-    | metadata_elements.SlantToElevationVector
+    DopplerCentroidVector
+    | DopplerRateVector
+    | TopsAzimuthModulationRateVector
+    | SlantToGroundVector
+    | GroundToSlantVector
+    | SlantToIncidenceVector
+    | SlantToElevationVector
 )
-PolynomialPairVector: TypeAlias = metadata_elements.CoregPolyVector
+PolynomialPairVector: TypeAlias = CoregPolyVector
 
 
 @dataclass(frozen=True)
-class Polynomial2D(Generic[metadata_elements.ReferenceAzimuthTimeT]):
+class Polynomial2D(Generic[ReferenceAzimuthTimeT]):
     """2D polynomial built from a metadata ``Poly2D`` instance."""
 
-    reference_values: tuple[metadata_elements.ReferenceAzimuthTimeT, float]
+    reference_values: tuple[ReferenceAzimuthTimeT, float]
     coefficient_matrix: np.ndarray = field(
         default_factory=lambda: np.zeros((0, 0), dtype=float),
     )
 
     @classmethod
     def from_metadata(
-        cls: type[Polynomial2D[metadata_elements.ReferenceAzimuthTimeT]],
-        poly2d: metadata_elements.Poly2D[metadata_elements.ReferenceAzimuthTimeT],
-    ) -> Polynomial2D[metadata_elements.ReferenceAzimuthTimeT]:
+        cls: type[Polynomial2D[ReferenceAzimuthTimeT]],
+        poly2d: Poly2D[ReferenceAzimuthTimeT],
+    ) -> Polynomial2D[ReferenceAzimuthTimeT]:
         """Create a 2D polynomial from product metadata."""
         return cls(
             reference_values=(poly2d.t_ref_az, poly2d.t_ref_rg),
@@ -55,7 +67,7 @@ class Polynomial2D(Generic[metadata_elements.ReferenceAzimuthTimeT]):
 
     def evaluate(
         self,
-        values: tuple[metadata_elements.ReferenceAzimuthTimeT, float],
+        values: tuple[ReferenceAzimuthTimeT, float],
     ) -> float:
         """Evaluate the polynomial at the provided azimuth and range values."""
         azimuth_value, range_value = values
@@ -73,12 +85,10 @@ class Polynomial2D(Generic[metadata_elements.ReferenceAzimuthTimeT]):
 
 
 @dataclass(frozen=True)
-class PiecewisePolynomial2D(Generic[metadata_elements.ReferenceAzimuthTimeT]):
+class PiecewisePolynomial2D(Generic[ReferenceAzimuthTimeT]):
     """Piecewise 2D polynomial selection over azimuth reference values."""
 
-    _sorted_poly_list: list[Polynomial2D[metadata_elements.ReferenceAzimuthTimeT]] = field(
-        default_factory=list
-    )
+    _sorted_poly_list: list[Polynomial2D[ReferenceAzimuthTimeT]] = field(default_factory=list)
 
     def __post_init__(self) -> None:
         """Ensure the input list is always sorted after initialization."""
@@ -86,9 +96,9 @@ class PiecewisePolynomial2D(Generic[metadata_elements.ReferenceAzimuthTimeT]):
 
     @classmethod
     def from_metadata(
-        cls: type[PiecewisePolynomial2D[metadata_elements.ReferenceAzimuthTimeT]],
+        cls: type[PiecewisePolynomial2D[ReferenceAzimuthTimeT]],
         poly2d_vector: Poly2DVector,
-    ) -> PiecewisePolynomial2D[metadata_elements.ReferenceAzimuthTimeT]:
+    ) -> PiecewisePolynomial2D[ReferenceAzimuthTimeT]:
         """Create a piecewise 2D polynomial from product metadata."""
         return cls(
             _sorted_poly_list=[
@@ -98,7 +108,7 @@ class PiecewisePolynomial2D(Generic[metadata_elements.ReferenceAzimuthTimeT]):
 
     def evaluate(
         self,
-        values: tuple[metadata_elements.ReferenceAzimuthTimeT, float],
+        values: tuple[ReferenceAzimuthTimeT, float],
     ) -> float:
         """Evaluate the polynomial selected by the reference coordinate."""
         if not self._sorted_poly_list:
@@ -124,7 +134,7 @@ class PolynomialPair2D:
     range_poly: Polynomial2D[PreciseDateTime]
 
     @classmethod
-    def from_metadata(cls, poly: metadata_elements.CoregPoly) -> PolynomialPair2D:
+    def from_metadata(cls, poly: CoregPoly) -> PolynomialPair2D:
         """Create a polynomial pair from product metadata."""
         reference_values = (poly.t_ref_az, poly.t_ref_rg)
         return cls(
@@ -132,16 +142,16 @@ class PolynomialPair2D:
                 reference_values=reference_values,
                 coefficient_matrix=_coefficients_to_matrix(
                     coefficients=poly.coefficients_az,
-                    powers_x=metadata_elements.Poly2D.POWERS_X,
-                    powers_y=metadata_elements.Poly2D.POWERS_Y,
+                    powers_x=Poly2D.POWERS_X,
+                    powers_y=Poly2D.POWERS_Y,
                 ),
             ),
             range_poly=Polynomial2D(
                 reference_values=reference_values,
                 coefficient_matrix=_coefficients_to_matrix(
                     coefficients=poly.coefficients_rg,
-                    powers_x=metadata_elements.Poly2D.POWERS_X,
-                    powers_y=metadata_elements.Poly2D.POWERS_Y,
+                    powers_x=Poly2D.POWERS_X,
+                    powers_y=Poly2D.POWERS_Y,
                 ),
             ),
         )
