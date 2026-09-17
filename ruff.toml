@@ -4,6 +4,14 @@ target-version = "py311"
 output-format = "concise"
 required-version = ">=0.16.7"
 
+exclude = [
+    ".git",
+    ".venv",
+    "build",
+    "dist",
+    "tools/*",
+]
+
 [format]
 docstring-code-format = true
 docstring-code-line-length = 99
