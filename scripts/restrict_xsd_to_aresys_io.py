@@ -9,22 +9,7 @@ from pathlib import Path
 
 import click
 
-UNUSED_TAGS = [
-    "ProductType",
-    "OrderingType",
-    "ScanSARSlcSwathType",
-    "ScanSARRgcSwathType",
-    "ScanSARRawSwathType",
-    "SlcSwathType",
-    "RgcSwathType",
-    "RawSwathType",
-    "GeometryParamsType",
-    "GridType",
-    "PolySARType",
-    "FileListType",
-    "SensorAttitudeType",
-    "ROIType",
-]
+UNUSED_TAGS = ["ROIType"]
 
 
 def remove_unused_types(xsd_file_in: Path, xsd_file_out: Path) -> None:
