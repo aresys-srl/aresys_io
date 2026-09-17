@@ -4,6 +4,7 @@
 """Product."""
 
 from aresys_io.product.channel_iteration import *
+from aresys_io.product.create_attitude import *
 from aresys_io.product.create_orbit import *
 from aresys_io.product.manifest import *
 from aresys_io.product.polynomials import *
