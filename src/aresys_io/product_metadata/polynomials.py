@@ -39,7 +39,8 @@ Poly2DVector: TypeAlias = (
     | SlantToIncidenceVector
     | SlantToElevationVector
 )
-PolynomialPairVector: TypeAlias = CoregPolyVector
+
+__all__ = ["CoregistrationPoly", "PiecewisePolynomial2D"]
 
 
 @dataclass(frozen=True, eq=False)
@@ -201,8 +202,8 @@ class PolynomialPair2D:
 
 
 @dataclass(frozen=True)
-class PiecewisePolynomialPair2D:
-    """Piecewise selection of paired 2D polynomials over azimuth references."""
+class CoregistrationPoly:
+    """Piecewise coregistration polynomial pair selection over azimuth references."""
 
     _sorted_poly_list: list[PolynomialPair2D] = field(default_factory=list)
 
@@ -219,10 +220,10 @@ class PiecewisePolynomialPair2D:
 
     @classmethod
     def from_metadata(
-        cls: type[PiecewisePolynomialPair2D],
-        poly_vector: PolynomialPairVector,
-    ) -> PiecewisePolynomialPair2D:
-        """Create a piecewise polynomial pair from product metadata."""
+        cls: type[CoregistrationPoly],
+        poly_vector: CoregPolyVector,
+    ) -> CoregistrationPoly:
+        """Create a coregistration polynomial from product metadata."""
         return cls(
             _sorted_poly_list=[
                 PolynomialPair2D.from_metadata(poly) for poly in poly_vector.poly_list
@@ -235,7 +236,7 @@ class PiecewisePolynomialPair2D:
     ) -> PolynomialPairEvaluationResult:
         """Evaluate the selected polynomial pair."""
         if not self._sorted_poly_list:
-            msg = "Cannot evaluate an empty PiecewisePolynomialPair2D"
+            msg = "Cannot evaluate an empty CoregistrationPoly"
             raise ValueError(msg)
 
         reference_value = values[0]

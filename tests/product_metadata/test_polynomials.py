@@ -5,18 +5,22 @@ from dataclasses import dataclass
 from math import isclose
 
 import numpy as np
+import pytest
 from perseo_core.timing import PreciseDateTime
 
 from aresys_io.product_metadata import (
+    CoregistrationPoly,
     CoregPoly,
     CoregPolyVector,
     DopplerCentroid,
     DopplerCentroidVector,
     DopplerRate,
     PiecewisePolynomial2D,
-    PiecewisePolynomialPair2D,
+)
+from aresys_io.product_metadata.polynomials import (
     Polynomial2D,
     PolynomialPair2D,
+    _coefficients_to_matrix,  # ruff: ignore[import-private-name]
 )
 
 
@@ -120,7 +124,7 @@ def _polynomial_pair_vector_from_data(
 
 
 def _sorted_polynomial_pairs(
-    sorted_poly_list: PiecewisePolynomialPair2D,
+    sorted_poly_list: CoregistrationPoly,
 ) -> list[PolynomialPair2D]:
     return sorted_poly_list._sorted_poly_list
 
@@ -271,8 +275,8 @@ def test_polynomial_pair_evaluate() -> None:
     assert isclose(range_result, 11.0)
 
 
-def test_piecewise_polynomial_pair_from_metadata() -> None:
-    sorted_poly_list = PiecewisePolynomialPair2D.from_metadata(
+def test_coregistration_poly_from_metadata() -> None:
+    sorted_poly_list = CoregistrationPoly.from_metadata(
         _polynomial_pair_vector_from_data(
             [POLYNOMIAL_PAIR_DATA_SORTED_SECOND, POLYNOMIAL_PAIR_DATA_SORTED_FIRST],
         ),
@@ -290,8 +294,8 @@ def test_piecewise_polynomial_pair_from_metadata() -> None:
     )
 
 
-def test_piecewise_polynomial_pair_init_and_evaluate() -> None:
-    sorted_poly_list = PiecewisePolynomialPair2D(
+def test_coregistration_poly_init_and_evaluate() -> None:
+    sorted_poly_list = CoregistrationPoly(
         _sorted_poly_list=[
             PolynomialPair2D.from_metadata(
                 _metadata_polynomial_pair_from_data(POLYNOMIAL_PAIR_DATA_SORTED_SECOND),
@@ -317,3 +321,190 @@ def test_piecewise_polynomial_pair_init_and_evaluate() -> None:
     )
     assert isclose(azimuth_result, -18.5)
     assert isclose(range_result, 15.5)
+
+
+def test_polynomial2d_equality() -> None:
+    p1 = _polynomial2d_from_data(POLY_DATA_SORTED_FIRST)
+    p2 = _polynomial2d_from_data(POLY_DATA_SORTED_FIRST)
+    p3 = _polynomial2d_from_data(POLY_DATA_SORTED_SECOND)
+
+    assert p1 == p2
+    assert p1 != p3
+    assert p1 != "not_a_polynomial"
+
+
+def test_polynomial2d_properties() -> None:
+    p = _polynomial2d_from_data(POLY_DATA_SORTED_FIRST)
+    assert p.ref_azimuth_time == POLY_DATA_SORTED_FIRST.ref_az
+    assert p.ref_range_time == POLY_DATA_SORTED_FIRST.ref_rg
+
+
+def test_piecewise_init_does_not_mutate_input_list() -> None:
+    original = [
+        _polynomial2d_from_data(POLY_DATA_SORTED_SECOND),
+        _polynomial2d_from_data(POLY_DATA_SORTED_FIRST),
+    ]
+    PiecewisePolynomial2D(_sorted_poly_list=original)
+
+    # original list must not be sorted in place
+    assert original[0].reference_values[0] == POLY_DATA_SORTED_SECOND.ref_az
+    assert original[1].reference_values[0] == POLY_DATA_SORTED_FIRST.ref_az
+
+
+def test_piecewise_evaluate_before_first_reference() -> None:
+    poly_list = _doppler_centroid_vector_from_data(
+        [POLY_DATA_SORTED_SECOND, POLY_DATA_SORTED_FIRST],
+    )
+    sorted_poly_list = PiecewisePolynomial2D.from_metadata(poly_list)
+
+    # Evaluate before the first polynomial's azimuth time: should pick the first polynomial
+    res = sorted_poly_list.evaluate(
+        (PreciseDateTime.from_utc_string("09-JUL-2006 20:58:00.0"), 8.0),
+    )
+    first_poly = _polynomial2d_from_data(POLY_DATA_SORTED_FIRST)
+    expected = first_poly.evaluate(
+        (PreciseDateTime.from_utc_string("09-JUL-2006 20:58:00.0"), 8.0),
+    )
+    assert isclose(res, expected)
+
+
+def test_empty_piecewise_raises_error() -> None:
+    empty_poly2d = PiecewisePolynomial2D()
+    with pytest.raises(ValueError, match="Cannot evaluate an empty PiecewisePolynomial2D"):
+        empty_poly2d.evaluate((PreciseDateTime.now(), 0.0))
+
+    empty_pair = CoregistrationPoly()
+    with pytest.raises(ValueError, match="Cannot evaluate an empty CoregistrationPoly"):
+        empty_pair.evaluate((PreciseDateTime.now(), 0.0))
+
+
+def test_polynomial_unhashable() -> None:
+    p = _polynomial2d_from_data(POLY_DATA_SORTED_FIRST)
+    with pytest.raises(TypeError, match="unhashable"):
+        hash(p)
+
+    pair = PolynomialPair2D.from_metadata(
+        _metadata_polynomial_pair_from_data(POLYNOMIAL_PAIR_DATA_SORTED_FIRST),
+    )
+    with pytest.raises(TypeError, match="unhashable"):
+        hash(pair)
+
+
+def test_polynomial2d_equality_matrices() -> None:
+    p1 = Polynomial2D(
+        reference_values=(POLY_DATA_SORTED_FIRST.ref_az, 1.0),
+        coefficient_matrix=np.array([[1.0, 2.0], [3.0, 4.0]]),
+    )
+    p2 = Polynomial2D(
+        reference_values=(POLY_DATA_SORTED_FIRST.ref_az, 1.0),
+        coefficient_matrix=np.array([[1.0, 2.0], [3.0, 99.0]]),
+    )
+    assert p1 != p2
+
+
+def test_polynomial_pair_equality() -> None:
+    pair1 = PolynomialPair2D.from_metadata(
+        _metadata_polynomial_pair_from_data(POLYNOMIAL_PAIR_DATA_SORTED_FIRST),
+    )
+    pair2 = PolynomialPair2D.from_metadata(
+        _metadata_polynomial_pair_from_data(POLYNOMIAL_PAIR_DATA_SORTED_FIRST),
+    )
+    pair3 = PolynomialPair2D.from_metadata(
+        _metadata_polynomial_pair_from_data(POLYNOMIAL_PAIR_DATA_SORTED_SECOND),
+    )
+    assert pair1 == pair2
+    assert pair1 != pair3
+    assert pair1 != 123
+
+
+def test_piecewise_input_list_independence() -> None:
+    p1 = _polynomial2d_from_data(POLY_DATA_SORTED_FIRST)
+    p2 = _polynomial2d_from_data(POLY_DATA_SORTED_SECOND)
+    original_list = [p2, p1]
+    piecewise = PiecewisePolynomial2D(_sorted_poly_list=original_list)
+
+    # Modifying the original list must not alter the internal list of PiecewisePolynomial2D
+    original_list.clear()
+    assert len(_sorted_polys(piecewise)) == 2
+
+    pair1 = PolynomialPair2D.from_metadata(
+        _metadata_polynomial_pair_from_data(POLYNOMIAL_PAIR_DATA_SORTED_FIRST),
+    )
+    pair2 = PolynomialPair2D.from_metadata(
+        _metadata_polynomial_pair_from_data(POLYNOMIAL_PAIR_DATA_SORTED_SECOND),
+    )
+    original_pairs = [pair2, pair1]
+    piecewise_pairs = CoregistrationPoly(_sorted_poly_list=original_pairs)
+
+    original_pairs.append(pair1)
+    assert len(_sorted_polynomial_pairs(piecewise_pairs)) == 2
+
+
+def test_float_reference_azimuth() -> None:
+    # Test Polynomial2D and PiecewisePolynomial2D with float reference azimuth time
+    p1 = Polynomial2D(
+        reference_values=(10.0, 2.0),
+        coefficient_matrix=np.array([[1.0, 2.0]]),  # 1.0 + 2.0 * (rg - 2.0)
+    )
+    p2 = Polynomial2D(
+        reference_values=(20.0, 2.0),
+        coefficient_matrix=np.array([[5.0, 0.0]]),  # 5.0
+    )
+
+    assert isclose(p1.ref_azimuth_time, 10.0)
+    assert isclose(p1.ref_range_time, 2.0)
+    assert isclose(p1.evaluate((10.0, 3.0)), 3.0)
+
+    piecewise = PiecewisePolynomial2D(_sorted_poly_list=[p2, p1])
+    # Before p1
+    assert isclose(piecewise.evaluate((5.0, 3.0)), 3.0)
+    # At p1
+    assert isclose(piecewise.evaluate((10.0, 3.0)), 3.0)
+    # Between p1 and p2 (picks p1)
+    assert isclose(piecewise.evaluate((15.0, 3.0)), 3.0)
+    # At p2 (picks p2)
+    assert isclose(piecewise.evaluate((20.0, 3.0)), 5.0)
+    # After p2 (picks p2)
+    assert isclose(piecewise.evaluate((25.0, 3.0)), 5.0)
+
+
+def test_piecewise_pair_boundaries() -> None:
+    pair_first = PolynomialPair2D.from_metadata(
+        _metadata_polynomial_pair_from_data(POLYNOMIAL_PAIR_DATA_SORTED_FIRST),
+    )
+    pair_second = PolynomialPair2D.from_metadata(
+        _metadata_polynomial_pair_from_data(POLYNOMIAL_PAIR_DATA_SORTED_SECOND),
+    )
+    piecewise = CoregistrationPoly(_sorted_poly_list=[pair_second, pair_first])
+
+    # Before first
+    res_before = piecewise.evaluate(
+        (PreciseDateTime.from_utc_string("09-JUL-2006 20:50:00.0"), 8.0),
+    )
+    res_first_expected = pair_first.evaluate(
+        (PreciseDateTime.from_utc_string("09-JUL-2006 20:50:00.0"), 8.0),
+    )
+    assert isclose(res_before[0], res_first_expected[0])
+    assert isclose(res_before[1], res_first_expected[1])
+
+    # Exactly at second
+    res_at_second = piecewise.evaluate((POLYNOMIAL_PAIR_DATA_SORTED_SECOND.ref_az, 2.0))
+    res_second_expected = pair_second.evaluate((POLYNOMIAL_PAIR_DATA_SORTED_SECOND.ref_az, 2.0))
+    assert isclose(res_at_second[0], res_second_expected[0])
+    assert isclose(res_at_second[1], res_second_expected[1])
+
+    # After second
+    res_after = piecewise.evaluate(
+        (PreciseDateTime.from_utc_string("09-JUL-2006 21:10:00.0"), 2.0),
+    )
+    res_after_expected = pair_second.evaluate(
+        (PreciseDateTime.from_utc_string("09-JUL-2006 21:10:00.0"), 2.0),
+    )
+    assert isclose(res_after[0], res_after_expected[0])
+    assert isclose(res_after[1], res_after_expected[1])
+
+
+def test_coefficients_to_matrix_empty() -> None:
+    mat = _coefficients_to_matrix([], (0, 1), (0, 1))
+    assert mat.shape == (0, 0)
+    assert mat.dtype == float

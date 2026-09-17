@@ -14,7 +14,7 @@ from aresys_io.product_metadata.create_attitude import (
     create_attitude_from_attitude_info_and_trajectory,
 )
 from aresys_io.product_metadata.create_orbit import create_trajectory_from_state_vectors
-from aresys_io.product_metadata.polynomials import PiecewisePolynomial2D, PiecewisePolynomialPair2D
+from aresys_io.product_metadata.polynomials import CoregistrationPoly, PiecewisePolynomial2D
 
 if TYPE_CHECKING:
     from perseo_core.geometry.navigation import CubicSplineTrajectory
@@ -436,9 +436,9 @@ class MetaDataChannel:
         """Create a PiecewisePolynomial2D from the slant to elevation metadata element."""
         return PiecewisePolynomial2D.from_metadata(self.slant_to_elevation)
 
-    def coregistration_poly(self) -> PiecewisePolynomialPair2D:
-        """Create a PiecewisePolynomialPair2D from the coreg_poly metadata element."""
-        return PiecewisePolynomialPair2D.from_metadata(self.coreg_poly)
+    def coregistration_poly(self) -> CoregistrationPoly:
+        """Create a CoregistrationPoly from the coreg_poly metadata element."""
+        return CoregistrationPoly.from_metadata(self.coreg_poly)
 
 
 def create_new_metadata(
@@ -843,13 +843,13 @@ class MetaData:
         """
         return self.channels[0].slant_to_elevation_poly()
 
-    def coregistration_poly(self) -> PiecewisePolynomialPair2D:
-        """Create a PiecewisePolynomialPair2D from the first metadata channel's coregistration.
+    def coregistration_poly(self) -> CoregistrationPoly:
+        """Create a CoregistrationPoly from the first metadata channel's coregistration.
 
         Returns
         -------
-        PiecewisePolynomialPair2D
-            PiecewisePolynomialPair2D metadata element from the first metadata channel.
+        CoregistrationPoly
+            CoregistrationPoly metadata element from the first metadata channel.
 
         """
         return self.channels[0].coregistration_poly()
