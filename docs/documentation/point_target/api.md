@@ -11,6 +11,6 @@ tags:
 
 ## Point Target Binary
 
-::: aresys_io.point_target.nominal_point_targets
+::: aresys_io.product.point_target.nominal_point_targets
 
-::: aresys_io.point_target.point_target_binary
+::: aresys_io.product.point_target.point_target_binary

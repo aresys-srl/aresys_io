@@ -15,18 +15,19 @@ tags:
 
 ## Product Folder Format
 
-::: aresys_io.product.productfolder
+::: aresys_io.product.pf.product_folder
 
-::: aresys_io.product.manifest
+::: aresys_io.product.pf.layout
 
-::: aresys_io.product.productfolder_layout
+::: aresys_io.product.pf.manifest
+
 
 ## Metadata
 
-::: aresys_io.product_metadata.metadata
+::: aresys_io.product.metadata.channel
 
-::: aresys_io.product_metadata.metadata_elements
+::: aresys_io.product.metadata.elements
 
-::: aresys_io.product_metadata.metadata_io
+::: aresys_io.product.metadata.io
 
-::: aresys_io.product_metadata.raster_io_from_metadata
+::: aresys_io.product.metadata.raster_io_from_metadata

@@ -61,7 +61,7 @@ def format_generated_package(python_executable: str, package: str) -> None:
 def main() -> None:
     """Generate XML parser models for metadata files."""
     packages = [
-        ("aresys_io.product_metadata.models", "aresys_generic_metadata.xsd"),
+        ("aresys_io.product.metadata.models", "aresys_generic_metadata.xsd"),
         ("aresys_io.point_target.models"),
         (
             "aresys_io.sarsystem.models",

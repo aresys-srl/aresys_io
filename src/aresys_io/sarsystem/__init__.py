@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Aresys S.r.l. <info@aresys.it>
 # SPDX-License-Identifier: MIT
 
-"""sarsystem module."""
+"""Aresys SAR System."""
 
 from aresys_io.sarsystem.sat_table import *
 from aresys_io.sarsystem.sat_table_read import *
