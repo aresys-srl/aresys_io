@@ -65,8 +65,20 @@ class ProductFolder:
         """Delete current product on disk."""
         delete_product_folder_content(self)
 
+    def _get_channels_list(self) -> list[int]:
+        """List of current channels."""
+        files = [f.name for f in self._path.iterdir()]
+
+        headers = [
+            f for f in files if f.startswith(self._path.name) and f.endswith(METADATA_EXTENSION)
+        ]
+        headers = [h.rstrip(METADATA_EXTENSION) for h in headers]
+        channels = [h.split("_")[-1] for h in headers]
+
+        return sorted([int(c) for c in channels])
+
     @property
-    def pf_name(self) -> str:
+    def name(self) -> str:
         """The Product Folder base name."""
         return self._pf_name
 
@@ -85,12 +97,13 @@ class ProductFolder:
         """The channel raster file extension."""
         return self._raster_extension
 
-    def get_channels_list(self) -> list[int]:
-        """Retrieve list of available channels on disk for the current Product Folder.
+    @property
+    def channel_ids(self) -> list[int]:
+        """The list of available channels on disk for the current Product Folder.
 
         Returns
         -------
-        List
+        list[int]
             list of integers corresponding to the available channels.
 
         Raises
@@ -100,18 +113,9 @@ class ProductFolder:
         """
         if not is_valid_product_folder(pf_path=self._path):
             raise RuntimeError(self._path)
+        return self._get_channels_list()
 
-        files = [f.name for f in self._path.iterdir()]
-
-        headers = [
-            f for f in files if f.startswith(self._path.name) and f.endswith(METADATA_EXTENSION)
-        ]
-        headers = [h.rstrip(METADATA_EXTENSION) for h in headers]
-        channels = [h.split("_")[-1] for h in headers]
-
-        return sorted([int(c) for c in channels])
-
-    def get_channel_metadata(self, channel: int) -> Path:
+    def channel_metadata_path(self, channel: int) -> Path:
         """Getter method for retrieving Product Folder channel's metadata path.
 
         Parameters
@@ -126,7 +130,7 @@ class ProductFolder:
         """
         return self._layout.get_channel_metadata_path(channel_id=channel)
 
-    def get_channel_data(self, channel: int) -> Path:
+    def channel_data_path(self, channel: int) -> Path:
         """Getter method for retrieving Product Folder channel's raster file path.
 
         Parameters
@@ -144,7 +148,8 @@ class ProductFolder:
             extension=self._raster_extension,
         )
 
-    def get_config_file(self) -> Path:
+    @property
+    def config_path(self) -> Path:
         """Getter method for retrieving Product Folder config file path.
 
         Returns
@@ -154,7 +159,8 @@ class ProductFolder:
         """
         return self._layout.get_config_path()
 
-    def get_overlay_file(self) -> Path:
+    @property
+    def overlay_path(self) -> Path:
         """Getter method for retrieving Product Folder overlay (.kmz) file path.
 
         Returns
@@ -164,7 +170,7 @@ class ProductFolder:
         """
         return self._layout.get_overlay_path()
 
-    def get_channel_quicklook(self, ext: QuicklookExtension, channel_id: int) -> Path:
+    def channel_quicklook_path(self, ext: QuicklookExtension, channel_id: int) -> Path:
         """Quicklook full path for the selected channel.
 
         Parameters
@@ -451,7 +457,7 @@ def delete_product_folder_content(product_folder: ProductFolder) -> None:
     # removing all files matching the pattern: ...\pf_name_XXXX and ending with .xml, .tiff
     # and no suffix
     # finding all channels data
-    matching_pattern = re.compile(product_folder.pf_name + "_" + r"\d{4}")
+    matching_pattern = re.compile(product_folder.name + "_" + r"\d{4}")
     matching_files = [f for f in files if bool(matching_pattern.search(f))]
     # removing channel metadata (.xml)
     metadata = [m for m in matching_files if m.endswith(METADATA_EXTENSION)]
@@ -463,10 +469,10 @@ def delete_product_folder_content(product_folder: ProductFolder) -> None:
         product_folder.path.joinpath(file).unlink()
 
     # removing config file, if it exists
-    product_folder.get_config_file().unlink(missing_ok=True)
+    product_folder.config_path.unlink(missing_ok=True)
 
     # removing kmz file, if it exists
-    product_folder.get_overlay_file().unlink(missing_ok=True)
+    product_folder.overlay_path.unlink(missing_ok=True)
 
     # resetting manifest to default: this operation is needed to reset the product folder status so
     # that this folder can be used as a pristine new Product Folder later on, if needed

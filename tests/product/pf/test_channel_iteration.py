@@ -110,7 +110,7 @@ def _create_product_with_channels(
     product_path = Path(tmpdir, "test_product")
     pf = create_product_folder(product_path)
     channel_paths = [
-        product_path.joinpath(pf.pf_name + f"_000{c + 1}.xml")
+        product_path.joinpath(pf.name + f"_000{c + 1}.xml")
         for c in range(len(channel_xml_contents))
     ]
     for item, content in zip(channel_paths, channel_xml_contents, strict=False):

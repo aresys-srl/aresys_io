@@ -97,8 +97,8 @@ def iter_channels_generator(
         channel id,
         channel metadata object
     """
-    for ch_index in product.get_channels_list():
-        metadata = read_metadata(product.get_channel_metadata(ch_index))
+    for ch_index in product.channel_ids:
+        metadata = read_metadata(product.channel_metadata_path(ch_index))
 
         if filter_func is None or filter_func(metadata):
             yield ch_index, metadata

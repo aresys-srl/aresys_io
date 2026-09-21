@@ -47,10 +47,10 @@ def _check_pf_validity(
     assert isinstance(product, ProductFolder)
     assert isinstance(product.manifest, Path)
     assert isinstance(product.path, Path)
-    assert isinstance(product.pf_name, str)
+    assert isinstance(product.name, str)
     assert isinstance(product.raster_extension, str)
     assert product.path == path
-    assert product.pf_name == path.name
+    assert product.name == path.name
     assert product.manifest == path.joinpath(MANIFEST_NAME)
     assert product.raster_extension == extension
 
@@ -59,12 +59,12 @@ def _check_pf_equivalence(pf1: ProductFolder, pf2: ProductFolder) -> None:
     """Checking the equivalence of two PFs."""
     assert pf1.path == pf2.path
     assert pf1.raster_extension == pf2.raster_extension
-    assert pf1.pf_name == pf2.pf_name
+    assert pf1.name == pf2.name
     assert pf1.manifest == pf2.manifest
-    assert pf1.get_config_file() == pf2.get_config_file()
-    assert pf1.get_overlay_file() == pf2.get_overlay_file()
-    assert pf1.get_channel_metadata(3) == pf2.get_channel_metadata(3)
-    assert pf1.get_channel_data(3) == pf2.get_channel_data(3)
+    assert pf1.config_path == pf2.config_path
+    assert pf1.overlay_path == pf2.overlay_path
+    assert pf1.channel_metadata_path(3) == pf2.channel_metadata_path(3)
+    assert pf1.channel_data_path(3) == pf2.channel_data_path(3)
 
 
 @pytest.mark.parametrize("product_name", PRODUCT_NAMES)
@@ -106,7 +106,7 @@ def test_pf_get_channels_list_error(product_name: str) -> None:
     path = Path(r"C:\Users\user\data").joinpath(product_name)
     product_folder = ProductFolder(path=path)
     with pytest.raises(RuntimeError):
-        product_folder.get_channels_list()
+        product_folder.channel_ids  # ruff: ignore[useless-expression]
 
 
 @pytest.mark.parametrize("product_name", PRODUCT_NAMES)
@@ -117,7 +117,7 @@ def test_pf_get_channels_list_empty(tmp_path: Path, product_name: str) -> None:
     product_folder = ProductFolder(path=path)
     Manifest().write(product_folder.manifest)
 
-    channels = product_folder.get_channels_list()
+    channels = product_folder.channel_ids
 
     assert isinstance(channels, list)
     assert len(channels) == 0
@@ -131,13 +131,13 @@ def test_pf_get_channels_list(tmp_path: Path, product_name: str) -> None:
     product_folder = ProductFolder(path=path)
     Manifest().write(product_folder.manifest)
 
-    file_list = [product_folder.get_channel_data(c) for c in CHANNELS_INT]
-    metadata_list = [product_folder.get_channel_metadata(c) for c in CHANNELS_INT]
+    file_list = [product_folder.channel_data_path(c) for c in CHANNELS_INT]
+    metadata_list = [product_folder.channel_metadata_path(c) for c in CHANNELS_INT]
     for file_path, metadata_path in zip(file_list, metadata_list, strict=False):
         Path(file_path).write_text("", encoding="utf-8")
         Path(metadata_path).write_text("", encoding="utf-8")
 
-    channels = product_folder.get_channels_list()
+    channels = product_folder.channel_ids
 
     assert isinstance(channels, list)
     assert len(channels) == len(CHANNELS_INT)
@@ -152,13 +152,13 @@ def test_pf_get_channels_list_ext(tmp_path: Path, product_name: str) -> None:
     product_folder = ProductFolder(path=path, raster_extension=R_EXTENSION)
     Manifest(datafile_extension=R_EXTENSION).write(product_folder.manifest)
 
-    file_list = [product_folder.get_channel_data(c) for c in CHANNELS_INT]
-    metadata_list = [product_folder.get_channel_metadata(c) for c in CHANNELS_INT]
+    file_list = [product_folder.channel_data_path(c) for c in CHANNELS_INT]
+    metadata_list = [product_folder.channel_metadata_path(c) for c in CHANNELS_INT]
     for file_path, metadata_path in zip(file_list, metadata_list, strict=False):
         Path(file_path).write_text("", encoding="utf-8")
         Path(metadata_path).write_text("", encoding="utf-8")
 
-    channels = product_folder.get_channels_list()
+    channels = product_folder.channel_ids
 
     assert isinstance(channels, list)
     assert len(channels) == len(CHANNELS_INT)
@@ -290,7 +290,7 @@ def test_rename_product_folder_no_ext_no_ql(
     rename_product_folder(current_folder=path, new_folder=new_pf)
 
     new = open_product_folder(new_pf)
-    ch_list = new.get_channels_list()
+    ch_list = new.channel_ids
     assert ch_list == [int(c) for c in CHANNELS_STR]
 
 
@@ -320,7 +320,7 @@ def test_rename_product_folder_ext_no_ql(
     rename_product_folder(current_folder=path, new_folder=new_pf)
 
     new = open_product_folder(new_pf)
-    ch_list = new.get_channels_list()
+    ch_list = new.channel_ids
     assert ch_list == [int(c) for c in CHANNELS_STR]
 
 
@@ -354,7 +354,7 @@ def test_rename_product_folder_ext_ql(
     rename_product_folder(current_folder=path, new_folder=new_pf)
 
     new = open_product_folder(new_pf)
-    ch_list = new.get_channels_list()
+    ch_list = new.channel_ids
     assert ch_list == [int(c) for c in CHANNELS_STR]
     for channel in CHANNELS_STR:
         assert new_pf.joinpath(new_name + "_" + channel + R_EXTENSION).exists()
@@ -389,7 +389,7 @@ def test_rename_product_folder_other_files(
     rename_product_folder(current_folder=path, new_folder=new_pf)
 
     new = open_product_folder(new_pf)
-    ch_list = new.get_channels_list()
+    ch_list = new.channel_ids
     assert ch_list == [int(c) for c in CHANNELS_STR]
     assert new_pf.joinpath("report.xml").exists()
     assert new_pf.joinpath("info.txt").exists()
