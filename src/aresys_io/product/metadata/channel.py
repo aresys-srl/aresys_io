@@ -450,6 +450,28 @@ class MetaDataChannel:
         """Create a CoregistrationPoly from the coreg_poly metadata element."""
         return CoregistrationPoly.from_metadata(self.coreg_poly)
 
+    def __repr__(self) -> str:
+        """Return a compact, readable representation."""
+        elements = ", ".join(self.elements)
+        return (
+            f"{type(self).__name__}("
+            f"content_id={self.content_id!r}, "
+            f"number={self.number}, "
+            f"total={self.total}, "
+            f"elements=[{elements}]"
+            ")"
+        )
+
+    def __str__(self) -> str:
+        """Return a human-readable representation."""
+        elements = "\n".join(f" - {name}" for name in self.elements)
+        return (
+            f"{type(self).__name__} {self.number}/{self.total}\n"
+            f" content_id: {self.content_id}\n"
+            f" elements:\n"
+            f"{elements}"
+        )
+
 
 def create_new_metadata(
     num_metadata_channels: int = 1,
@@ -863,3 +885,37 @@ class MetaData:
 
         """
         return self.channels[0].coregistration_poly()
+
+    def __repr__(self) -> str:
+        """Return a compact, readable representation."""
+        channels = ", ".join(
+            f"channel_{index}=[{', '.join(channel.elements)}]"
+            for index, channel in enumerate(self.channels)
+        )
+        return (
+            f"{type(self).__name__}("
+            f"description={self.description!r}, "
+            f"num_channels={len(self.channels)}, "
+            f"channels=[{channels}]"
+            ")"
+        )
+
+    def __str__(self) -> str:
+        """Return a human-readable representation."""
+        channels = "\n".join(
+            f" channel {index + 1}/{len(self.channels)}"
+            f" (content_id: {channel.content_id}):\n"
+            + (
+                "\n".join(f"  - {name}" for name in channel.elements)
+                if channel.elements
+                else "  - no elements"
+            )
+            for index, channel in enumerate(self.channels)
+        )
+        return (
+            f"{type(self).__name__}\n"
+            f" description: {self.description}\n"
+            f" number of channels: {len(self.channels)}\n"
+            f" channels:\n"
+            f"{channels}"
+        )

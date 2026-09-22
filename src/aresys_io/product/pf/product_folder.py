@@ -115,6 +115,28 @@ class ProductFolder:
             raise RuntimeError(self._path)
         return self._get_channels_list()
 
+    @property
+    def config_path(self) -> Path:
+        """Getter method for retrieving Product Folder config file path.
+
+        Returns
+        -------
+        Path
+            Path to the Product Folder config file.
+        """
+        return self._layout.get_config_path()
+
+    @property
+    def overlay_path(self) -> Path:
+        """Getter method for retrieving Product Folder overlay (.kmz) file path.
+
+        Returns
+        -------
+        Path
+            Path to the Product Folder overlay file.
+        """
+        return self._layout.get_overlay_path()
+
     def channel_metadata_path(self, channel: int) -> Path:
         """Getter method for retrieving Product Folder channel's metadata path.
 
@@ -148,28 +170,6 @@ class ProductFolder:
             extension=self._raster_extension,
         )
 
-    @property
-    def config_path(self) -> Path:
-        """Getter method for retrieving Product Folder config file path.
-
-        Returns
-        -------
-        Path
-            Path to the Product Folder config file.
-        """
-        return self._layout.get_config_path()
-
-    @property
-    def overlay_path(self) -> Path:
-        """Getter method for retrieving Product Folder overlay (.kmz) file path.
-
-        Returns
-        -------
-        Path
-            Path to the Product Folder overlay file.
-        """
-        return self._layout.get_overlay_path()
-
     def channel_quicklook_path(self, ext: QuicklookExtension, channel_id: int) -> Path:
         """Quicklook full path for the selected channel.
 
@@ -186,6 +186,18 @@ class ProductFolder:
             Path to the quicklook image corresponding to the selected channel
         """
         return self._layout.get_channel_quicklook_path(channel_id=channel_id, extension=ext)
+
+    def __str__(self) -> str:
+        """Return a human-readable representation of the Product Folder."""
+        return f"{self.name} [{len(self.channel_ids)} channels]\n({self.path})"
+
+    def __repr__(self) -> str:
+        """Return an unambiguous representation of the Product Folder."""
+        return (
+            f"{type(self).__name__}("
+            f"path={str(self._path)!r}, "
+            f"raster_extension={self._raster_extension!r})"
+        )
 
 
 def create_product_folder(
