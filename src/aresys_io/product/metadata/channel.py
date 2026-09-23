@@ -483,7 +483,7 @@ def create_new_metadata(
     ----------
     num_metadata_channels : int, optional
         number of metadata channels, by default 1
-    description : str, optional
+    description : str | None, optional
         metadata description, by default None.
 
     Returns

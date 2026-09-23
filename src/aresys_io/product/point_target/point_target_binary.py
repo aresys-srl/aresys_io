@@ -142,8 +142,9 @@ class PointSetProduct:
 
         Returns
         -------
-        Tuple[List[RasterInfo], int]
-            list of raster info for each metadata,
+        list[RasterInfo]
+            list of raster info for each metadata
+        int
             number of point targets in the product folder binary
 
         Raises
@@ -179,8 +180,9 @@ class PointSetProduct:
 
         Returns
         -------
-        Tuple[np.ndarray, np.ndarray]
-            coordinates array (N, 3),
+        np.ndarray
+            coordinates array (N, 3)
+        np.ndarray
             rcs array (N, 4)
         """
         # block to be read [first line, first sample, lines to be read, samples to be read]
@@ -214,7 +216,7 @@ class PointSetProduct:
         ----------
         data : np.ndarray
             array to be written to raster file
-        filenames : List[Path]
+        filenames : list[Path]
             names of raster files to be written
         data_type : Literal["FLOAT32", "FLOAT64", "FLOAT_COMPLEX", "DOUBLE_COMPLEX"]
             data type to be used when writing data.
@@ -242,7 +244,7 @@ class PointSetProduct:
 
         Parameters
         ----------
-        filenames : List[Path]
+        filenames : list[Path]
             metadata filenames to be written
         num_points : int
             total number of data blocks written to the corresponding raster file
@@ -273,14 +275,15 @@ class PointSetProduct:
         ----------
         start : int, optional
             number of point targets from which to start reading the raster, by default 0
-        num_points : int, optional
+        num_points : int | None, optional
             number of points to be read, if None all points are read from the start to the end,
-            by default None.
+            by default None
 
         Returns
         -------
-        Tuple[np.ndarray, np.ndarray]
-            coordinates array in the form (N, 3),
+        np.ndarray
+            coordinates array in the form (N, 3)
+        np.ndarray
             rcs array (HH, HV, VH, VV) in the form (N, 4)
 
         Raises

@@ -36,7 +36,7 @@ def convert_array_to_point_target_structure(
         point target coordinates, in the form (N, 3)
     rcs : np.ndarray
         point target rcs values (HH, HV, VH, VV), in the form (N, 4)
-    point_target_ids : List[str], optional
+    point_target_ids : list[str] | None, optional
         optional list of point target id labels, by default None
 
     Returns

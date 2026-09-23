@@ -28,10 +28,10 @@ class SwathIDFilter:
 
         Parameters
         ----------
-        polarization : SwathPolarization | list[SwathPolarization], optional
+        polarization : SwathPolarization | list[SwathPolarization] | None, optional
             polarizations to be filtered, it can be a single value or a list of polarizations,
             by default None
-        swath : str, optional
+        swath : str | None, optional
             swath name to be filtered, by default None.
 
         Raises
@@ -88,7 +88,7 @@ def iter_channels_generator(
     ----------
     product : ProductFolder
         product folder from which to get the channels
-    filter_func : MetaDataFilter, optional
+    filter_func : MetaDataFilter | None, optional
         filtering MetaDataFilter-like function, by default None
 
     Yields
@@ -115,11 +115,11 @@ def iter_channels(
     ----------
     product : ProductFolder
         product folder from which to get the channels
-    polarization : SwathPolarization | list[SwathPolarization], optional
+    polarization : SwathPolarization | list[SwathPolarization] | None, optional
         polarizations to be filtered, it can be a single value or a list of polarizations,
         by default None
-    swath : str, optional
-        swath name to be filtered, by default None.
+    swath : str | None, optional
+        swath name to be filtered, by default None
 
     Yields
     ------

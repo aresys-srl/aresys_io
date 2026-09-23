@@ -223,7 +223,7 @@ def create_product_folder(
     overwrite_ok : bool, optional
         if True, if a valid Product Folder is located at the given path, it is overwritten,
         by default False
-    description : str, optional
+    description : str | None, optional
         description of the product folder, by default None
 
     Returns

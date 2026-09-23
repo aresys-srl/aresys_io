@@ -81,7 +81,7 @@ def read_raster_with_raster_info(
         path to the raster file to be read
     raster_info : metadata.RasterInfo
         RasterInfo metadata corresponding to the raster to be read
-    block_to_read : list[int], optional
+    block_to_read : list[int] | None, optional
         data block to be read, to be specified as a list of 4 integers, in the form:
             0. first line to be read
             1. first sample to be read
