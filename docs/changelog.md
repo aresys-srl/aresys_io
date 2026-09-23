@@ -8,6 +8,12 @@ tags:
 
 # Changelog
 
+## v1.1.0
+
+First public release.
+
+The interface has been reviewed and updated.
+
 ## v1.0.0
 
-First official release.
+First beta release.

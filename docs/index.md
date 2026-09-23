@@ -1,6 +1,6 @@
 ---
 icon: lucide/sparkles
-title: "Aresys IO"
+title: "Overview"
 tags:
     - aresys
     - io
