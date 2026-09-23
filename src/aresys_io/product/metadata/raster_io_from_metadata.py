@@ -103,7 +103,7 @@ def read_raster_with_raster_info(
             f"Raster file name {raster_file.name} differs "
             f"from raster info file name {raster_info.file_name}"
         )
-        warnings.warn(msg, stacklevel=1)
+        warnings.warn(msg, stacklevel=2)
 
     data_layout = retrieve_data_layout(raster_info)
 
@@ -151,7 +151,7 @@ def read_raster_as_memmap_with_raster_info(
         )
         warnings.warn(
             msg,
-            stacklevel=1,
+            stacklevel=2,
         )
 
     data_layout = retrieve_data_layout(raster_info)
@@ -190,7 +190,7 @@ def write_raster_with_raster_info(
             f"Raster file name {raster_file.name} differs "
             f"from raster info file name {raster_info.file_name}"
         )
-        warnings.warn(msg, stacklevel=1)
+        warnings.warn(msg, stacklevel=2)
 
     data_layout = retrieve_data_layout(raster_info)
 
