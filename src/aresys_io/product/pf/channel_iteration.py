@@ -10,7 +10,7 @@ from aresys_io.product.metadata.elements import SwathPolarization
 from aresys_io.product.metadata.io import read_metadata
 from aresys_io.product.pf.product_folder import ProductFolder
 
-__all__ = ["iter_channels"]
+__all__ = ["iter_channels", "iter_channels_generator"]
 
 
 MetaDataFilter = Callable[[MetaData], bool]
