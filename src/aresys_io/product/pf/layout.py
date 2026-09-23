@@ -28,7 +28,7 @@ class ProductFolderLayout:
 
         Parameters
         ----------
-        path : Union[str, Path]
+        path : str | Path
             path to the product folder
         """
         self._pf_path = Path(path)

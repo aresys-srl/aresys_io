@@ -29,7 +29,7 @@ class Manifest:
 
         Parameters
         ----------
-        file_path : Union[str, Path]
+        file_path : str | Path
             path of the file to be written, comprehensive of file name.
         """
         file_path = Path(file_path)
@@ -56,7 +56,7 @@ class Manifest:
 
         Parameters
         ----------
-        file_path : Union[str, Path]
+        file_path : str | Path
             path to the xml manifest file.
 
         Returns

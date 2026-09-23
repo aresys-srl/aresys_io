@@ -76,7 +76,7 @@ class PointSetProduct:
 
         Parameters
         ----------
-        path : Union[str, Path]
+        path : str | Path
             path to the product folder
         open_mode : OpenMode, optional
             open mode (can be write "w" or read "r"), write mode will overwrite existing data,

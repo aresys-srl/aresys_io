@@ -29,7 +29,7 @@ class ProductFolder:
 
         Parameters
         ----------
-        path : Union[str, Path]
+        path : str | Path
             path to the selected Product Folder
         raster_extension : RasterExtension, optional
             extension of channel raster data files, by default "".
@@ -52,7 +52,7 @@ class ProductFolder:
 
         Parameters
         ----------
-        new_path : Union[str, Path]
+        new_path : str | Path
             new full path for the current product folder.
         """
         rename_product_folder(self._path, new_path)
@@ -215,7 +215,7 @@ def create_product_folder(
 
     Parameters
     ----------
-    pf_path : Union[str, Path]
+    pf_path : str | Path
         path to the location where to create the Product Folder
     raster_extension : RasterExtension, optional
         extension of the channel's raster data file to be written in Manifest,
@@ -283,7 +283,7 @@ def open_product_folder(
 
     Parameters
     ----------
-    pf_path : Union[str, Path]
+    pf_path : str | Path
         path to the location where to create the Product Folder.
 
     Returns
@@ -334,7 +334,7 @@ def is_product_folder(pf_path: str | Path) -> bool:
 
     Parameters
     ----------
-    pf_path : Union[str, Path]
+    pf_path : str | Path
         path to Product Folder to be checked
 
     Returns
@@ -362,7 +362,7 @@ def is_valid_product_folder(pf_path: str | Path) -> bool:
 
     Parameters
     ----------
-    pf_path : Union[str, Path]
+    pf_path : str | Path
         path to the selected Product Folder
 
     Returns
@@ -506,9 +506,9 @@ def rename_product_folder(current_folder: str | Path, new_folder: str | Path) ->
 
     Parameters
     ----------
-    current_folder : Union[str, Path]
+    current_folder : str | Path
         current Product Folder, full path
-    new_folder : Union[str, Path]
+    new_folder : str | Path
         desired Product Folder, full path
 
     Raises

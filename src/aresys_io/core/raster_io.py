@@ -180,8 +180,14 @@ class DataLayout:
 
         Returns
         -------
-        tuple[int, int, int, int]
-            Normalized (first_line, first_sample, lines_to_read, samples_to_read).
+        int
+            First line of the block to read.
+        int
+            First sample of the block to read.
+        int
+            Number of lines to read.
+        int
+            Number of samples to read.
 
         Raises
         ------
