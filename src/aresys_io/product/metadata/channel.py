@@ -57,8 +57,8 @@ class MetaDataChannel:
         ----------
         element : mtd_elements.MetaDataPydanticModel
             metadata element to insert
-        overwrite_ok : bool
-            overwrite existing metadata element of the same type.
+        overwrite_ok : bool, optional
+            overwrite existing metadata element of the same type. False by default.
 
         Raises
         ------
@@ -511,6 +511,8 @@ class MetaData:
     def insert_element(
         self,
         element: mtd_elements.MetaDataPydanticModel,
+        *,
+        overwrite_ok: bool = False,
     ) -> None:
         """Insert a new metadata element into the first metadata channel.
 
@@ -518,9 +520,11 @@ class MetaData:
         ----------
         element : mtd_elements.MetaDataPydanticModel
             metadata element to be inserted into the first metadata channel.
+        overwrite_ok : bool, optional
+            overwrite existing metadata element of the same type. False by default.
 
         """
-        self.channels[0].insert_element(element)
+        self.channels[0].insert_element(element, overwrite_ok=overwrite_ok)
 
     def remove_element(
         self,
