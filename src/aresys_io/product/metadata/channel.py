@@ -45,6 +45,10 @@ class MetaDataChannel:
         mtd_elements.MetaDataPydanticModel,
     ] = field(default_factory=dict)
 
+    def __contains__(self, item: mtd_elements.MetaDataElementName) -> bool:
+        """Overloaded method to check if the element is available in the metadata channel."""
+        return item in self.elements
+
     def insert_element(
         self,
         element: mtd_elements.MetaDataPydanticModel,
@@ -166,7 +170,7 @@ class MetaDataChannel:
         return raster_info
 
     @property
-    def data_set_info(self) -> mtd_elements.DataSetInfo:
+    def dataset_info(self) -> mtd_elements.DataSetInfo:
         """DataSetInfo.
 
         Returns
@@ -180,7 +184,7 @@ class MetaDataChannel:
         return data_set_info
 
     @property
-    def state_vector_data(self) -> mtd_elements.StateVectors:
+    def state_vectors(self) -> mtd_elements.StateVectors:
         """StateVectors.
 
         Returns
@@ -410,7 +414,7 @@ class MetaDataChannel:
 
     def trajectory(self) -> CubicSplineTrajectory:
         """Create a CubicSplineTrajectory from the state vector data."""
-        return create_trajectory_from_state_vectors(self.state_vector_data)
+        return create_trajectory_from_state_vectors(self.state_vectors)
 
     def attitude(self) -> Attitude:
         """Create an Attitude object from the attitude data."""
@@ -508,6 +512,10 @@ class MetaData:
         """Retrieve the metadata channel at the specified index."""
         return self.channels[index]
 
+    def __contains__(self, item: mtd_elements.MetaDataElementName) -> bool:
+        """Overloaded method to check if the element is available in the metadata first channel."""
+        return item in self.channels[0]
+
     def insert_element(
         self,
         element: mtd_elements.MetaDataPydanticModel,
@@ -577,7 +585,7 @@ class MetaData:
         return self.channels[0].raster_info
 
     @property
-    def data_set_info(self) -> mtd_elements.DataSetInfo:
+    def dataset_info(self) -> mtd_elements.DataSetInfo:
         """DataSetInfo from the first metadata channel.
 
         Returns
@@ -586,10 +594,10 @@ class MetaData:
             DataSetInfo metadata element from the first metadata channel.
 
         """
-        return self.channels[0].data_set_info
+        return self.channels[0].dataset_info
 
     @property
-    def state_vector_data(self) -> mtd_elements.StateVectors:
+    def state_vectors(self) -> mtd_elements.StateVectors:
         """StateVectors from the first metadata channel.
 
         Returns
@@ -598,7 +606,7 @@ class MetaData:
             StateVectors metadata element from the first metadata channel.
 
         """
-        return self.channels[0].state_vector_data
+        return self.channels[0].state_vectors
 
     @property
     def attitude_info(self) -> mtd_elements.AttitudeInfo:

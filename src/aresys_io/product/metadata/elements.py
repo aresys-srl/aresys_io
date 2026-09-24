@@ -22,6 +22,7 @@ __all__ = [
     "AttitudeRotationOrder",
     "AttitudeType",
     "Burst",
+    "BurstInfo",
     "CoregPoly",
     "CoregPolyVector",
     "DataBlockStatistic",

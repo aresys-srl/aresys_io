@@ -7,9 +7,10 @@ from __future__ import annotations
 
 import bisect
 from dataclasses import dataclass, field
-from typing import Generic, TypeAlias
+from typing import Generic, TypeAlias, overload
 
 import numpy as np
+import numpy.typing as npt
 from perseo_core.timing import PreciseDateTime
 
 from aresys_io.product.metadata.elements import (
@@ -41,7 +42,9 @@ __all__ = [
     "TopsAzimuthModulationRatePoly",
 ]
 
-PolynomialPairEvaluationResult: TypeAlias = tuple[float, float]
+PolynomialPairEvaluationResult: TypeAlias = (
+    tuple[float, float] | tuple[npt.NDArray[np.floating], npt.NDArray[np.floating]]
+)
 
 
 @dataclass(frozen=True, eq=False)
@@ -88,23 +91,54 @@ class Polynomial2D(Generic[ReferenceAzimuthTimeT]):
             ),
         )
 
+    @overload
     def evaluate(
         self,
-        values: tuple[ReferenceAzimuthTimeT, float],
-    ) -> float:
-        """Evaluate the polynomial at the provided azimuth and range values."""
-        azimuth_value, range_value = values
-        reference_azimuth = self.reference_values[0]
-        azimuth_delta: float = azimuth_value - reference_azimuth  # pyright: ignore[reportAssignmentType]
+        azimuth_value: float,
+        range_values: float,
+    ) -> float: ...
 
-        range_delta = range_value - self.reference_values[1]
-        return float(
-            np.polynomial.polynomial.polyval2d(
-                azimuth_delta,
-                range_delta,
-                self.coefficient_matrix,
-            ),
+    @overload
+    def evaluate(
+        self,
+        azimuth_value: PreciseDateTime,
+        range_values: float,
+    ) -> float: ...
+
+    @overload
+    def evaluate(
+        self,
+        azimuth_value: float,
+        range_values: npt.NDArray[np.floating],
+    ) -> npt.NDArray[np.floating]: ...
+
+    @overload
+    def evaluate(
+        self,
+        azimuth_value: PreciseDateTime,
+        range_values: npt.NDArray[np.floating],
+    ) -> npt.NDArray[np.floating]: ...
+
+    def evaluate(
+        self,
+        azimuth_value: ReferenceAzimuthTimeT,
+        range_values: float | npt.NDArray[np.floating],
+    ) -> float | npt.NDArray[np.floating]:
+        """Evaluate the polynomial at the provided azimuth and range values."""
+        azimuth_delta: float = azimuth_value - self.reference_values[0]  # pyright: ignore[reportAssignmentType]
+        range_delta = range_values - self.reference_values[1]
+        azimuth_delta_, range_delta_ = np.broadcast_arrays(
+            azimuth_delta,
+            range_delta,
         )
+        values = np.polynomial.polynomial.polyval2d(
+            azimuth_delta_,
+            range_delta_,
+            self.coefficient_matrix,
+        )
+        if isinstance(range_values, np.ndarray):
+            return values
+        return float(values)
 
 
 @dataclass(frozen=True)
@@ -123,21 +157,21 @@ class PiecewisePolynomial2D(Generic[ReferenceAzimuthTimeT]):
 
     def evaluate(
         self,
-        values: tuple[ReferenceAzimuthTimeT, float],
-    ) -> float:
+        azimuth_value: ReferenceAzimuthTimeT,
+        range_values: float | npt.NDArray[np.floating],
+    ) -> float | npt.NDArray[np.floating]:
         """Evaluate the polynomial selected by the reference coordinate."""
         if not self._sorted_poly_list:
             msg = "Cannot evaluate an empty PiecewisePolynomial2D"
             raise ValueError(msg)
 
-        reference_value = values[0]
         idx = bisect.bisect_right(
             self._sorted_poly_list,
-            reference_value,
+            azimuth_value,
             key=lambda poly: poly.reference_values[0],
         )
         selected_poly = self._sorted_poly_list[max(0, idx - 1)]
-        return selected_poly.evaluate(values)
+        return selected_poly.evaluate(azimuth_value, range_values)  # type: ignore[reportArgumentType]
 
 
 @dataclass(frozen=True)
@@ -303,10 +337,13 @@ class PolynomialPair2D:
 
     def evaluate(
         self,
-        values: tuple[PreciseDateTime, float],
+        azimuth_value: ReferenceAzimuthTimeT,
+        range_values: float | npt.NDArray[np.floating],
     ) -> PolynomialPairEvaluationResult:
         """Evaluate both polynomials at the provided azimuth and range values."""
-        return self.azimuth_poly.evaluate(values), self.range_poly.evaluate(values)
+        az_values = self.azimuth_poly.evaluate(azimuth_value, range_values)  # type: ignore[reportArgumentType]
+        rng_values = self.range_poly.evaluate(azimuth_value, range_values)  # type: ignore[reportArgumentType]
+        return az_values, rng_values
 
 
 @dataclass(frozen=True)
@@ -340,21 +377,21 @@ class CoregistrationPoly:
 
     def evaluate(
         self,
-        values: tuple[PreciseDateTime, float],
+        azimuth_value: ReferenceAzimuthTimeT,
+        range_values: float | npt.NDArray[np.floating],
     ) -> PolynomialPairEvaluationResult:
         """Evaluate the selected polynomial pair."""
         if not self._sorted_poly_list:
             msg = "Cannot evaluate an empty CoregistrationPoly"
             raise ValueError(msg)
 
-        reference_value = values[0]
         idx = bisect.bisect_right(
             self._sorted_poly_list,
-            reference_value,
+            azimuth_value,
             key=lambda poly: poly.azimuth_poly.reference_values[0],
         )
         selected_poly = self._sorted_poly_list[max(0, idx - 1)]
-        return selected_poly.evaluate(values)
+        return selected_poly.evaluate(azimuth_value, range_values)
 
 
 def _coefficients_to_matrix(

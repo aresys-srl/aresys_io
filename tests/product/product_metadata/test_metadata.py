@@ -3,6 +3,7 @@
 
 """Unit tests for metadata accessors."""
 
+from aresys_io.product import MetaDataElementName
 from aresys_io.product.metadata.io import parse_metadata
 
 METADATA = """<?xml version="1.0" encoding="utf-8"?>
@@ -159,24 +160,65 @@ METADATA = """<?xml version="1.0" encoding="utf-8"?>
 </AresysXmlDoc>
 """  # ruff: ignore[line-too-long]
 
+ACCESSOR_NAMES = (
+    "raster_info",
+    "dataset_info",
+    "swath_info",
+    "sampling_constants",
+    "state_vectors",
+    "attitude_info",
+    "slant_to_ground",
+    "ground_to_slant",
+    "data_statistics",
+    "pulse",
+)
+
+FIELD_NAMES: list[MetaDataElementName] = [
+    "RasterInfo",
+    "DataSetInfo",
+    "SwathInfo",
+    "SamplingConstants",
+    "StateVectors",
+    "AttitudeInfo",
+    "SlantToGroundVector",
+    "GroundToSlantVector",
+    "DataStatistics",
+    "Pulse",
+]
+FIELD_NAMES_NOT: list[MetaDataElementName] = [
+    "DopplerCentroidVector",
+    "AntennaInfo",
+    "CoregPolyVector",
+]
+
 
 def test_metadata_element_access_is_consistent() -> None:
     """Accessing an element directly matches accessing it through channel zero."""
     metadata = parse_metadata(METADATA)
     channel = metadata[0]
 
-    accessor_names = (
-        "raster_info",
-        "data_set_info",
-        "swath_info",
-        "sampling_constants",
-        "state_vector_data",
-        "attitude_info",
-        "slant_to_ground",
-        "ground_to_slant",
-        "data_statistics",
-        "pulse",
-    )
-
-    for accessor_name in accessor_names:
+    for accessor_name in ACCESSOR_NAMES:
         assert getattr(metadata, accessor_name) is getattr(channel, accessor_name)
+
+
+def test_metadata_element_in_channel() -> None:
+    """Check if the element is available in the metadata channel."""
+    metadata = parse_metadata(METADATA)
+    channel = metadata[0]
+
+    for name in FIELD_NAMES:
+        assert name in channel
+
+    for name in FIELD_NAMES_NOT:
+        assert name not in channel
+
+
+def test_metadata_element_in_metadata() -> None:
+    """Check if the element is available in the metadata channel."""
+    metadata = parse_metadata(METADATA)
+
+    for name in FIELD_NAMES:
+        assert name in metadata
+
+    for name in FIELD_NAMES_NOT:
+        assert name not in metadata

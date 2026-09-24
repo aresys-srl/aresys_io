@@ -1724,30 +1724,61 @@ CHANNEL_FIELDS_FROM_MODEL = (
 
 
 CHANNEL_FIELDS_TO_MODEL = (
-    ("RasterInfo", "raster_info", translate_raster_info_to_model),
-    ("SamplingConstants", "sampling_constants", translate_sampling_constants_to_model),
-    ("Pulse", "pulse", translate_pulse_to_model),
-    ("SwathInfo", "swath_info", translate_swath_info_to_model),
-    ("DataSetInfo", "data_set_info", translate_dataset_info_to_model),
-    ("StateVectors", "state_vector_data", translate_state_vectors_to_model),
-    ("AttitudeInfo", "attitude_info", translate_attitude_to_model),
-    ("AcquisitionTimeLine", "acquisition_time_line", translate_acquisition_time_line_to_model),
-    ("GroundCornerPoints", "ground_corner_points", translate_ground_corner_points_to_model),
-    ("BurstInfo", "burst_info", translate_burst_info_to_model),
-    ("DopplerCentroidVector", "doppler_centroid", _translate_poly_vector_to_model),
-    ("DopplerRateVector", "doppler_rate", _translate_poly_vector_to_model),
+    ("RasterInfo", "raster_info", "raster_info", translate_raster_info_to_model),
+    (
+        "SamplingConstants",
+        "sampling_constants",
+        "sampling_constants",
+        translate_sampling_constants_to_model,
+    ),
+    ("Pulse", "pulse", "pulse", translate_pulse_to_model),
+    ("SwathInfo", "swath_info", "swath_info", translate_swath_info_to_model),
+    ("DataSetInfo", "data_set_info", "dataset_info", translate_dataset_info_to_model),
+    ("StateVectors", "state_vector_data", "state_vectors", translate_state_vectors_to_model),
+    ("AttitudeInfo", "attitude_info", "attitude_info", translate_attitude_to_model),
+    (
+        "AcquisitionTimeLine",
+        "acquisition_time_line",
+        "acquisition_time_line",
+        translate_acquisition_time_line_to_model,
+    ),
+    (
+        "GroundCornerPoints",
+        "ground_corner_points",
+        "ground_corner_points",
+        translate_ground_corner_points_to_model,
+    ),
+    ("BurstInfo", "burst_info", "burst_info", translate_burst_info_to_model),
+    (
+        "DopplerCentroidVector",
+        "doppler_centroid",
+        "doppler_centroid",
+        _translate_poly_vector_to_model,
+    ),
+    ("DopplerRateVector", "doppler_rate", "doppler_rate", _translate_poly_vector_to_model),
     (
         "TopsAzimuthModulationRateVector",
         "tops_azimuth_modulation_rate",
+        "tops_azimuth_modulation_rate",
         _translate_poly_vector_to_model,
     ),
-    ("SlantToGroundVector", "slant_to_ground", _translate_poly_vector_to_model),
-    ("GroundToSlantVector", "ground_to_slant", _translate_poly_vector_to_model),
-    ("SlantToElevationVector", "slant_to_elevation", _translate_poly_vector_to_model),
-    ("SlantToIncidenceVector", "slant_to_incidence", _translate_poly_vector_to_model),
-    ("AntennaInfo", "antenna_info", translate_antenna_info_to_model),
-    ("DataStatistics", "data_statistics", translate_data_statistics_to_model),
-    ("CoregPolyVector", "coreg_poly", _translate_coreg_poly_vector_to_model),
+    ("SlantToGroundVector", "slant_to_ground", "slant_to_ground", _translate_poly_vector_to_model),
+    ("GroundToSlantVector", "ground_to_slant", "ground_to_slant", _translate_poly_vector_to_model),
+    (
+        "SlantToIncidenceVector",
+        "slant_to_incidence",
+        "slant_to_incidence",
+        _translate_poly_vector_to_model,
+    ),
+    (
+        "SlantToElevationVector",
+        "slant_to_elevation",
+        "slant_to_elevation",
+        _translate_poly_vector_to_model,
+    ),
+    ("AntennaInfo", "antenna_info", "antenna_info", translate_antenna_info_to_model),
+    ("DataStatistics", "data_statistics", "data_statistics", translate_data_statistics_to_model),
+    ("CoregPolyVector", "coreg_poly", "coreg_poly", _translate_coreg_poly_vector_to_model),
 )
 
 
@@ -1762,7 +1793,7 @@ def translate_metadata_channel_from_model(
     )
 
     for field_name, translator in CHANNEL_FIELDS_FROM_MODEL:
-        if (value := getattr(channel_mtd, field_name)) is not None:
+        if value := getattr(channel_mtd, field_name):
             mdc.insert_element(translator(value))
 
     return mdc
@@ -1803,9 +1834,11 @@ def translate_metadata_channel_to_model(
         content_id=metadata_channel.content_id,
     )
 
-    for element_name, field_name, translator in CHANNEL_FIELDS_TO_MODEL:
+    for element_name, field_name_model, field_name, translator in CHANNEL_FIELDS_TO_MODEL:
         if element_name in metadata_channel.elements:
-            setattr(channel_model, field_name, translator(getattr(metadata_channel, field_name)))
+            setattr(
+                channel_model, field_name_model, translator(getattr(metadata_channel, field_name))
+            )
 
     return channel_model
 

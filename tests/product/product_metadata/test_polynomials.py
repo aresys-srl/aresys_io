@@ -184,10 +184,22 @@ def test_evaluate() -> None:
     polynomial2d = _polynomial2d_from_data(POLY_DATA_SORTED_SECOND)
 
     result = polynomial2d.evaluate(
-        (PreciseDateTime.from_utc_string("09-JUL-2006 21:00:03.0"), 4.0),
+        azimuth_value=PreciseDateTime.from_utc_string("09-JUL-2006 21:00:03.0"),
+        range_values=4.0,
     )
 
     assert isclose(result, 3.5)
+
+
+def test_evaluate_vec() -> None:
+    polynomial2d = _polynomial2d_from_data(POLY_DATA_SORTED_SECOND)
+
+    result = polynomial2d.evaluate(
+        azimuth_value=PreciseDateTime.from_utc_string("09-JUL-2006 21:00:03.0"),
+        range_values=np.array([4.0, 5.0]),
+    )
+
+    np.testing.assert_array_equal(result, np.array([3.5, 5.5]))
 
 
 def test_from_metadata() -> None:
@@ -236,13 +248,15 @@ def test_from_metadata_sorts_and_selects_previous_poly() -> None:
     ]
     assert isclose(
         sorted_poly_list.evaluate(
-            (PreciseDateTime.from_utc_string("09-JUL-2006 21:00:03.0"), 4.0),
+            azimuth_value=PreciseDateTime.from_utc_string("09-JUL-2006 21:00:03.0"),
+            range_values=4.0,
         ),
         3.5,
     )
     assert isclose(
         sorted_poly_list.evaluate(
-            (PreciseDateTime.from_utc_string("09-JUL-2006 20:59:07.0"), 4.0),
+            azimuth_value=PreciseDateTime.from_utc_string("09-JUL-2006 20:59:07.0"),
+            range_values=4.0,
         ),
         61.5,
     )
@@ -290,11 +304,26 @@ def test_polynomial_pair_evaluate() -> None:
     )
 
     azimuth_result, range_result = polynomial_pair.evaluate(
-        (PreciseDateTime.from_utc_string("09-JUL-2006 21:00:03.0"), 4.0),
+        azimuth_value=PreciseDateTime.from_utc_string("09-JUL-2006 21:00:03.0"),
+        range_values=4.0,
     )
 
     assert isclose(azimuth_result, 1.5)
     assert isclose(range_result, 11.0)
+
+
+def test_polynomial_pair_evaluate_vect() -> None:
+    polynomial_pair = PolynomialPair2D.from_metadata(
+        _metadata_polynomial_pair_from_data(POLYNOMIAL_PAIR_DATA_SORTED_SECOND),
+    )
+
+    azimuth_result, range_result = polynomial_pair.evaluate(
+        azimuth_value=PreciseDateTime.from_utc_string("09-JUL-2006 21:00:03.0"),
+        range_values=np.array([4.0, 5.0]),
+    )
+
+    np.testing.assert_array_equal(azimuth_result, np.array([1.5, 1.0]))
+    np.testing.assert_array_equal(range_result, np.array([11.0, 17.5]))
 
 
 def test_coregistration_poly_from_metadata() -> None:
@@ -333,16 +362,49 @@ def test_coregistration_poly_init_and_evaluate() -> None:
         POLYNOMIAL_PAIR_DATA_SORTED_SECOND.ref_az,
     ]
     azimuth_result, range_result = sorted_poly_list.evaluate(
-        (PreciseDateTime.from_utc_string("09-JUL-2006 21:00:03.0"), 4.0),
+        azimuth_value=PreciseDateTime.from_utc_string("09-JUL-2006 21:00:03.0"),
+        range_values=4.0,
     )
     assert isclose(azimuth_result, 1.5)
     assert isclose(range_result, 11.0)
 
     azimuth_result, range_result = sorted_poly_list.evaluate(
-        (PreciseDateTime.from_utc_string("09-JUL-2006 20:59:07.0"), 4.0),
+        azimuth_value=PreciseDateTime.from_utc_string("09-JUL-2006 20:59:07.0"),
+        range_values=4.0,
     )
     assert isclose(azimuth_result, -18.5)
     assert isclose(range_result, 15.5)
+
+
+def test_coregistration_poly_init_and_evaluate_vect() -> None:
+    sorted_poly_list = CoregistrationPoly(
+        _sorted_poly_list=[
+            PolynomialPair2D.from_metadata(
+                _metadata_polynomial_pair_from_data(POLYNOMIAL_PAIR_DATA_SORTED_SECOND),
+            ),
+            PolynomialPair2D.from_metadata(
+                _metadata_polynomial_pair_from_data(POLYNOMIAL_PAIR_DATA_SORTED_FIRST),
+            ),
+        ],
+    )
+
+    assert [poly.ref_azimuth_time for poly in _sorted_polynomial_pairs(sorted_poly_list)] == [
+        POLYNOMIAL_PAIR_DATA_SORTED_FIRST.ref_az,
+        POLYNOMIAL_PAIR_DATA_SORTED_SECOND.ref_az,
+    ]
+    azimuth_result, range_result = sorted_poly_list.evaluate(
+        azimuth_value=PreciseDateTime.from_utc_string("09-JUL-2006 21:00:03.0"),
+        range_values=np.array([4.0, 5.0]),
+    )
+    np.testing.assert_array_equal(azimuth_result, np.array([1.5, 1.0]))
+    np.testing.assert_array_equal(range_result, np.array([11.0, 17.5]))
+
+    azimuth_result, range_result = sorted_poly_list.evaluate(
+        azimuth_value=PreciseDateTime.from_utc_string("09-JUL-2006 20:59:07.0"),
+        range_values=np.array([4.0, 5.0]),
+    )
+    np.testing.assert_array_equal(azimuth_result, np.array([-18.5, -12.5]))
+    np.testing.assert_array_equal(range_result, np.array([15.5, 13.5]))
 
 
 def test_polynomial2d_equality() -> None:
@@ -381,11 +443,13 @@ def test_piecewise_evaluate_before_first_reference() -> None:
 
     # Evaluate before the first polynomial's azimuth time: should pick the first polynomial
     res = sorted_poly_list.evaluate(
-        (PreciseDateTime.from_utc_string("09-JUL-2006 20:58:00.0"), 8.0),
+        azimuth_value=PreciseDateTime.from_utc_string("09-JUL-2006 20:58:00.0"),
+        range_values=8.0,
     )
     first_poly = _polynomial2d_from_data(POLY_DATA_SORTED_FIRST)
     expected = first_poly.evaluate(
-        (PreciseDateTime.from_utc_string("09-JUL-2006 20:58:00.0"), 8.0),
+        azimuth_value=PreciseDateTime.from_utc_string("09-JUL-2006 20:58:00.0"),
+        range_values=8.0,
     )
     assert isclose(res, expected)
 
@@ -393,11 +457,11 @@ def test_piecewise_evaluate_before_first_reference() -> None:
 def test_empty_piecewise_raises_error() -> None:
     empty_poly2d = PiecewisePolynomial2D()
     with pytest.raises(ValueError, match="Cannot evaluate an empty PiecewisePolynomial2D"):
-        empty_poly2d.evaluate((PreciseDateTime.now(), 0.0))
+        empty_poly2d.evaluate(azimuth_value=PreciseDateTime.now(), range_values=0.0)
 
     empty_pair = CoregistrationPoly()
     with pytest.raises(ValueError, match="Cannot evaluate an empty CoregistrationPoly"):
-        empty_pair.evaluate((PreciseDateTime.now(), 0.0))
+        empty_pair.evaluate(azimuth_value=PreciseDateTime.now(), range_values=0.0)
 
 
 def test_polynomial_unhashable() -> None:
@@ -475,19 +539,19 @@ def test_float_reference_azimuth() -> None:
 
     assert isclose(p1.ref_azimuth_time, 10.0)
     assert isclose(p1.ref_range_time, 2.0)
-    assert isclose(p1.evaluate((10.0, 3.0)), 3.0)
+    assert isclose(p1.evaluate(azimuth_value=10.0, range_values=3.0), 3.0)
 
     piecewise = PiecewisePolynomial2D(_sorted_poly_list=[p2, p1])
     # Before p1
-    assert isclose(piecewise.evaluate((5.0, 3.0)), 3.0)
+    assert isclose(piecewise.evaluate(azimuth_value=5.0, range_values=3.0), 3.0)
     # At p1
-    assert isclose(piecewise.evaluate((10.0, 3.0)), 3.0)
+    assert isclose(piecewise.evaluate(azimuth_value=10.0, range_values=3.0), 3.0)
     # Between p1 and p2 (picks p1)
-    assert isclose(piecewise.evaluate((15.0, 3.0)), 3.0)
+    assert isclose(piecewise.evaluate(azimuth_value=15.0, range_values=3.0), 3.0)
     # At p2 (picks p2)
-    assert isclose(piecewise.evaluate((20.0, 3.0)), 5.0)
+    assert isclose(piecewise.evaluate(azimuth_value=20.0, range_values=3.0), 5.0)
     # After p2 (picks p2)
-    assert isclose(piecewise.evaluate((25.0, 3.0)), 5.0)
+    assert isclose(piecewise.evaluate(azimuth_value=25.0, range_values=3.0), 5.0)
 
 
 def test_piecewise_pair_boundaries() -> None:
@@ -501,26 +565,34 @@ def test_piecewise_pair_boundaries() -> None:
 
     # Before first
     res_before = piecewise.evaluate(
-        (PreciseDateTime.from_utc_string("09-JUL-2006 20:50:00.0"), 8.0),
+        azimuth_value=PreciseDateTime.from_utc_string("09-JUL-2006 20:50:00.0"),
+        range_values=8.0,
     )
     res_first_expected = pair_first.evaluate(
-        (PreciseDateTime.from_utc_string("09-JUL-2006 20:50:00.0"), 8.0),
+        azimuth_value=PreciseDateTime.from_utc_string("09-JUL-2006 20:50:00.0"),
+        range_values=8.0,
     )
     assert isclose(res_before[0], res_first_expected[0])
     assert isclose(res_before[1], res_first_expected[1])
 
     # Exactly at second
-    res_at_second = piecewise.evaluate((POLYNOMIAL_PAIR_DATA_SORTED_SECOND.ref_az, 2.0))
-    res_second_expected = pair_second.evaluate((POLYNOMIAL_PAIR_DATA_SORTED_SECOND.ref_az, 2.0))
+    res_at_second = piecewise.evaluate(
+        azimuth_value=POLYNOMIAL_PAIR_DATA_SORTED_SECOND.ref_az, range_values=2.0
+    )
+    res_second_expected = pair_second.evaluate(
+        azimuth_value=POLYNOMIAL_PAIR_DATA_SORTED_SECOND.ref_az, range_values=2.0
+    )
     assert isclose(res_at_second[0], res_second_expected[0])
     assert isclose(res_at_second[1], res_second_expected[1])
 
     # After second
     res_after = piecewise.evaluate(
-        (PreciseDateTime.from_utc_string("09-JUL-2006 21:10:00.0"), 2.0),
+        azimuth_value=PreciseDateTime.from_utc_string("09-JUL-2006 21:10:00.0"),
+        range_values=2.0,
     )
     res_after_expected = pair_second.evaluate(
-        (PreciseDateTime.from_utc_string("09-JUL-2006 21:10:00.0"), 2.0),
+        azimuth_value=PreciseDateTime.from_utc_string("09-JUL-2006 21:10:00.0"),
+        range_values=2.0,
     )
     assert isclose(res_after[0], res_after_expected[0])
     assert isclose(res_after[1], res_after_expected[1])
@@ -558,7 +630,8 @@ def _assert_concrete_poly(vector_cls: type, elem_cls: type, poly_cls: type) -> N
     ]
 
     res = poly_obj.evaluate(
-        (PreciseDateTime.from_utc_string("09-JUL-2006 21:00:03.0"), 4.0),
+        azimuth_value=PreciseDateTime.from_utc_string("09-JUL-2006 21:00:03.0"),
+        range_values=4.0,
     )
     assert isclose(res, 3.5)
 
