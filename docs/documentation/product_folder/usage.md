@@ -378,6 +378,33 @@ mtd.channels[0].raster_info
 This means that code written for products containing a single metadata channel can use the convenient top-level properties,
 while products containing multiple metadata channels can explicitly access each channel when needed.
 
+### Verifying Metadata Element Existence
+
+To check whether a metadata element is present inside a `MetaDataChannel` object, you can use the ``in`` python keyword.
+
+```python
+if "RasterInfo" in mtd:
+    print("raster_info is present")
+```
+
+For convenience, when checking the existence of a metadata element in a `MetaData` object, the operation is performed
+on the **first metadata channel** (`channels[0]`).
+
+This operation is particularly useful when working with multiple metadata elements, as it allows you to check whether
+a specific element is present in the metadata without raising a `RuntimeError` exception if the requested element is not
+present.
+
+```python
+if "AntennaInfo" not in channel_mtd:
+    channel_mtd.antenna_info
+```
+
+This results in:
+
+```bash
+RuntimeError: The element AntennaInfo is not available in the current metadata channel
+```
+
 ### Creating multiple metadata channels
 
 You can create a `MetaData` object containing multiple metadata channels by specifying the desired number with `create_new_metadata()`.
