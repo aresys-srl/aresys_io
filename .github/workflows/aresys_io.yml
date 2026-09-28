@@ -1,0 +1,252 @@
+name: aresys-io
+
+on:
+  workflow_dispatch:
+
+  push:
+    branches:
+      - main
+    tags:
+      - "aresys-io-v*"
+      - "docs-v*"
+    paths:
+      - ".github/workflows/aresys_io.yml"
+      - "src/**"
+      - "tests/**"
+      - "docs/**"
+      - "overrides/**"
+      - "pyproject.toml"
+      - "zensical.toml"
+
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/aresys_io.yml"
+      - "src/**"
+      - "tests/**"
+      - "docs/**"
+      - "overrides/**"
+      - "pyproject.toml"
+      - "zensical.toml"
+
+jobs:
+  ruff:
+    runs-on: ubuntu-latest
+    container:
+      image: quay.io/pypa/manylinux_2_28_x86_64
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
+      - run: echo "/opt/python/cp312-cp312/bin" >> $GITHUB_PATH
+      - run: python -m pip install ruff
+      - run: python -m ruff --version
+      - run: python -m ruff format --check .
+      - run: python -m ruff check .
+
+  pyrefly:
+    runs-on: ubuntu-latest
+    container:
+      image: quay.io/pypa/manylinux_2_28_x86_64
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
+      - run: echo "/opt/python/cp312-cp312/bin" >> $GITHUB_PATH
+      - run: python --version
+      - run: python -m pip install -e .[typecheck]
+      - run: |
+          python -m pyrefly check \
+            --python-interpreter-path $(python -c "import sys; print(sys.executable)")
+
+  unittest_linux:
+    runs-on: ubuntu-latest
+    container:
+      image: quay.io/pypa/manylinux_2_28_x86_64
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python:
+          - "3.11"
+          - "3.12"
+          - "3.13"
+          - "3.14"
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
+      - name: Select Python ${{ matrix.python }}
+        run: |
+          case "${{ matrix.python }}" in
+            3.11) echo "/opt/python/cp311-cp311/bin" >> $GITHUB_PATH ;;
+            3.12) echo "/opt/python/cp312-cp312/bin" >> $GITHUB_PATH ;;
+            3.13) echo "/opt/python/cp313-cp313/bin" >> $GITHUB_PATH ;;
+            3.14) echo "/opt/python/cp314-cp314/bin" >> $GITHUB_PATH ;;
+          esac
+
+      - run: python --version
+      - name: Install package
+        run: python -m pip install -e ".[test,typecheck]"
+
+      - name: Run unit tests with coverage
+        run: |
+          mkdir -p _build
+          python -m pytest ./tests/ \
+            --junitxml=_build/pytest-report-linux-py${{ matrix.python }}.xml \
+            --cov-report=xml:_build/pytest-coverage-linux-py${{ matrix.python }}.xml
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: linux-results-${{ matrix.python }}
+          path: |
+            _build/pytest-report-*.xml
+            _build/pytest-coverage-*.xml
+          retention-days: 14
+
+  unittest_windows:
+    runs-on: windows-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python:
+          - "3.11"
+          - "3.12"
+          - "3.13"
+          - "3.14"
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+
+      - run: python --version
+      - name: Install package
+        run: python -m pip install -e ".[test,typecheck]"
+
+      - name: Run unit tests with coverage
+        run: |
+          if (-not (Test-Path _build)) { New-Item -ItemType Directory -Path _build | Out-Null }
+          python -m pytest ./tests/ --junitxml=_build/pytest-report-win-py${{ matrix.python }}.xml --cov-report=xml:_build/pytest-coverage-win-py${{ matrix.python }}.xml
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: windows-results-${{ matrix.python }}
+          path: |
+            _build/pytest-report-*.xml
+            _build/pytest-coverage-*.xml
+          retention-days: 14
+
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: quay.io/pypa/manylinux_2_28_x86_64
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
+      - run: echo "/opt/python/cp312-cp312/bin" >> $GITHUB_PATH
+      - run: uv build --sdist --wheel .
+      - uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: dist/
+          retention-days: 14
+
+  doc_build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - run: python -m pip install ".[docs]"
+      - run: python tools/build_doc.py
+      - uses: actions/upload-artifact@v7
+        with:
+          name: documentation-site
+          path: site/
+          retention-days: 14
+
+  publish:
+    needs: [ruff, pyrefly, unittest_linux, unittest_windows, build]
+    if: startsWith(github.ref_name, 'aresys-io-v')
+
+    runs-on: ubuntu-latest
+
+    environment: pypi-aresys-io
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist
+
+      - name: Clean dist
+        run: |
+          find dist -type f ! -name "*.whl" ! -name "*.tar.gz" -delete
+
+      - name: Show artifacts
+        run: |
+          find dist -type f -maxdepth 2
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist
+
+  publish_docs:
+    if: >
+      ${{
+        (startsWith(github.ref_name, 'aresys-io-v') || startsWith(github.ref_name, 'docs-v')) &&
+        (needs.publish.result == 'success' || needs.publish.result == 'skipped')
+      }}
+    needs: [doc_build, publish]
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Download docs site
+        uses: actions/download-artifact@v8
+        with:
+          name: documentation-site
+          path: site
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
