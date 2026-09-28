@@ -10,7 +10,7 @@
 site_name = "Aresys I/O"
 site_description = "Documentation for the Aresys Input/Output python package."
 site_author = "Aresys s.r.l."
-site_url = "http://intranet.aresys.it/sardashboard/develop"
+site_url = "https://opensource.aresys.it/aresys_io"
 copyright = """
 Copyright &copy; 2026-present Aresys s.r.l.
 """
