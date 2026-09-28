@@ -1,6 +1,6 @@
 [project]
 name = "aresys_io"
-description = "Python library for reading and writing Aresys EO/SAR product formats.."
+description = "Python library for reading and writing Aresys EO/SAR product formats."
 authors = [{ name = "Aresys S.R.L.", email = "info@aresys.it" }]
 requires-python = ">=3.11"
 readme = "README.md"
@@ -30,6 +30,11 @@ classifiers = [
     "Topic :: Scientific/Engineering",
     "Typing :: Typed",
 ]
+
+[project.urls]
+Homepage = "https://github.com/aresys-srl/aresys_io"
+Repository = "https://github.com/aresys-srl/aresys_io"
+Documentation = "https://opensource.aresys.it/aresys_io"
 
 [project.optional-dependencies]
 dev = ["ruff>=0.16.7"]
