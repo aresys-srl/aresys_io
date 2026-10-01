@@ -1430,6 +1430,54 @@ class TestBurstInfo:
         )
 
 
+def create_state_vectors() -> tuple[elements.StateVectors, models.StateVectorDataType]:
+    """Builds and returns example state vectors metadata and model data."""
+    state_vectors_model = models.StateVectorDataType(
+        p_sv_m=models.StateVectorDataType.PSvM(
+            val=[
+                models.StateVectorDataType.PSvM.Val(value=1.2, n=1),
+                models.StateVectorDataType.PSvM.Val(value=2.3, n=2),
+                models.StateVectorDataType.PSvM.Val(value=3.4, n=3),
+                models.StateVectorDataType.PSvM.Val(value=4.5, n=4),
+                models.StateVectorDataType.PSvM.Val(value=5.6, n=5),
+                models.StateVectorDataType.PSvM.Val(value=6.7, n=6),
+            ],
+        ),
+        v_sv_m_os=models.StateVectorDataType.VSvMOs(
+            val=[
+                models.StateVectorDataType.VSvMOs.Val(value=11.2, n=1),
+                models.StateVectorDataType.VSvMOs.Val(value=12.3, n=2),
+                models.StateVectorDataType.VSvMOs.Val(value=13.4, n=3),
+                models.StateVectorDataType.VSvMOs.Val(value=14.5, n=4),
+                models.StateVectorDataType.VSvMOs.Val(value=15.6, n=5),
+                models.StateVectorDataType.VSvMOs.Val(value=16.7, n=6),
+            ],
+        ),
+        orbit_number="NOT_AVAILABLE",
+        track="NOT_AVAILABLE",
+        orbit_direction=models.AscendingDescendingType.ASCENDING,
+        t_ref_utc="01-JAN-2020 00:00:00.000000000000",
+        dt_sv_s=models.StateVectorDataType.DtSvS(value=1.2, unit=models.Units.S),
+        n_sv_n=models.StateVectorDataType.NSvN(value=2),
+    )
+
+    positions = np.zeros(shape=(2, 3))
+    positions[0, :] = [1.2, 2.3, 3.4]
+    positions[1, :] = [4.5, 5.6, 6.7]
+
+    velocities = np.zeros(shape=(2, 3))
+    velocities[0, :] = [11.2, 12.3, 13.4]
+    velocities[1, :] = [14.5, 15.6, 16.7]
+
+    state_vectors_metadata = elements.StateVectors(
+        position_vector=positions,
+        velocity_vector=velocities,
+        reference_time=PreciseDateTime.from_numeric_datetime(year=2020),
+        time_step=1.2,
+    )
+    return state_vectors_metadata, state_vectors_model
+
+
 class TestStateVectors:
     @staticmethod
     def assert_equal_state_vectors(
@@ -1456,49 +1504,10 @@ class TestStateVectors:
                 assert comp_a == comp_b
 
     def setup_method(self) -> None:
-        self.state_vectors_model = models.StateVectorDataType(
-            p_sv_m=models.StateVectorDataType.PSvM(
-                val=[
-                    models.StateVectorDataType.PSvM.Val(value=1.2, n=1),
-                    models.StateVectorDataType.PSvM.Val(value=2.3, n=2),
-                    models.StateVectorDataType.PSvM.Val(value=3.4, n=3),
-                    models.StateVectorDataType.PSvM.Val(value=4.5, n=4),
-                    models.StateVectorDataType.PSvM.Val(value=5.6, n=5),
-                    models.StateVectorDataType.PSvM.Val(value=6.7, n=6),
-                ],
-            ),
-            v_sv_m_os=models.StateVectorDataType.VSvMOs(
-                val=[
-                    models.StateVectorDataType.VSvMOs.Val(value=11.2, n=1),
-                    models.StateVectorDataType.VSvMOs.Val(value=12.3, n=2),
-                    models.StateVectorDataType.VSvMOs.Val(value=13.4, n=3),
-                    models.StateVectorDataType.VSvMOs.Val(value=14.5, n=4),
-                    models.StateVectorDataType.VSvMOs.Val(value=15.6, n=5),
-                    models.StateVectorDataType.VSvMOs.Val(value=16.7, n=6),
-                ],
-            ),
-            orbit_number="NOT_AVAILABLE",
-            track="NOT_AVAILABLE",
-            orbit_direction=models.AscendingDescendingType.ASCENDING,
-            t_ref_utc="01-JAN-2020 00:00:00.000000000000",
-            dt_sv_s=models.StateVectorDataType.DtSvS(value=1.2, unit=models.Units.S),
-            n_sv_n=models.StateVectorDataType.NSvN(value=2),
-        )
-
-        positions = np.zeros(shape=(2, 3))
-        positions[0, :] = [1.2, 2.3, 3.4]
-        positions[1, :] = [4.5, 5.6, 6.7]
-
-        velocities = np.zeros(shape=(2, 3))
-        velocities[0, :] = [11.2, 12.3, 13.4]
-        velocities[1, :] = [14.5, 15.6, 16.7]
-
-        self.state_vectors_metadata = elements.StateVectors(
-            position_vector=positions,
-            velocity_vector=velocities,
-            reference_time=PreciseDateTime.from_numeric_datetime(year=2020),
-            time_step=1.2,
-        )
+        (
+            self.state_vectors_metadata,
+            self.state_vectors_model,
+        ) = create_state_vectors()
 
     def test_translate_state_vectors(self) -> None:
         assert (
@@ -2339,3 +2348,68 @@ def test_translate_image_quantity_from_model(
     expected: str,
 ) -> None:
     assert translate.translate_image_quantity_from_model(model_value) == expected
+
+
+sv_element, sv_model = create_state_vectors()
+time_grid_info_test_cases = [
+    (
+        elements.TimeGridInfo(data=elements.TimeGridInfo.Monostatic()),
+        models.TimeGridInfoType(monostatic=models.TimeGridInfoType.Monostatic()),
+    ),
+    (
+        elements.TimeGridInfo(data=elements.TimeGridInfo.Bistatic()),
+        models.TimeGridInfoType(bistatic=models.TimeGridInfoType.Bistatic()),
+    ),
+    (
+        elements.TimeGridInfo(data=elements.TimeGridInfo.BistaticSingleSystem()),
+        models.TimeGridInfoType(
+            bistatic_single_system=models.TimeGridInfoType.BistaticSingleSystem()
+        ),
+    ),
+    (
+        elements.TimeGridInfo(data=elements.TimeGridInfo.Monostatic(state_vectors=sv_element)),
+        models.TimeGridInfoType(
+            monostatic=models.TimeGridInfoType.Monostatic(trajectory=sv_model)
+        ),
+    ),
+    (
+        elements.TimeGridInfo(
+            data=elements.TimeGridInfo.Bistatic(state_vectors_tx_rx=(sv_element, sv_element))
+        ),
+        models.TimeGridInfoType(
+            bistatic=models.TimeGridInfoType.Bistatic(
+                trajectory_tx=sv_model, trajectory_rx=sv_model
+            )
+        ),
+    ),
+    (
+        elements.TimeGridInfo(
+            data=elements.TimeGridInfo.BistaticSingleSystem(state_vectors=sv_element)
+        ),
+        models.TimeGridInfoType(
+            bistatic_single_system=models.TimeGridInfoType.BistaticSingleSystem(
+                trajectory=sv_model
+            )
+        ),
+    ),
+]
+
+
+@pytest.mark.parametrize(("time_grid_info", "expected"), time_grid_info_test_cases)
+def test_translate_time_grid_info_to_model(
+    time_grid_info: elements.TimeGridInfo,
+    expected: models.TimeGridInfoType,
+) -> None:
+    translated_model = translate.translate_time_grid_info_to_model(time_grid_info)
+    assert isinstance(translated_model, models.TimeGridInfoType)
+    assert translated_model == expected
+
+
+@pytest.mark.parametrize(("expected", "time_grid_info"), time_grid_info_test_cases)
+def test_translate_time_grid_info_from_model(
+    expected: elements.TimeGridInfo,
+    time_grid_info: models.TimeGridInfoType,
+) -> None:
+    translated_model = translate.translate_time_grid_info_from_model(time_grid_info)
+    assert isinstance(translated_model, elements.TimeGridInfo)
+    assert type(translated_model.data) is type(expected.data)

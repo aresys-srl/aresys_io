@@ -22,6 +22,7 @@ from aresys_io.product.metadata.models.aresys_types import (
     SamplingConstantsType,
     StateVectorDataType,
     SwathInfoType,
+    TimeGridInfoType,
     TreeElementBaseType,
 )
 
@@ -204,6 +205,13 @@ class AresysXmlDocType:
             default=None,
             metadata={
                 "name": "AntennaInfo",
+                "type": "Element",
+            },
+        )
+        time_grid_info: TimeGridInfoType | None = field(
+            default=None,
+            metadata={
+                "name": "TimeGridInfo",
                 "type": "Element",
             },
         )

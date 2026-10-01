@@ -33,6 +33,7 @@
                   <xs:element minOccurs="0" maxOccurs="1" name="Pulse" type="ns1:PulseType"/>
                   <xs:element minOccurs="0" maxOccurs="unbounded" name="CoregPoly" type="ns1:polyCoregType"/>
                   <xs:element minOccurs="0" maxOccurs="1" name="AntennaInfo" type="ns1:AntennaInfoType"/>
+                  <xs:element minOccurs="0" maxOccurs="1" name="TimeGridInfo" type="ns1:TimeGridInfoType"/>
                 </xs:sequence>
               </xs:extension>
             </xs:complexContent>

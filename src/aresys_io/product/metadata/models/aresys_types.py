@@ -2821,6 +2821,75 @@ class SwathInfoType(TreeElementBaseType):
 
 
 @dataclass(kw_only=True)
+class TimeGridInfoType:
+    monostatic: TimeGridInfoType.Monostatic | None = field(
+        default=None,
+        metadata={
+            "name": "Monostatic",
+            "type": "Element",
+            "namespace": "",
+        },
+    )
+    bistatic: TimeGridInfoType.Bistatic | None = field(
+        default=None,
+        metadata={
+            "name": "Bistatic",
+            "type": "Element",
+            "namespace": "",
+        },
+    )
+    bistatic_single_system: TimeGridInfoType.BistaticSingleSystem | None = field(
+        default=None,
+        metadata={
+            "name": "BistaticSingleSystem",
+            "type": "Element",
+            "namespace": "",
+        },
+    )
+
+    @dataclass(kw_only=True)
+    class Monostatic:
+        trajectory: StateVectorDataType | None = field(
+            default=None,
+            metadata={
+                "name": "Trajectory",
+                "type": "Element",
+                "namespace": "",
+            },
+        )
+
+    @dataclass(kw_only=True)
+    class Bistatic:
+        trajectory_rx: StateVectorDataType | None = field(
+            default=None,
+            metadata={
+                "name": "TrajectoryRX",
+                "type": "Element",
+                "namespace": "",
+            },
+        )
+        trajectory_tx: StateVectorDataType | None = field(
+            default=None,
+            metadata={
+                "name": "TrajectoryTX",
+                "type": "Element",
+                "namespace": "",
+            },
+        )
+
+    @dataclass(kw_only=True)
+    class BistaticSingleSystem:
+        trajectory: StateVectorDataType | None = field(
+            default=None,
+            metadata={
+                "name": "Trajectory",
+                "type": "Element",
+                "namespace": "",
+            },
+        )
+
+
+@dataclass(kw_only=True)
 class BurstInfoType(TreeElementBaseType):
     """
     Bursts information.

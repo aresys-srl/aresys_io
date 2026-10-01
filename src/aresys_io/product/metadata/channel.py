@@ -412,6 +412,20 @@ class MetaDataChannel:
         assert isinstance(coreg_poly, mtd_elements.CoregPolyVector)
         return coreg_poly
 
+    @property
+    def time_grid_info(self) -> mtd_elements.TimeGridInfo:
+        """TimeGridInfo.
+
+        Returns
+        -------
+        mtd_elements.TimeGridInfo
+            TimeGridInfo metadata element.
+
+        """
+        time_grid_info = self.get_element("TimeGridInfo")
+        assert isinstance(time_grid_info, mtd_elements.TimeGridInfo)
+        return time_grid_info
+
     def trajectory(self) -> CubicSplineTrajectory:
         """Create a CubicSplineTrajectory from the state vector data."""
         return create_trajectory_from_state_vectors(self.state_vectors)
@@ -787,6 +801,18 @@ class MetaData:
 
         """
         return self.channels[0].coreg_poly
+
+    @property
+    def time_grid_info(self) -> mtd_elements.TimeGridInfo:
+        """TimeGridInfo from the first metadata channel.
+
+        Returns
+        -------
+        mtd_elements.TimeGridInfo
+            TimeGridInfo metadata element from the first metadata channel.
+
+        """
+        return self.channels[0].time_grid_info
 
     def trajectory(self) -> CubicSplineTrajectory:
         """CubicSplineTrajectory from the first metadata channel.
