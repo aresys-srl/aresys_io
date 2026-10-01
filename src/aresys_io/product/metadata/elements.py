@@ -57,6 +57,7 @@ __all__ = [
     "StateVectors",
     "SwathInfo",
     "SwathPolarization",
+    "TimeGridInfo",
     "TopsAzimuthModulationRate",
     "TopsAzimuthModulationRateVector",
 ]
@@ -108,6 +109,7 @@ MetaDataElementName = Literal[
     "AntennaInfo",
     "DataStatistics",
     "CoregPolyVector",
+    "TimeGridInfo",
 ]
 METADATA_ELEMENT_NAMES: set[MetaDataElementName] = set(get_args(MetaDataElementName))
 
@@ -793,3 +795,24 @@ class Pulse(MetaDataPydanticModel):
     pulse_start_frequency: float | None = None
     pulse_start_phase: float | None = None
     pulse_direction: PulseDirection | None = None
+
+
+class TimeGridInfo(MetaDataPydanticModel):
+    """Time grid metadata container."""
+
+    class Monostatic(MetaDataPydanticModel):
+        """Time grid interpretation is based on monostatic geocoding."""
+
+        state_vectors: StateVectors | None = None
+
+    class Bistatic(MetaDataPydanticModel):
+        """Time grid interpretation is based on bistatic geocoding."""
+
+        state_vectors_tx_rx: tuple[StateVectors, StateVectors] | None = None
+
+    class BistaticSingleSystem(MetaDataPydanticModel):
+        """Time grid interpretation is based on bistatic geocoding with the same orbit."""
+
+        state_vectors: StateVectors | None = None
+
+    data: Monostatic | Bistatic | BistaticSingleSystem

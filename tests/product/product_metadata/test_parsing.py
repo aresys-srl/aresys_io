@@ -6,6 +6,7 @@
 import numpy as np
 from perseo_core.timing import PreciseDateTime
 
+from aresys_io.product import TimeGridInfo
 from aresys_io.product.metadata import channel
 from aresys_io.product.metadata.elements import (
     AttitudeInfo,
@@ -174,6 +175,9 @@ METADATA = """<?xml version="1.0" encoding="utf-8"?>
       <PulseStartFrequency unit="Hz">0.5</PulseStartFrequency>
       <PulseStartPhase unit="rad">0.785398163397448</PulseStartPhase>
     </Pulse>
+    <TimeGridInfo>
+      <Bistatic/>
+    </TimeGridInfo>
   </Channel>
 </AresysXmlDoc>
 """
@@ -367,6 +371,9 @@ class TestMetadataParsingSerialization:
             pulse_direction="UP",
         )
         channel_mtd.insert_element(pulse)
+
+        time_grid_info = TimeGridInfo(data=TimeGridInfo.Bistatic())
+        channel_mtd.insert_element(time_grid_info)
 
         self.metadata_obj.channels.append(channel_mtd)
 

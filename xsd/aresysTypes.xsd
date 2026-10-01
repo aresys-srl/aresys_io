@@ -1776,4 +1776,32 @@
       <xs:element name="ImaginaryValue" type="xs:double" />
     </xs:sequence>
   </xs:complexType>
+  <xs:complexType name="TimeGridInfoType">
+    <xs:sequence>
+      <xs:choice>
+        <xs:element name="Monostatic">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Trajectory" type="at:StateVectorDataType" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Bistatic">
+          <xs:complexType>
+            <xs:sequence minOccurs="0">
+              <xs:element name="TrajectoryRX" type="at:StateVectorDataType" />
+              <xs:element name="TrajectoryTX" type="at:StateVectorDataType" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="BistaticSingleSystem">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Trajectory" type="at:StateVectorDataType" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
 </xs:schema>

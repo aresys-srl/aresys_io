@@ -1714,6 +1714,91 @@ def _translate_coreg_poly_vector_to_model(
     return translate_coreg_polynomial_list_to_model(vector.poly_list)
 
 
+def translate_time_grid_info_from_model(
+    time_grid_info: md_models.TimeGridInfoType,
+) -> md_elements.TimeGridInfo:
+    """Translate a time grid info element from a model."""
+
+    def translate_state_vectors_from_optional_model(
+        state_vectors: md_models.StateVectorDataType | None,
+    ) -> md_elements.StateVectors | None:
+        if state_vectors is None:
+            return None
+        return translate_state_vectors_from_model(state_vectors)
+
+    if time_grid_info.monostatic is not None:
+        return md_elements.TimeGridInfo(
+            data=md_elements.TimeGridInfo.Monostatic(
+                state_vectors=translate_state_vectors_from_optional_model(
+                    time_grid_info.monostatic.trajectory
+                )
+            )
+        )
+    if time_grid_info.bistatic is not None:
+        return md_elements.TimeGridInfo(
+            data=md_elements.TimeGridInfo.Bistatic(
+                state_vectors_tx=translate_state_vectors_from_optional_model(
+                    time_grid_info.bistatic.trajectory_tx
+                ),
+                state_vectors_rx=translate_state_vectors_from_optional_model(
+                    time_grid_info.bistatic.trajectory_rx
+                ),
+            )
+        )
+    if time_grid_info.bistatic_single_system is not None:
+        return md_elements.TimeGridInfo(
+            data=md_elements.TimeGridInfo.BistaticSingleSystem(
+                state_vectors=translate_state_vectors_from_optional_model(
+                    time_grid_info.bistatic_single_system.trajectory
+                )
+            )
+        )
+    msg = f"Unsupported time grid info type: {type(time_grid_info)}"
+    raise ValueError(msg)
+
+
+def translate_time_grid_info_to_model(
+    time_grid_info: md_elements.TimeGridInfo,
+) -> md_models.TimeGridInfoType:
+    """Translate a time grid info element into a model."""
+
+    def translate_state_vectors_to_optional_model(
+        state_vectors: md_elements.StateVectors | None,
+    ) -> md_models.StateVectorDataType | None:
+        if state_vectors is None:
+            return None
+        return translate_state_vectors_to_model(state_vectors)
+
+    data = time_grid_info.data
+    match data:
+        case md_elements.TimeGridInfo.Monostatic():
+            return md_models.TimeGridInfoType(
+                monostatic=md_models.TimeGridInfoType.Monostatic(
+                    trajectory=translate_state_vectors_to_optional_model(data.state_vectors)
+                )
+            )
+        case md_elements.TimeGridInfo.Bistatic():
+            if data.state_vectors_tx_rx is None:
+                return md_models.TimeGridInfoType(bistatic=md_models.TimeGridInfoType.Bistatic())
+
+            sv_tx, sv_rx = data.state_vectors_tx_rx
+            return md_models.TimeGridInfoType(
+                bistatic=md_models.TimeGridInfoType.Bistatic(
+                    trajectory_tx=translate_state_vectors_to_model(sv_tx),
+                    trajectory_rx=translate_state_vectors_to_model(sv_rx),
+                )
+            )
+        case md_elements.TimeGridInfo.BistaticSingleSystem():
+            return md_models.TimeGridInfoType(
+                bistatic_single_system=md_models.TimeGridInfoType.BistaticSingleSystem(
+                    trajectory=translate_state_vectors_to_optional_model(data.state_vectors)
+                )
+            )
+        case _:
+            msg = f"Unsupported time grid info type: {type(time_grid_info.data)}"
+            raise ValueError(msg)
+
+
 CHANNEL_FIELDS_FROM_MODEL = (
     ("raster_info", translate_raster_info_from_model),
     ("data_set_info", translate_dataset_info_from_model),
@@ -1738,6 +1823,7 @@ CHANNEL_FIELDS_FROM_MODEL = (
     ("pulse", translate_pulse_from_model),
     ("coreg_poly", translate_coreg_polynomial_list_from_model),
     ("antenna_info", translate_antenna_info_from_model),
+    ("time_grid_info", translate_time_grid_info_from_model),
 )
 
 
@@ -1797,6 +1883,7 @@ CHANNEL_FIELDS_TO_MODEL = (
     ("AntennaInfo", "antenna_info", "antenna_info", translate_antenna_info_to_model),
     ("DataStatistics", "data_statistics", "data_statistics", translate_data_statistics_to_model),
     ("CoregPolyVector", "coreg_poly", "coreg_poly", _translate_coreg_poly_vector_to_model),
+    ("TimeGridInfo", "time_grid_info", "time_grid_info", translate_time_grid_info_to_model),
 )
 
 

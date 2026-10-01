@@ -43,6 +43,7 @@ from aresys_io.product.metadata.models.aresys_types import (
     StateVectorDataType,
     StringWithUnit,
     SwathInfoType,
+    TimeGridInfoType,
     TreeElementBaseType,
     Units,
 )
@@ -85,6 +86,7 @@ __all__ = [
     "StateVectorDataType",
     "StringWithUnit",
     "SwathInfoType",
+    "TimeGridInfoType",
     "TreeElementBaseType",
     "Units",
 ]
