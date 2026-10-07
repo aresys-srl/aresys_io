@@ -6,6 +6,8 @@
 from pathlib import Path
 from typing import Literal, TypeAlias
 
+__all__ = ["METADATA_EXTENSION", "ProductFolderLayout", "QuicklookExtension", "RasterExtension"]
+
 METADATA_EXTENSION = ".xml"
 CONFIG_EXTENSION = ".config"
 OVERLAY_EXTENSION = ".kmz"

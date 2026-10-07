@@ -13,6 +13,8 @@ from lxml import etree
 
 from aresys_io.product.pf.layout import RasterExtension
 
+__all__ = ["Manifest"]
+
 _VERSION = "2.1"
 
 
