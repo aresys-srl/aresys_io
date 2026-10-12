@@ -10,121 +10,123 @@ from typing import Protocol, TypeVar
 import numpy as np
 from perseo_core.timing import PreciseDateTime
 
-from aresys_io.product.metadata import channel, elements, models
+import aresys_io.product.metadata.elements as md_elements
+import aresys_io.product.metadata.models as md_models
+from aresys_io.product.metadata.channel import MetaData, MetaDataChannel
 
 SECOND_STR = "s"
 HERTZ_STR = "Hz"
 
-Poly2DT = TypeVar("Poly2DT", bound=elements.Poly2D)
+Poly2DT = TypeVar("Poly2DT", bound=md_elements.Poly2D)
 
 
 class _PolyVectorLike(Protocol):
-    poly_list: list[elements.Poly2D]
+    poly_list: list[md_elements.Poly2D]
 
 
 class _CoregPolyVectorLike(Protocol):
-    poly_list: list[elements.CoregPoly]
+    poly_list: list[md_elements.CoregPoly]
 
 
-_ENDIANITY_FROM_MODEL: dict[models.Endianity, elements.RasterByteOrder] = {
-    models.Endianity.BIGENDIAN: "BIGENDIAN",
-    models.Endianity.LITTLEENDIAN: "LITTLEENDIAN",
+_ENDIANITY_FROM_MODEL: dict[md_models.Endianity, md_elements.RasterByteOrder] = {
+    md_models.Endianity.BIGENDIAN: "BIGENDIAN",
+    md_models.Endianity.LITTLEENDIAN: "LITTLEENDIAN",
 }
 
 
 def translate_endianity_from_model(
-    endianity: models.Endianity,
-) -> elements.RasterByteOrder:
+    endianity: md_models.Endianity,
+) -> md_elements.RasterByteOrder:
     """Translate endianity from model."""
     return _ENDIANITY_FROM_MODEL[endianity]
 
 
 def translate_endianity_to_model(
-    endianity: elements.RasterByteOrder,
-) -> models.Endianity:
+    endianity: md_elements.RasterByteOrder,
+) -> md_models.Endianity:
     """Translate endianity to model."""
-    return models.Endianity(endianity)
+    return md_models.Endianity(endianity)
 
 
 def translate_cell_type_from_model(
-    cell_type: models.CellTypeVerboseType,
-) -> elements.RasterCellType:
+    cell_type: md_models.CellTypeVerboseType,
+) -> md_elements.RasterCellType:
     """Translate cell type from model."""
-    if cell_type == models.CellTypeVerboseType.SHORT_COMPLEX:
+    if cell_type == md_models.CellTypeVerboseType.SHORT_COMPLEX:
         return "INT16_COMPLEX"
 
-    if cell_type == models.CellTypeVerboseType.INT_COMPLEX:
+    if cell_type == md_models.CellTypeVerboseType.INT_COMPLEX:
         return "INT_COMPLEX"
 
     return cell_type.value
 
 
 def translate_cell_type_to_model(
-    cell_type: elements.RasterCellType,
-) -> models.CellTypeVerboseType:
+    cell_type: md_elements.RasterCellType,
+) -> md_models.CellTypeVerboseType:
     """Translate cell type to model."""
     if cell_type == "INT16_COMPLEX":
-        return models.CellTypeVerboseType.SHORT_COMPLEX
+        return md_models.CellTypeVerboseType.SHORT_COMPLEX
 
     if cell_type == "INT_COMPLEX":
-        return models.CellTypeVerboseType.INT_COMPLEX
+        return md_models.CellTypeVerboseType.INT_COMPLEX
 
-    return models.CellTypeVerboseType(cell_type)
+    return md_models.CellTypeVerboseType(cell_type)
 
 
 def translate_orbit_direction_from_model(
-    direction: models.AscendingDescendingType,
-) -> elements.OrbitDirection | None:
+    direction: md_models.AscendingDescendingType,
+) -> md_elements.OrbitDirection | None:
     """Translate orbit direction from model."""
-    if direction == models.AscendingDescendingType.NOT_AVAILABLE:
+    if direction == md_models.AscendingDescendingType.NOT_AVAILABLE:
         return None
 
     return direction.value
 
 
 def translate_orbit_direction_to_model(
-    direction: elements.OrbitDirection | None,
-) -> models.AscendingDescendingType:
+    direction: md_elements.OrbitDirection | None,
+) -> md_models.AscendingDescendingType:
     """Translate orbit direction to model."""
     if direction is not None:
-        return models.AscendingDescendingType(direction)
-    return models.AscendingDescendingType.NOT_AVAILABLE
+        return md_models.AscendingDescendingType(direction)
+    return md_models.AscendingDescendingType.NOT_AVAILABLE
 
 
-_SIDE_LOOKING_FROM_MODEL: dict[models.LeftRightType, elements.SideLooking] = {
-    models.LeftRightType.LEFT: "LEFT",
-    models.LeftRightType.RIGHT: "RIGHT",
+_SIDE_LOOKING_FROM_MODEL: dict[md_models.LeftRightType, md_elements.SideLooking] = {
+    md_models.LeftRightType.LEFT: "LEFT",
+    md_models.LeftRightType.RIGHT: "RIGHT",
 }
 
 
 def translate_side_looking_from_model(
-    side: models.LeftRightType,
-) -> elements.SideLooking:
+    side: md_models.LeftRightType,
+) -> md_elements.SideLooking:
     """Translate looking side from model."""
     return _SIDE_LOOKING_FROM_MODEL[side]
 
 
 def translate_side_looking_to_model(
-    side: elements.SideLooking,
-) -> models.LeftRightType:
+    side: md_elements.SideLooking,
+) -> md_models.LeftRightType:
     """Translate looking side to model."""
-    return models.LeftRightType(side)
+    return md_models.LeftRightType(side)
 
 
 def translate_polarization_from_model(
-    polarization: models.PolarizationType,
-) -> elements.AntennaPolarization:
+    polarization: md_models.PolarizationType,
+) -> md_elements.AntennaPolarization:
     """Translate polarization from model."""
     match polarization:
-        case models.PolarizationType.H_H:
+        case md_models.PolarizationType.H_H:
             return "HH"
-        case models.PolarizationType.H_V:
+        case md_models.PolarizationType.H_V:
             return "HV"
-        case models.PolarizationType.V_H:
+        case md_models.PolarizationType.V_H:
             return "VH"
-        case models.PolarizationType.V_V:
+        case md_models.PolarizationType.V_V:
             return "VV"
-        case models.PolarizationType.X_X:
+        case md_models.PolarizationType.X_X:
             return "XX"
 
     msg = f"Unsupported polarization: {polarization}"
@@ -132,89 +134,93 @@ def translate_polarization_from_model(
 
 
 def translate_polarization_to_model(
-    polarization: elements.AntennaPolarization,
-) -> models.PolarizationType:
+    polarization: md_elements.AntennaPolarization,
+) -> md_models.PolarizationType:
     """Translate polarization from model."""
-    return models.PolarizationType(f"{polarization[0]}/{polarization[1]}")
+    return md_models.PolarizationType(f"{polarization[0]}/{polarization[1]}")
 
 
-_REFERENCE_FRAME_FROM_MODEL: dict[models.ReferenceFrameType, elements.AttitudeReferenceFrame] = {
-    models.ReferenceFrameType.GEOCENTRIC: "GEOCENTRIC",
-    models.ReferenceFrameType.GEODETIC: "GEODETIC",
-    models.ReferenceFrameType.ZERODOPPLER: "ZERODOPPLER",
+_REFERENCE_FRAME_FROM_MODEL: dict[
+    md_models.ReferenceFrameType, md_elements.AttitudeReferenceFrame
+] = {
+    md_models.ReferenceFrameType.GEOCENTRIC: "GEOCENTRIC",
+    md_models.ReferenceFrameType.GEODETIC: "GEODETIC",
+    md_models.ReferenceFrameType.ZERODOPPLER: "ZERODOPPLER",
 }
 
 
 def translate_reference_frame_from_model(
-    frame: models.ReferenceFrameType,
-) -> elements.AttitudeReferenceFrame:
+    frame: md_models.ReferenceFrameType,
+) -> md_elements.AttitudeReferenceFrame:
     """Translate reference frame from model."""
     return _REFERENCE_FRAME_FROM_MODEL[frame]
 
 
 def translate_reference_frame_to_model(
-    frame: elements.AttitudeReferenceFrame,
-) -> models.ReferenceFrameType:
+    frame: md_elements.AttitudeReferenceFrame,
+) -> md_models.ReferenceFrameType:
     """Translate reference frame to model."""
-    return models.ReferenceFrameType(frame)
+    return md_models.ReferenceFrameType(frame)
 
 
-_ROTATION_ORDER_FROM_MODEL: dict[models.RotationOrderType, elements.AttitudeRotationOrder] = {
-    models.RotationOrderType.YPR: "YPR",
-    models.RotationOrderType.YRP: "YRP",
-    models.RotationOrderType.PRY: "PRY",
-    models.RotationOrderType.PYR: "PYR",
-    models.RotationOrderType.RPY: "RPY",
-    models.RotationOrderType.RYP: "RYP",
+_ROTATION_ORDER_FROM_MODEL: dict[
+    md_models.RotationOrderType, md_elements.AttitudeRotationOrder
+] = {
+    md_models.RotationOrderType.YPR: "YPR",
+    md_models.RotationOrderType.YRP: "YRP",
+    md_models.RotationOrderType.PRY: "PRY",
+    md_models.RotationOrderType.PYR: "PYR",
+    md_models.RotationOrderType.RPY: "RPY",
+    md_models.RotationOrderType.RYP: "RYP",
 }
 
 
 def translate_rotation_order_from_model(
-    order: models.RotationOrderType,
-) -> elements.AttitudeRotationOrder:
+    order: md_models.RotationOrderType,
+) -> md_elements.AttitudeRotationOrder:
     """Translate rotation order from model."""
     return _ROTATION_ORDER_FROM_MODEL[order]
 
 
 def translate_rotation_order_to_model(
-    order: elements.AttitudeRotationOrder,
-) -> models.RotationOrderType:
+    order: md_elements.AttitudeRotationOrder,
+) -> md_models.RotationOrderType:
     """Translate rotation order to model."""
-    return models.RotationOrderType(order)
+    return md_models.RotationOrderType(order)
 
 
-_ATTITUDE_TYPE_FROM_MODEL: dict[models.AttitudeType, elements.AttitudeType] = {
-    models.AttitudeType.NOMINAL: "NOMINAL",
-    models.AttitudeType.REFINED: "REFINED",
+_ATTITUDE_TYPE_FROM_MODEL: dict[md_models.AttitudeType, md_elements.AttitudeType] = {
+    md_models.AttitudeType.NOMINAL: "NOMINAL",
+    md_models.AttitudeType.REFINED: "REFINED",
 }
 
 
 def translate_attitude_type_from_model(
-    attitude_type: models.AttitudeType,
-) -> elements.AttitudeType:
+    attitude_type: md_models.AttitudeType,
+) -> md_elements.AttitudeType:
     """Translate attitude type from model."""
     return _ATTITUDE_TYPE_FROM_MODEL[attitude_type]
 
 
 def translate_attitude_type_to_model(
-    attitude_type: elements.AttitudeType,
-) -> models.AttitudeType:
+    attitude_type: md_elements.AttitudeType,
+) -> md_models.AttitudeType:
     """Translate attitude type to model."""
-    return models.AttitudeType(attitude_type)
+    return md_models.AttitudeType(attitude_type)
 
 
 def translate_raster_format_type_from_model(
-    raster_format: models.RasterFormatType,
-) -> elements.RasterFormat:
+    raster_format: md_models.RasterFormatType,
+) -> md_elements.RasterFormat:
     """Translate raster format type from model."""
-    if raster_format == models.RasterFormatType.RASTER:
+    if raster_format == md_models.RasterFormatType.RASTER:
         return "ARESYS_RASTER"
     return raster_format.value
 
 
 def translate_raster_format_type_to_model(
-    raster_format: elements.RasterFormat,
-) -> models.RasterFormatType:
+    raster_format: md_elements.RasterFormat,
+) -> md_models.RasterFormatType:
     """Translate raster format type to model.
 
     Deprecated ``RASTER`` is normalized to ``ARESYS_RASTER`` to avoid writing
@@ -222,7 +228,7 @@ def translate_raster_format_type_to_model(
 
     Returns
     -------
-    models.RasterFormatType
+    md_models.RasterFormatType
         Canonical raster format enum.
 
     Raises
@@ -231,34 +237,34 @@ def translate_raster_format_type_to_model(
         If the raster format is not supported.
     """
     if raster_format == "ARESYS_GEOTIFF":
-        return models.RasterFormatType.ARESYS_GEOTIFF
+        return md_models.RasterFormatType.ARESYS_GEOTIFF
     if raster_format in {"ARESYS_RASTER", "RASTER"}:
-        return models.RasterFormatType.ARESYS_RASTER
+        return md_models.RasterFormatType.ARESYS_RASTER
 
     msg = f"Raster format {raster_format} is not supported"
     raise RuntimeError(msg)
 
 
-def translate_unit_from_model(unit: models.Units) -> str:
+def translate_unit_from_model(unit: md_models.Units) -> str:
     """Translate unit from model."""
     return unit.value
 
 
-def translate_unit_to_model(unit: str) -> models.Units:
+def translate_unit_to_model(unit: str) -> md_models.Units:
     """Translate unit to model."""
-    return models.Units(unit)
+    return md_models.Units(unit)
 
 
-def translate_double_with_unit_to_model(value: float, unit: str) -> models.DoubleWithUnit:
+def translate_double_with_unit_to_model(value: float, unit: str) -> md_models.DoubleWithUnit:
     """Create a DoubleWithUnit model."""
-    return models.DoubleWithUnit(value=value, unit=translate_unit_to_model(unit))
+    return md_models.DoubleWithUnit(value=value, unit=translate_unit_to_model(unit))
 
 
 def translate_str_with_unit_from_model(
-    str_with_unit: models.StringWithUnit,
+    str_with_unit: md_models.StringWithUnit,
 ) -> tuple[PreciseDateTime | float, str]:
     """Translate a StringWithUnit model."""
-    if str_with_unit.unit == models.Units.UTC:
+    if str_with_unit.unit == md_models.Units.UTC:
         value = PreciseDateTime.from_utc_string(str_with_unit.value)
     else:
         value = float(str_with_unit.value)
@@ -269,26 +275,26 @@ def translate_str_with_unit_from_model(
 def translate_str_with_unit_to_model(
     value: PreciseDateTime | float,
     unit: str,
-) -> models.StringWithUnit:
+) -> md_models.StringWithUnit:
     """Translate a StringWithUnit from model."""
-    return models.StringWithUnit(value=str(value), unit=translate_unit_to_model(unit))
+    return md_models.StringWithUnit(value=str(value), unit=translate_unit_to_model(unit))
 
 
-def translate_dcomplex_to_model(value: complex) -> models.Dcomplex:
+def translate_dcomplex_to_model(value: complex) -> md_models.Dcomplex:
     """Translate dcomplex to model."""
-    return models.Dcomplex(real_value=value.real, imaginary_value=value.imag)
+    return md_models.Dcomplex(real_value=value.real, imaginary_value=value.imag)
 
 
-def translate_dcomplex_from_model(value: models.Dcomplex) -> complex:
+def translate_dcomplex_from_model(value: md_models.Dcomplex) -> complex:
     """Translate dcomplex from model."""
     return complex(real=value.real_value, imag=value.imaginary_value)
 
 
 def translate_raster_info_to_model(
-    raster_info: elements.RasterInfo,
-) -> models.RasterInfoType:
+    raster_info: md_elements.RasterInfo,
+) -> md_models.RasterInfoType:
     """Translate raster info to model."""
-    return models.RasterInfoType(
+    return md_models.RasterInfoType(
         number=None,
         total=None,
         file_name=raster_info.file_name,
@@ -328,15 +334,15 @@ def translate_raster_info_to_model(
 
 
 def translate_raster_info_from_model(
-    raster_info: models.RasterInfoType,
-) -> elements.RasterInfo:
+    raster_info: md_models.RasterInfoType,
+) -> md_elements.RasterInfo:
     """Translate raster info from model."""
     lines_start, lines_start_unit = translate_str_with_unit_from_model(raster_info.lines_start)
     samples_start, samples_start_unit = translate_str_with_unit_from_model(
         raster_info.samples_start,
     )
 
-    return elements.RasterInfo(
+    return md_elements.RasterInfo(
         file_name=raster_info.file_name,
         lines=raster_info.lines,
         samples=raster_info.samples,
@@ -366,31 +372,31 @@ def translate_raster_info_from_model(
 
 
 def translate_image_quantity_to_model(
-    image_quantity: elements.DataSetImageQuantity,
-) -> models.ImageQuantityType:
+    image_quantity: md_elements.DataSetImageQuantity,
+) -> md_models.ImageQuantityType:
     """Translate image quantity to model."""
-    return models.ImageQuantityType(image_quantity)
+    return md_models.ImageQuantityType(image_quantity)
 
 
-_IMAGE_QUANTITY_FROM_MODEL: dict[models.ImageQuantityType, elements.DataSetImageQuantity] = {
-    models.ImageQuantityType.BETA: "BETA",
-    models.ImageQuantityType.GAMMA: "GAMMA",
-    models.ImageQuantityType.SIGMA: "SIGMA",
+_IMAGE_QUANTITY_FROM_MODEL: dict[md_models.ImageQuantityType, md_elements.DataSetImageQuantity] = {
+    md_models.ImageQuantityType.BETA: "BETA",
+    md_models.ImageQuantityType.GAMMA: "GAMMA",
+    md_models.ImageQuantityType.SIGMA: "SIGMA",
 }
 
 
 def translate_image_quantity_from_model(
-    image_quantity: models.ImageQuantityType,
-) -> elements.DataSetImageQuantity:
+    image_quantity: md_models.ImageQuantityType,
+) -> md_elements.DataSetImageQuantity:
     """Translate image quantity from model."""
     return _IMAGE_QUANTITY_FROM_MODEL[image_quantity]
 
 
 def translate_dataset_info_from_model(
-    info: models.DataSetInfoType,
-) -> elements.DataSetInfo:
+    info: md_models.DataSetInfoType,
+) -> md_elements.DataSetInfo:
     """Translate dataset info from model."""
-    return elements.DataSetInfo(
+    return md_elements.DataSetInfo(
         sensor_name=info.sensor_name,
         description=info.description.value,
         # XSD field is mandatory, but NOT_AVAILABLE is a legal payload marker.
@@ -433,8 +439,8 @@ def translate_dataset_info_from_model(
 
 
 def translate_dataset_info_to_model(
-    info: elements.DataSetInfo,
-) -> models.DataSetInfoType:
+    info: md_elements.DataSetInfo,
+) -> md_models.DataSetInfoType:
     """Translate dataset info to model."""
     if info.projection_params is not None and info.projection_params_format is None:
         msg = "Projection parameters format is required when projection parameters is specified"
@@ -445,31 +451,31 @@ def translate_dataset_info_to_model(
     output_proj_params = None
     if info.projection_params is not None:
         assert info.projection_params_format is not None
-        output_proj_params = models.DataSetInfoType.ProjectionParameters(
+        output_proj_params = md_models.DataSetInfoType.ProjectionParameters(
             value=info.projection_params,
             format=info.projection_params_format,
         )
 
-    return models.DataSetInfoType(
+    return md_models.DataSetInfoType(
         sensor_name=info.sensor_name,
-        description=models.DataSetInfoType.Description(value=info.description),
-        sense_date=models.DataSetInfoType.SenseDate(
+        description=md_models.DataSetInfoType.Description(value=info.description),
+        sense_date=md_models.DataSetInfoType.SenseDate(
             value="NOT_AVAILABLE" if info.sense_date is None else str(info.sense_date),
         ),
-        acquisition_mode=models.DataSetInfoType.AcquisitionMode(value=info.acquisition_mode),
-        image_type=models.DataSetInfoType.ImageType(value=info.image_type),
-        projection=models.DataSetInfoType.Projection(value=info.projection),
-        acquisition_station=models.DataSetInfoType.AcquisitionStation(
+        acquisition_mode=md_models.DataSetInfoType.AcquisitionMode(value=info.acquisition_mode),
+        image_type=md_models.DataSetInfoType.ImageType(value=info.image_type),
+        projection=md_models.DataSetInfoType.Projection(value=info.projection),
+        acquisition_station=md_models.DataSetInfoType.AcquisitionStation(
             value=info.acquisition_station,
         ),
-        processing_center=models.DataSetInfoType.ProcessingCenter(value=info.processing_center),
-        processing_date=models.DataSetInfoType.ProcessingDate(
+        processing_center=md_models.DataSetInfoType.ProcessingCenter(value=info.processing_center),
+        processing_date=md_models.DataSetInfoType.ProcessingDate(
             value="NOT_AVAILABLE" if info.processing_date is None else str(info.processing_date),
         ),
-        processing_software=models.DataSetInfoType.ProcessingSoftware(
+        processing_software=md_models.DataSetInfoType.ProcessingSoftware(
             value=info.processing_software,
         ),
-        fc_hz=models.DataSetInfoType.FcHz(value=info.fc_hz),
+        fc_hz=md_models.DataSetInfoType.FcHz(value=info.fc_hz),
         side_looking=translate_side_looking_to_model(info.side_looking),
         external_calibration_factor=info.external_calibration_factor,
         data_take_id=info.data_take_id,
@@ -484,8 +490,8 @@ def translate_dataset_info_to_model(
 
 
 def translate_geo_point_from_model(
-    point: models.PointType,
-) -> elements.GeoPoint:
+    point: md_models.PointType,
+) -> md_elements.GeoPoint:
     """Translate geo point from model."""
     assert len(point.val) == 5
 
@@ -494,7 +500,7 @@ def translate_geo_point_from_model(
     height = point.val[2].value
     theta_inc = point.val[3].value
     theta_look = point.val[4].value
-    return elements.GeoPoint(
+    return md_elements.GeoPoint(
         lat=lat,
         lon=lon,
         height=height,
@@ -503,24 +509,24 @@ def translate_geo_point_from_model(
     )
 
 
-def translate_geo_point_to_model(point: elements.GeoPoint) -> models.PointType:
+def translate_geo_point_to_model(point: md_elements.GeoPoint) -> md_models.PointType:
     """Translate geo point to model."""
-    return models.PointType(
+    return md_models.PointType(
         val=[
-            models.PointType.Val(value=point.lat),
-            models.PointType.Val(value=point.lon),
-            models.PointType.Val(value=point.height),
-            models.PointType.Val(value=point.theta_inc),
-            models.PointType.Val(value=point.theta_look),
+            md_models.PointType.Val(value=point.lat),
+            md_models.PointType.Val(value=point.lon),
+            md_models.PointType.Val(value=point.height),
+            md_models.PointType.Val(value=point.theta_inc),
+            md_models.PointType.Val(value=point.theta_look),
         ],
     )
 
 
 def translate_ground_corner_points_from_model(
-    corners: models.GroundCornersPointsType,
-) -> elements.GroundCornerPoints:
+    corners: md_models.GroundCornersPointsType,
+) -> md_elements.GroundCornerPoints:
     """Translate ground corner points from model."""
-    corners_metadata = elements.GroundCornerPoints()
+    corners_metadata = md_elements.GroundCornerPoints()
     corners_metadata.easting_grid_size = corners.easting_grid_size.value
     corners_metadata.northing_grid_size = corners.northing_grid_size.value
     corners_metadata.nw_point = translate_geo_point_from_model(corners.north_west.point)
@@ -532,37 +538,37 @@ def translate_ground_corner_points_from_model(
 
 
 def translate_ground_corner_points_to_model(
-    corners: elements.GroundCornerPoints,
-) -> models.GroundCornersPointsType:
+    corners: md_elements.GroundCornerPoints,
+) -> md_models.GroundCornersPointsType:
     """Translate ground corner points."""
-    return models.GroundCornersPointsType(
-        easting_grid_size=models.GroundCornersPointsType.EastingGridSize(
+    return md_models.GroundCornersPointsType(
+        easting_grid_size=md_models.GroundCornersPointsType.EastingGridSize(
             value=corners.easting_grid_size,
         ),
-        northing_grid_size=models.GroundCornersPointsType.NorthingGridSize(
+        northing_grid_size=md_models.GroundCornersPointsType.NorthingGridSize(
             value=corners.northing_grid_size,
         ),
-        north_west=models.GroundCornersPointsType.NorthWest(
+        north_west=md_models.GroundCornersPointsType.NorthWest(
             point=translate_geo_point_to_model(corners.nw_point),
         ),
-        north_east=models.GroundCornersPointsType.NorthEast(
+        north_east=md_models.GroundCornersPointsType.NorthEast(
             point=translate_geo_point_to_model(corners.ne_point),
         ),
-        south_west=models.GroundCornersPointsType.SouthWest(
+        south_west=md_models.GroundCornersPointsType.SouthWest(
             point=translate_geo_point_to_model(corners.sw_point),
         ),
-        south_east=models.GroundCornersPointsType.SouthEast(
+        south_east=md_models.GroundCornersPointsType.SouthEast(
             point=translate_geo_point_to_model(corners.se_point),
         ),
-        center=models.GroundCornersPointsType.Center(
+        center=md_models.GroundCornersPointsType.Center(
             point=translate_geo_point_to_model(corners.center_point),
         ),
     )
 
 
 def translate_swath_info_from_model(
-    info: models.SwathInfoType,
-) -> elements.SwathInfo:
+    info: md_models.SwathInfoType,
+) -> md_elements.SwathInfo:
     """Translate swath info from model."""
     # azimuth steering options
     assert (
@@ -575,7 +581,7 @@ def translate_swath_info_from_model(
         and info.azimuth_steering_angle_pol is not None
     )
 
-    swath_info_metadata = elements.SwathInfo(
+    swath_info_metadata = md_elements.SwathInfo(
         swath=info.swath.value,
         polarization=translate_polarization_from_model(info.polarization),
         acquisition_start_time=PreciseDateTime.from_utc_string(info.acquisition_start_time.value),
@@ -613,28 +619,28 @@ def translate_swath_info_from_model(
 
 
 def translate_swath_info_to_model(
-    info: elements.SwathInfo,
-) -> models.SwathInfoType:
+    info: md_elements.SwathInfo,
+) -> md_models.SwathInfoType:
     """Translate swath info to model."""
-    polarization = models.PolarizationType(f"{info.polarization[0]}/{info.polarization[1]}")
+    polarization = md_models.PolarizationType(f"{info.polarization[0]}/{info.polarization[1]}")
 
-    return models.SwathInfoType(
-        swath=models.SwathInfoType.Swath(value=info.swath),
-        swath_acquisition_order=models.SwathInfoType.SwathAcquisitionOrder(
+    return md_models.SwathInfoType(
+        swath=md_models.SwathInfoType.Swath(value=info.swath),
+        swath_acquisition_order=md_models.SwathInfoType.SwathAcquisitionOrder(
             value=info.swath_acquisition_order,
         ),
         polarization=polarization,
-        rank=models.SwathInfoType.Rank(value=info.rank),
-        range_delay_bias=models.SwathInfoType.RangeDelayBias(
+        rank=md_models.SwathInfoType.Rank(value=info.rank),
+        range_delay_bias=md_models.SwathInfoType.RangeDelayBias(
             value=info.range_delay_bias,
             unit=translate_unit_to_model(info.range_delay_bias_unit),
         ),
-        acquisition_start_time=models.SwathInfoType.AcquisitionStartTime(
+        acquisition_start_time=md_models.SwathInfoType.AcquisitionStartTime(
             value=str(info.acquisition_start_time),
             unit=translate_unit_to_model(info.acquisition_start_time_unit),
         ),
         azimuth_steering_angle_reference_time=(
-            models.DoubleWithUnit(
+            md_models.DoubleWithUnit(
                 value=info.azimuth_steering_angle_reference_time,
                 unit=translate_unit_to_model(info.az_steering_angle_ref_time_unit),
             )
@@ -642,21 +648,21 @@ def translate_swath_info_to_model(
             else None
         ),
         azimuth_steering_angle_pol=(
-            models.SwathInfoType.AzimuthSteeringAnglePol(
+            md_models.SwathInfoType.AzimuthSteeringAnglePol(
                 val=[
-                    models.SwathInfoType.AzimuthSteeringAnglePol.Val(
+                    md_models.SwathInfoType.AzimuthSteeringAnglePol.Val(
                         value=info.azimuth_steering_angle_pol[0],
                         n=1,
                     ),
-                    models.SwathInfoType.AzimuthSteeringAnglePol.Val(
+                    md_models.SwathInfoType.AzimuthSteeringAnglePol.Val(
                         value=info.azimuth_steering_angle_pol[1],
                         n=2,
                     ),
-                    models.SwathInfoType.AzimuthSteeringAnglePol.Val(
+                    md_models.SwathInfoType.AzimuthSteeringAnglePol.Val(
                         value=info.azimuth_steering_angle_pol[2],
                         n=3,
                     ),
-                    models.SwathInfoType.AzimuthSteeringAnglePol.Val(
+                    md_models.SwathInfoType.AzimuthSteeringAnglePol.Val(
                         value=info.azimuth_steering_angle_pol[3],
                         n=4,
                     ),
@@ -666,7 +672,7 @@ def translate_swath_info_to_model(
             else None
         ),
         azimuth_steering_rate_reference_time=(
-            models.DoubleWithUnit(
+            md_models.DoubleWithUnit(
                 value=info.azimuth_steering_rate_reference_time,
                 unit=translate_unit_to_model(info.az_steering_rate_ref_time_unit),
             )
@@ -674,17 +680,17 @@ def translate_swath_info_to_model(
             else None
         ),
         azimuth_steering_rate_pol=(
-            models.SwathInfoType.AzimuthSteeringRatePol(
+            md_models.SwathInfoType.AzimuthSteeringRatePol(
                 val=[
-                    models.SwathInfoType.AzimuthSteeringRatePol.Val(
+                    md_models.SwathInfoType.AzimuthSteeringRatePol.Val(
                         value=info.azimuth_steering_rate_pol[0],
                         n=1,
                     ),
-                    models.SwathInfoType.AzimuthSteeringRatePol.Val(
+                    md_models.SwathInfoType.AzimuthSteeringRatePol.Val(
                         value=info.azimuth_steering_rate_pol[1],
                         n=2,
                     ),
-                    models.SwathInfoType.AzimuthSteeringRatePol.Val(
+                    md_models.SwathInfoType.AzimuthSteeringRatePol.Val(
                         value=info.azimuth_steering_rate_pol[2],
                         n=3,
                     ),
@@ -701,10 +707,10 @@ def translate_swath_info_to_model(
 
 
 def translate_sampling_constants_from_model(
-    constants: models.SamplingConstantsType,
-) -> elements.SamplingConstants:
+    constants: md_models.SamplingConstantsType,
+) -> md_elements.SamplingConstants:
     """Translate sampling constants from model."""
-    return elements.SamplingConstants(
+    return md_elements.SamplingConstants(
         frg_hz=constants.frg_hz.value,
         brg_hz=constants.brg_hz.value,
         faz_hz=constants.faz_hz.value,
@@ -713,23 +719,23 @@ def translate_sampling_constants_from_model(
 
 
 def translate_sampling_constants_to_model(
-    constants: elements.SamplingConstants,
-) -> models.SamplingConstantsType:
+    constants: md_elements.SamplingConstants,
+) -> md_models.SamplingConstantsType:
     """Translate sampling constants to model."""
-    return models.SamplingConstantsType(
-        frg_hz=models.SamplingConstantsType.FrgHz(
+    return md_models.SamplingConstantsType(
+        frg_hz=md_models.SamplingConstantsType.FrgHz(
             value=constants.frg_hz,
             unit=translate_unit_to_model(HERTZ_STR),
         ),
-        brg_hz=models.SamplingConstantsType.BrgHz(
+        brg_hz=md_models.SamplingConstantsType.BrgHz(
             value=constants.brg_hz,
             unit=translate_unit_to_model(HERTZ_STR),
         ),
-        faz_hz=models.SamplingConstantsType.FazHz(
+        faz_hz=md_models.SamplingConstantsType.FazHz(
             value=constants.faz_hz,
             unit=translate_unit_to_model(HERTZ_STR),
         ),
-        baz_hz=models.SamplingConstantsType.BazHz(
+        baz_hz=md_models.SamplingConstantsType.BazHz(
             value=constants.baz_hz,
             unit=translate_unit_to_model(HERTZ_STR),
         ),
@@ -737,8 +743,8 @@ def translate_sampling_constants_to_model(
 
 
 def translate_acquisition_time_line_from_model(
-    time_line: models.AcquisitionTimelineType,
-) -> elements.AcquisitionTimeLine:
+    time_line: md_models.AcquisitionTimelineType,
+) -> md_elements.AcquisitionTimeLine:
     """Translate acquisition time line from model."""
     if time_line.swl_changes_number:
         assert time_line.swl_changes_azimuthtimes is not None
@@ -766,7 +772,7 @@ def translate_acquisition_time_line_from_model(
         prf_changes_azimuth_times = None
         prf_changes_values = None
 
-    output_time_line = elements.AcquisitionTimeLine(
+    output_time_line = md_elements.AcquisitionTimeLine(
         missing_lines=[element.value for element in time_line.missing_lines_azimuthtimes.val]
         or [],
         swst_changes=list(
@@ -800,12 +806,12 @@ def translate_acquisition_time_line_from_model(
 
 
 def translate_acquisition_time_line_to_model(
-    time_line: elements.AcquisitionTimeLine,
-) -> models.AcquisitionTimelineType:
+    time_line: md_elements.AcquisitionTimeLine,
+) -> md_models.AcquisitionTimelineType:
     """Translate acquisition time line from model."""
-    missing_lines_azimuth_times = models.AcquisitionTimelineType.MissingLinesAzimuthtimes(
+    missing_lines_azimuth_times = md_models.AcquisitionTimelineType.MissingLinesAzimuthtimes(
         val=[
-            models.AcquisitionTimelineType.MissingLinesAzimuthtimes.Val(
+            md_models.AcquisitionTimelineType.MissingLinesAzimuthtimes.Val(
                 value=value,
                 unit=translate_unit_to_model(SECOND_STR),
             )
@@ -813,18 +819,18 @@ def translate_acquisition_time_line_to_model(
         ],
     )
 
-    swst_changes_azimuth_times = models.AcquisitionTimelineType.SwstChangesAzimuthtimes(
+    swst_changes_azimuth_times = md_models.AcquisitionTimelineType.SwstChangesAzimuthtimes(
         val=[
-            models.AcquisitionTimelineType.SwstChangesAzimuthtimes.Val(
+            md_models.AcquisitionTimelineType.SwstChangesAzimuthtimes.Val(
                 value=azimuth_time,
                 unit=translate_unit_to_model(SECOND_STR),
             )
             for azimuth_time, _ in time_line.swst_changes
         ],
     )
-    swst_changes_values = models.AcquisitionTimelineType.SwstChangesValues(
+    swst_changes_values = md_models.AcquisitionTimelineType.SwstChangesValues(
         val=[
-            models.AcquisitionTimelineType.SwstChangesValues.Val(
+            md_models.AcquisitionTimelineType.SwstChangesValues.Val(
                 value=value,
                 unit=translate_unit_to_model(SECOND_STR),
             )
@@ -832,9 +838,9 @@ def translate_acquisition_time_line_to_model(
         ],
     )
 
-    noise_packets_azimuthtimes = models.AcquisitionTimelineType.NoisePacketsAzimuthtimes(
+    noise_packets_azimuthtimes = md_models.AcquisitionTimelineType.NoisePacketsAzimuthtimes(
         val=[
-            models.AcquisitionTimelineType.NoisePacketsAzimuthtimes.Val(
+            md_models.AcquisitionTimelineType.NoisePacketsAzimuthtimes.Val(
                 value=value,
                 unit=translate_unit_to_model(SECOND_STR),
             )
@@ -843,9 +849,9 @@ def translate_acquisition_time_line_to_model(
     )
 
     internal_calibration_azimuthtimes = (
-        models.AcquisitionTimelineType.InternalCalibrationAzimuthtimes(
+        md_models.AcquisitionTimelineType.InternalCalibrationAzimuthtimes(
             val=[
-                models.AcquisitionTimelineType.InternalCalibrationAzimuthtimes.Val(
+                md_models.AcquisitionTimelineType.InternalCalibrationAzimuthtimes.Val(
                     value=value,
                     unit=translate_unit_to_model(SECOND_STR),
                 )
@@ -859,18 +865,18 @@ def translate_acquisition_time_line_to_model(
         None,
     )
     if len(time_line.swl_changes) > 0:
-        swl_changes_azimuth_times = models.AcquisitionTimelineType.SwlChangesAzimuthtimes(
+        swl_changes_azimuth_times = md_models.AcquisitionTimelineType.SwlChangesAzimuthtimes(
             val=[
-                models.AcquisitionTimelineType.SwlChangesAzimuthtimes.Val(
+                md_models.AcquisitionTimelineType.SwlChangesAzimuthtimes.Val(
                     value=azimuth_time,
                     unit=translate_unit_to_model(SECOND_STR),
                 )
                 for azimuth_time, _ in time_line.swl_changes
             ],
         )
-        swl_changes_values = models.AcquisitionTimelineType.SwlChangesValues(
+        swl_changes_values = md_models.AcquisitionTimelineType.SwlChangesValues(
             val=[
-                models.AcquisitionTimelineType.SwlChangesValues.Val(
+                md_models.AcquisitionTimelineType.SwlChangesValues.Val(
                     value=value,
                     unit=translate_unit_to_model(SECOND_STR),
                 )
@@ -883,18 +889,18 @@ def translate_acquisition_time_line_to_model(
         None,
     )
     if len(time_line.prf_changes) > 0:
-        prf_changes_azimuth_times = models.AcquisitionTimelineType.PrfChangesAzimuthtimes(
+        prf_changes_azimuth_times = md_models.AcquisitionTimelineType.PrfChangesAzimuthtimes(
             val=[
-                models.AcquisitionTimelineType.PrfChangesAzimuthtimes.Val(
+                md_models.AcquisitionTimelineType.PrfChangesAzimuthtimes.Val(
                     value=azimuth_time,
                     unit=translate_unit_to_model(SECOND_STR),
                 )
                 for azimuth_time, _ in time_line.prf_changes
             ],
         )
-        prf_changes_values = models.AcquisitionTimelineType.PrfChangesValues(
+        prf_changes_values = md_models.AcquisitionTimelineType.PrfChangesValues(
             val=[
-                models.AcquisitionTimelineType.PrfChangesValues.Val(
+                md_models.AcquisitionTimelineType.PrfChangesValues.Val(
                     value=value,
                     unit=translate_unit_to_model(HERTZ_STR),
                 )
@@ -904,17 +910,19 @@ def translate_acquisition_time_line_to_model(
 
     duplicated_lines_azimuthtimes = None
     if len(time_line.duplicated_lines) > 0:
-        duplicated_lines_azimuthtimes = models.AcquisitionTimelineType.DuplicatedLinesAzimuthtimes(
-            val=[
-                models.AcquisitionTimelineType.DuplicatedLinesAzimuthtimes.Val(
-                    value=value,
-                    unit=translate_unit_to_model(SECOND_STR),
-                )
-                for value in time_line.duplicated_lines
-            ],
+        duplicated_lines_azimuthtimes = (
+            md_models.AcquisitionTimelineType.DuplicatedLinesAzimuthtimes(
+                val=[
+                    md_models.AcquisitionTimelineType.DuplicatedLinesAzimuthtimes.Val(
+                        value=value,
+                        unit=translate_unit_to_model(SECOND_STR),
+                    )
+                    for value in time_line.duplicated_lines
+                ],
+            )
         )
 
-    return models.AcquisitionTimelineType(
+    return md_models.AcquisitionTimelineType(
         missing_lines_number=len(missing_lines_azimuth_times.val),
         missing_lines_azimuthtimes=missing_lines_azimuth_times,
         swst_changes_number=len(swst_changes_azimuth_times.val),
@@ -943,8 +951,8 @@ def translate_acquisition_time_line_to_model(
 
 
 def translate_attitude_from_model(
-    attitude: models.AttitudeInfoType,
-) -> elements.AttitudeInfo:
+    attitude: md_models.AttitudeInfoType,
+) -> md_elements.AttitudeInfo:
     """Translate attitude from model."""
     yaw = [element.value for element in attitude.yaw_deg.val]
     pitch = [element.value for element in attitude.pitch_deg.val]
@@ -963,7 +971,7 @@ def translate_attitude_from_model(
         )
         raise ValueError(msg)
 
-    return elements.AttitudeInfo(
+    return md_elements.AttitudeInfo(
         ypr_deg=np.asarray(list(zip(yaw, pitch, roll, strict=True)), dtype=np.float64),
         reference_time=PreciseDateTime.from_utc_string(attitude.t_ref_utc),
         time_step=attitude.dt_ypr_s.value,
@@ -974,32 +982,32 @@ def translate_attitude_from_model(
 
 
 def translate_attitude_to_model(
-    attitude: elements.AttitudeInfo,
-) -> models.AttitudeInfoType:
+    attitude: md_elements.AttitudeInfo,
+) -> md_models.AttitudeInfoType:
     """Translate attitude to model."""
     yaw_values = attitude.ypr_deg[:, 0]
     pitch_values = attitude.ypr_deg[:, 1]
     roll_values = attitude.ypr_deg[:, 2]
 
-    return models.AttitudeInfoType(
+    return md_models.AttitudeInfoType(
         t_ref_utc=str(attitude.reference_time),
-        dt_ypr_s=models.AttitudeInfoType.DtYprS(value=attitude.time_step),
-        n_ypr_n=models.AttitudeInfoType.NYprN(value=int(attitude.ypr_deg.shape[0])),
-        yaw_deg=models.AttitudeInfoType.YawDeg(
+        dt_ypr_s=md_models.AttitudeInfoType.DtYprS(value=attitude.time_step),
+        n_ypr_n=md_models.AttitudeInfoType.NYprN(value=int(attitude.ypr_deg.shape[0])),
+        yaw_deg=md_models.AttitudeInfoType.YawDeg(
             val=[
-                models.AttitudeInfoType.YawDeg.Val(value=float(yaw), n=index + 1)
+                md_models.AttitudeInfoType.YawDeg.Val(value=float(yaw), n=index + 1)
                 for index, yaw in enumerate(yaw_values)
             ],
         ),
-        pitch_deg=models.AttitudeInfoType.PitchDeg(
+        pitch_deg=md_models.AttitudeInfoType.PitchDeg(
             val=[
-                models.AttitudeInfoType.PitchDeg.Val(value=float(pitch), n=index + 1)
+                md_models.AttitudeInfoType.PitchDeg.Val(value=float(pitch), n=index + 1)
                 for index, pitch in enumerate(pitch_values)
             ],
         ),
-        roll_deg=models.AttitudeInfoType.RollDeg(
+        roll_deg=md_models.AttitudeInfoType.RollDeg(
             val=[
-                models.AttitudeInfoType.RollDeg.Val(value=float(roll), n=index + 1)
+                md_models.AttitudeInfoType.RollDeg.Val(value=float(roll), n=index + 1)
                 for index, roll in enumerate(roll_values)
             ],
         ),
@@ -1010,7 +1018,7 @@ def translate_attitude_to_model(
 
 
 def _fill_lines_per_burst_list(
-    changes: list[models.BurstInfoType.LinesPerBurstChangeList.Lines],
+    changes: list[md_models.BurstInfoType.LinesPerBurstChangeList.Lines],
     burst_number: int,
 ) -> list[int]:
     """Fill lines per burst list."""
@@ -1025,10 +1033,10 @@ def _fill_lines_per_burst_list(
 
 
 def translate_burst_info_from_model(
-    info: models.BurstInfoType,
-) -> elements.BurstInfo:
+    info: md_models.BurstInfoType,
+) -> md_elements.BurstInfo:
     """Translate burst info from model."""
-    output_info = elements.BurstInfo(
+    output_info = md_elements.BurstInfo(
         burst_repetition_frequency=info.burst_repetition_frequency.value,
     )
     if info.lines_per_burst is not None:
@@ -1043,7 +1051,7 @@ def translate_burst_info_from_model(
     assert len(info.burst) == info.number_of_bursts
     for burst, lines in zip(info.burst, lines_per_burst, strict=True):
         output_info.bursts.append(
-            elements.Burst(
+            md_elements.Burst(
                 range_start_time=burst.range_start_time.value,
                 azimuth_start_time=PreciseDateTime.from_utc_string(burst.azimuth_start_time.value),
                 lines=lines,
@@ -1059,8 +1067,8 @@ def translate_burst_info_from_model(
 
 
 def translate_burst_info_to_model(
-    info: elements.BurstInfo,
-) -> models.BurstInfoType:
+    info: md_elements.BurstInfo,
+) -> md_models.BurstInfoType:
     """Translate burst info to model."""
     changes = {
         index: burst.lines
@@ -1068,9 +1076,9 @@ def translate_burst_info_to_model(
         if index == 0 or burst.lines != info.bursts[index - 1].lines
     }
 
-    change_list = models.BurstInfoType.LinesPerBurstChangeList(
+    change_list = md_models.BurstInfoType.LinesPerBurstChangeList(
         lines=[
-            models.BurstInfoType.LinesPerBurstChangeList.Lines(
+            md_models.BurstInfoType.LinesPerBurstChangeList.Lines(
                 value=lines,
                 from_burst=from_burst + 1,
             )
@@ -1080,17 +1088,19 @@ def translate_burst_info_to_model(
 
     burst_list = []
     for index, burst in enumerate(info.bursts):
-        burst_model = models.BurstType(
-            range_start_time=models.DoubleWithUnit(
+        burst_model = md_models.BurstType(
+            range_start_time=md_models.DoubleWithUnit(
                 value=burst.range_start_time,
-                unit=models.Units.S,
+                unit=md_models.Units.S,
             ),
-            azimuth_start_time=models.StringWithUnit(
+            azimuth_start_time=md_models.StringWithUnit(
                 value=str(burst.azimuth_start_time),
-                unit=models.Units.UTC,
+                unit=md_models.Units.UTC,
             ),
             burst_center_azimuth_shift=(
-                models.DoubleWithUnit(value=burst.burst_center_azimuth_shift, unit=models.Units.S)
+                md_models.DoubleWithUnit(
+                    value=burst.burst_center_azimuth_shift, unit=md_models.Units.S
+                )
                 if burst.burst_center_azimuth_shift is not None
                 else None
             ),
@@ -1098,11 +1108,11 @@ def translate_burst_info_to_model(
         )
         burst_list.append(burst_model)
 
-    return models.BurstInfoType(
+    return md_models.BurstInfoType(
         number_of_bursts=len(info.bursts),
-        burst_repetition_frequency=models.DoubleWithUnit(
+        burst_repetition_frequency=md_models.DoubleWithUnit(
             value=info.burst_repetition_frequency,
-            unit=models.Units.HZ,
+            unit=md_models.Units.HZ,
         ),
         lines_per_burst=None,  # Lines per burst is considered deprecated
         lines_per_burst_change_list=change_list,
@@ -1111,8 +1121,8 @@ def translate_burst_info_to_model(
 
 
 def translate_state_vectors_from_model(
-    state_vectors: models.StateVectorDataType,
-) -> elements.StateVectors:
+    state_vectors: md_models.StateVectorDataType,
+) -> md_elements.StateVectors:
     """Translate state vectors from model."""
     number_of_state_vectors = state_vectors.n_sv_n.value
     if (
@@ -1158,7 +1168,7 @@ def translate_state_vectors_from_model(
     # NOT_AVAILABLE is legal in the XML schema; map it to None in metadata.
     track_number = None if state_vectors.track == "NOT_AVAILABLE" else int(state_vectors.track)
 
-    output_sv = elements.StateVectors(
+    output_sv = md_elements.StateVectors(
         position_vector=positions,
         velocity_vector=velocities,
         reference_time=PreciseDateTime.from_utc_string(state_vectors.t_ref_utc),
@@ -1170,9 +1180,9 @@ def translate_state_vectors_from_model(
     )
 
     expected_orbit_direction = (
-        models.AscendingDescendingType.ASCENDING
+        md_models.AscendingDescendingType.ASCENDING
         if velocities[0, 2] > 0
-        else models.AscendingDescendingType.DESCENDING
+        else md_models.AscendingDescendingType.DESCENDING
     )
 
     if state_vectors.orbit_direction != expected_orbit_direction:
@@ -1185,7 +1195,7 @@ def translate_state_vectors_from_model(
 
         output_sv.annotated_orbit_direction = (
             None
-            if state_vectors.orbit_direction is models.AscendingDescendingType.NOT_AVAILABLE
+            if state_vectors.orbit_direction is md_models.AscendingDescendingType.NOT_AVAILABLE
             else state_vectors.orbit_direction.value
         )
 
@@ -1193,15 +1203,15 @@ def translate_state_vectors_from_model(
 
 
 def translate_state_vectors_to_model(
-    state_vectors: elements.StateVectors,
-) -> models.StateVectorDataType:
+    state_vectors: md_elements.StateVectors,
+) -> md_models.StateVectorDataType:
     """Translate state vectors to model."""
     if state_vectors.position_vector.shape != state_vectors.velocity_vector.shape:
         msg = "Position and velocity arrays must have the same shape"
         raise ValueError(msg)
 
-    position = models.StateVectorDataType.PSvM()
-    velocity = models.StateVectorDataType.VSvMOs()
+    position = md_models.StateVectorDataType.PSvM()
+    velocity = md_models.StateVectorDataType.VSvMOs()
     for index, (pos, vel) in enumerate(
         zip(state_vectors.position_vector, state_vectors.velocity_vector, strict=False),
     ):
@@ -1210,13 +1220,13 @@ def translate_state_vectors_to_model(
             index_current = offset + component + 1
 
             position.val.append(
-                models.StateVectorDataType.PSvM.Val(value=float(pos_comp), n=index_current),
+                md_models.StateVectorDataType.PSvM.Val(value=float(pos_comp), n=index_current),
             )
             velocity.val.append(
-                models.StateVectorDataType.VSvMOs.Val(value=float(vel_comp), n=index_current),
+                md_models.StateVectorDataType.VSvMOs.Val(value=float(vel_comp), n=index_current),
             )
 
-    state_vectors_model = models.StateVectorDataType(
+    state_vectors_model = md_models.StateVectorDataType(
         p_sv_m=position,
         v_sv_m_os=velocity,
         orbit_number=(
@@ -1233,26 +1243,30 @@ def translate_state_vectors_to_model(
             state_vectors.annotated_orbit_direction
         ),
         t_ref_utc=str(state_vectors.reference_time),
-        dt_sv_s=models.StateVectorDataType.DtSvS(
+        dt_sv_s=md_models.StateVectorDataType.DtSvS(
             value=state_vectors.time_step,
-            unit=models.Units.S,
+            unit=md_models.Units.S,
         ),
-        n_sv_n=models.StateVectorDataType.NSvN(value=int(state_vectors.position_vector.shape[0])),
+        n_sv_n=md_models.StateVectorDataType.NSvN(
+            value=int(state_vectors.position_vector.shape[0])
+        ),
     )
 
     if state_vectors.anx_position is not None:
-        state_vectors_model.ascending_node_coords = models.StateVectorDataType.AscendingNodeCoords(
-            val=[
-                models.StateVectorDataType.AscendingNodeCoords.Val(
-                    value=state_vectors.anx_position[0],
-                ),
-                models.StateVectorDataType.AscendingNodeCoords.Val(
-                    value=state_vectors.anx_position[1],
-                ),
-                models.StateVectorDataType.AscendingNodeCoords.Val(
-                    value=state_vectors.anx_position[2],
-                ),
-            ],
+        state_vectors_model.ascending_node_coords = (
+            md_models.StateVectorDataType.AscendingNodeCoords(
+                val=[
+                    md_models.StateVectorDataType.AscendingNodeCoords.Val(
+                        value=state_vectors.anx_position[0],
+                    ),
+                    md_models.StateVectorDataType.AscendingNodeCoords.Val(
+                        value=state_vectors.anx_position[1],
+                    ),
+                    md_models.StateVectorDataType.AscendingNodeCoords.Val(
+                        value=state_vectors.anx_position[2],
+                    ),
+                ],
+            )
         )
 
     if state_vectors.anx_time is not None:
@@ -1262,7 +1276,7 @@ def translate_state_vectors_to_model(
 
 
 def translate_polynomial_from_model(
-    poly: models.PolyType,
+    poly: md_models.PolyType,
     specific_type: type[Poly2DT],
 ) -> Poly2DT:
     """Translate polynomial from model."""
@@ -1273,7 +1287,7 @@ def translate_polynomial_from_model(
     )
 
 
-def translate_polynomial_to_model(poly: elements.Poly2D) -> models.PolyType:
+def translate_polynomial_to_model(poly: md_elements.Poly2D) -> md_models.PolyType:
     """Translate polynomial to model."""
     if len(poly.coefficients) > len(poly.UNITS):
         msg = (
@@ -1282,10 +1296,10 @@ def translate_polynomial_to_model(poly: elements.Poly2D) -> models.PolyType:
         )
         raise ValueError(msg)
 
-    return models.PolyType(
-        pol=models.PolyType.Pol(
+    return md_models.PolyType(
+        pol=md_models.PolyType.Pol(
             val=[
-                models.PolyType.Pol.Val(
+                md_models.PolyType.Pol.Val(
                     value=coeff,
                     unit=translate_unit_to_model(unit),
                     n=index + 1,
@@ -1295,21 +1309,21 @@ def translate_polynomial_to_model(poly: elements.Poly2D) -> models.PolyType:
                 )
             ],
         ),
-        trg0_s=models.PolyType.Trg0S(value=poly.t_ref_rg, unit=models.Units.S),
-        taz0_utc=models.PolyType.Taz0Utc(value=str(poly.t_ref_az), unit=models.Units.UTC),
+        trg0_s=md_models.PolyType.Trg0S(value=poly.t_ref_rg, unit=md_models.Units.S),
+        taz0_utc=md_models.PolyType.Taz0Utc(value=str(poly.t_ref_az), unit=md_models.Units.UTC),
     )
 
 
 def translate_polynomial_list_to_model(
-    poly_list: Sequence[elements.Poly2D],
-) -> list[models.PolyType]:
+    poly_list: Sequence[md_elements.Poly2D],
+) -> list[md_models.PolyType]:
     """Translate polynomial list from model."""
 
     def _add_number_and_total(
-        poly: models.PolyType,
+        poly: md_models.PolyType,
         number: int,
         total: int,
-    ) -> models.PolyType:
+    ) -> md_models.PolyType:
         poly.number = number
         poly.total = total
         return poly
@@ -1325,10 +1339,10 @@ def translate_polynomial_list_to_model(
 
 
 def translate_coreg_polynomial_from_model(
-    poly: models.PolyCoregType,
-) -> elements.CoregPoly:
+    poly: md_models.PolyCoregType,
+) -> md_elements.CoregPoly:
     """Translate coregistration polynomial from model."""
-    return elements.CoregPoly(
+    return md_elements.CoregPoly(
         t_ref_az=PreciseDateTime.from_utc_string(poly.taz0_utc.value),
         t_ref_rg=poly.trg0_s.value,
         coefficients_az=[elem.value for elem in poly.pol_az.val],
@@ -1337,8 +1351,8 @@ def translate_coreg_polynomial_from_model(
 
 
 def translate_coreg_polynomial_to_model(
-    poly: elements.CoregPoly,
-) -> models.PolyCoregType:
+    poly: md_elements.CoregPoly,
+) -> md_models.PolyCoregType:
     """Translate coregistration polynomial to model."""
     if poly.coefficients_az is None:
         msg = "Azimuth Coefficients are required in Coreg Polynomial: cannot be 'None'"
@@ -1350,43 +1364,45 @@ def translate_coreg_polynomial_to_model(
         msg = "Range Coefficients are required in Coreg Polynomial: cannot be 'None'"
         raise RuntimeError(msg)
 
-    return models.PolyCoregType(
-        pol_az=models.PolyCoregType.PolAz(
+    return md_models.PolyCoregType(
+        pol_az=md_models.PolyCoregType.PolAz(
             val=[
-                models.PolyCoregType.PolAz.Val(value=coeff, n=index + 1)
+                md_models.PolyCoregType.PolAz.Val(value=coeff, n=index + 1)
                 for index, coeff in enumerate(poly.coefficients_az)
             ],
         ),
-        pol_rg=models.PolyCoregType.PolRg(
+        pol_rg=md_models.PolyCoregType.PolRg(
             val=[
-                models.PolyCoregType.PolRg.Val(value=coeff, n=index + 1)
+                md_models.PolyCoregType.PolRg.Val(value=coeff, n=index + 1)
                 for index, coeff in enumerate(poly.coefficients_rg)
             ],
         ),
-        trg0_s=models.PolyCoregType.Trg0S(value=poly.t_ref_rg, unit=models.Units.S),
-        taz0_utc=models.PolyCoregType.Taz0Utc(value=str(poly.t_ref_az), unit=models.Units.UTC),
+        trg0_s=md_models.PolyCoregType.Trg0S(value=poly.t_ref_rg, unit=md_models.Units.S),
+        taz0_utc=md_models.PolyCoregType.Taz0Utc(
+            value=str(poly.t_ref_az), unit=md_models.Units.UTC
+        ),
     )
 
 
 def translate_coreg_polynomial_list_from_model(
-    poly_list: list[models.PolyCoregType],
-) -> elements.CoregPolyVector:
+    poly_list: list[md_models.PolyCoregType],
+) -> md_elements.CoregPolyVector:
     """Translate coregistration polynomial list from model."""
-    return elements.CoregPolyVector(
+    return md_elements.CoregPolyVector(
         poly_list=[translate_coreg_polynomial_from_model(poly) for poly in poly_list],
     )
 
 
 def translate_coreg_polynomial_list_to_model(
-    poly_list: list[elements.CoregPoly],
-) -> list[models.PolyCoregType]:
+    poly_list: list[md_elements.CoregPoly],
+) -> list[md_models.PolyCoregType]:
     """Translate coregistration polynomial list to model."""
 
     def _add_number_and_total(
-        poly: models.PolyCoregType,
+        poly: md_models.PolyCoregType,
         number: int,
         total: int,
-    ) -> models.PolyCoregType:
+    ) -> md_models.PolyCoregType:
         poly.number = number
         poly.total = total
         return poly
@@ -1402,10 +1418,10 @@ def translate_coreg_polynomial_list_to_model(
 
 
 def translate_data_statistics_from_model(
-    stat: models.DataStatisticsType,
-) -> elements.DataStatistics:
+    stat: md_models.DataStatisticsType,
+) -> md_elements.DataStatistics:
     """Translate data statistics from model."""
-    stat_metadata = elements.DataStatistics(
+    stat_metadata = md_elements.DataStatistics(
         num_samples=stat.num_samples.value,
         max_i=stat.max_i.value,
         min_i=stat.min_i.value,
@@ -1422,7 +1438,7 @@ def translate_data_statistics_from_model(
     if stat.statistics_list is not None:
         for block_stat in stat.statistics_list.data_block_statistic:
             stat_metadata.statistics_list.append(
-                elements.DataBlockStatistic(
+                md_elements.DataBlockStatistic(
                     num_samples=block_stat.num_samples.value,
                     max_i=block_stat.max_i.value,
                     min_i=block_stat.min_i.value,
@@ -1441,36 +1457,38 @@ def translate_data_statistics_from_model(
 
 
 def translate_data_statistics_to_model(
-    stat: elements.DataStatistics,
-) -> models.DataStatisticsType:
+    stat: md_elements.DataStatistics,
+) -> md_models.DataStatisticsType:
     """Translate data statistics to model."""
-    stat_model = models.DataStatisticsType(
-        num_samples=models.DataStatisticsType.NumSamples(value=stat.num_samples),
-        max_i=models.DataStatisticsType.MaxI(value=stat.max_i),
-        min_i=models.DataStatisticsType.MinI(value=stat.min_i),
-        max_q=models.DataStatisticsType.MaxQ(value=stat.max_q),
-        min_q=models.DataStatisticsType.MinQ(value=stat.min_q),
-        sum_i=models.DataStatisticsType.SumI(value=stat.sum_i),
-        sum_q=models.DataStatisticsType.SumQ(value=stat.sum_q),
-        sum2_i=models.DataStatisticsType.Sum2I(value=stat.sum_2_i),
-        sum2_q=models.DataStatisticsType.Sum2Q(value=stat.sum_2_q),
-        std_dev_i=models.DataStatisticsType.StdDevI(value=stat.std_dev_i),
-        std_dev_q=models.DataStatisticsType.StdDevQ(value=stat.std_dev_q),
+    stat_model = md_models.DataStatisticsType(
+        num_samples=md_models.DataStatisticsType.NumSamples(value=stat.num_samples),
+        max_i=md_models.DataStatisticsType.MaxI(value=stat.max_i),
+        min_i=md_models.DataStatisticsType.MinI(value=stat.min_i),
+        max_q=md_models.DataStatisticsType.MaxQ(value=stat.max_q),
+        min_q=md_models.DataStatisticsType.MinQ(value=stat.min_q),
+        sum_i=md_models.DataStatisticsType.SumI(value=stat.sum_i),
+        sum_q=md_models.DataStatisticsType.SumQ(value=stat.sum_q),
+        sum2_i=md_models.DataStatisticsType.Sum2I(value=stat.sum_2_i),
+        sum2_q=md_models.DataStatisticsType.Sum2Q(value=stat.sum_2_q),
+        std_dev_i=md_models.DataStatisticsType.StdDevI(value=stat.std_dev_i),
+        std_dev_q=md_models.DataStatisticsType.StdDevQ(value=stat.std_dev_q),
     )
     if stat.statistics_list:
-        stat_model.statistics_list = models.DataStatisticsType.StatisticsList()
+        stat_model.statistics_list = md_models.DataStatisticsType.StatisticsList()
         for block in stat.statistics_list:
             stat_model.statistics_list.data_block_statistic.append(
-                models.DataBlockStatisticsType(
-                    num_samples=models.DataBlockStatisticsType.NumSamples(value=block.num_samples),
-                    max_i=models.DataBlockStatisticsType.MaxI(value=block.max_i),
-                    min_i=models.DataBlockStatisticsType.MinI(value=block.min_i),
-                    max_q=models.DataBlockStatisticsType.MaxQ(value=block.max_q),
-                    min_q=models.DataBlockStatisticsType.MinQ(value=block.min_q),
-                    sum_i=models.DataBlockStatisticsType.SumI(value=block.sum_i),
-                    sum_q=models.DataBlockStatisticsType.SumQ(value=block.sum_q),
-                    sum2_i=models.DataBlockStatisticsType.Sum2I(value=block.sum_2_i),
-                    sum2_q=models.DataBlockStatisticsType.Sum2Q(value=block.sum_2_q),
+                md_models.DataBlockStatisticsType(
+                    num_samples=md_models.DataBlockStatisticsType.NumSamples(
+                        value=block.num_samples
+                    ),
+                    max_i=md_models.DataBlockStatisticsType.MaxI(value=block.max_i),
+                    min_i=md_models.DataBlockStatisticsType.MinI(value=block.min_i),
+                    max_q=md_models.DataBlockStatisticsType.MaxQ(value=block.max_q),
+                    min_q=md_models.DataBlockStatisticsType.MinQ(value=block.min_q),
+                    sum_i=md_models.DataBlockStatisticsType.SumI(value=block.sum_i),
+                    sum_q=md_models.DataBlockStatisticsType.SumQ(value=block.sum_q),
+                    sum2_i=md_models.DataBlockStatisticsType.Sum2I(value=block.sum_2_i),
+                    sum2_q=md_models.DataBlockStatisticsType.Sum2Q(value=block.sum_2_q),
                     line_start=block.line_start,
                     line_stop=block.line_stop,
                 ),
@@ -1479,21 +1497,21 @@ def translate_data_statistics_to_model(
     return stat_model
 
 
-def translate_sensor_names_from_model(name: models.SensorNamesType) -> str:
+def translate_sensor_names_from_model(name: md_models.SensorNamesType) -> str:
     """Translate sensor name from model."""
     return name.value
 
 
-def translate_sensor_names_to_model(name: str) -> models.SensorNamesType:
+def translate_sensor_names_to_model(name: str) -> md_models.SensorNamesType:
     """Translate sensor name to model."""
-    return models.SensorNamesType(name)
+    return md_models.SensorNamesType(name)
 
 
 def translate_antenna_info_from_model(
-    info: models.AntennaInfoType,
-) -> elements.AntennaInfo:
+    info: md_models.AntennaInfoType,
+) -> md_elements.AntennaInfo:
     """Translate antenna info from model."""
-    return elements.AntennaInfo(
+    return md_elements.AntennaInfo(
         sensor_name=translate_sensor_names_from_model(info.sensor_name),
         acquisition_mode=info.acquisition_mode.value,
         acquisition_beam=info.beam_name,
@@ -1503,43 +1521,43 @@ def translate_antenna_info_from_model(
 
 
 def translate_antenna_info_to_model(
-    info: elements.AntennaInfo,
-) -> models.AntennaInfoType:
+    info: md_elements.AntennaInfo,
+) -> md_models.AntennaInfoType:
     """Translate antenna info to model."""
-    return models.AntennaInfoType(
-        sensor_name=models.SensorNamesType(
+    return md_models.AntennaInfoType(
+        sensor_name=md_models.SensorNamesType(
             info.sensor_name if info.sensor_name is not None else "NOT SET",
         ),
-        acquisition_mode=models.AcquisitionModeType(info.acquisition_mode),
+        acquisition_mode=md_models.AcquisitionModeType(info.acquisition_mode),
         beam_name=info.acquisition_beam,
         polarization=translate_polarization_to_model(info.polarization),
         lines_per_pattern=info.lines_per_pattern,
     )
 
 
-_PULSE_DIRECTION_FROM_MODEL: dict[models.PulseTypeDirection, elements.PulseDirection] = {
-    models.PulseTypeDirection.UP: "UP",
-    models.PulseTypeDirection.DOWN: "DOWN",
+_PULSE_DIRECTION_FROM_MODEL: dict[md_models.PulseTypeDirection, md_elements.PulseDirection] = {
+    md_models.PulseTypeDirection.UP: "UP",
+    md_models.PulseTypeDirection.DOWN: "DOWN",
 }
 
 
 def translate_pulse_direction_from_model(
-    direction: models.PulseTypeDirection,
-) -> elements.PulseDirection:
+    direction: md_models.PulseTypeDirection,
+) -> md_elements.PulseDirection:
     """Translate pulse direction from model."""
     return _PULSE_DIRECTION_FROM_MODEL[direction]
 
 
 def translate_pulse_direction_to_model(
-    direction: elements.PulseDirection,
-) -> models.PulseTypeDirection:
+    direction: md_elements.PulseDirection,
+) -> md_models.PulseTypeDirection:
     """Translate pulse direction to model."""
-    return models.PulseTypeDirection(direction)
+    return md_models.PulseTypeDirection(direction)
 
 
-def translate_pulse_from_model(pulse: models.PulseType) -> elements.Pulse:
+def translate_pulse_from_model(pulse: md_models.PulseType) -> md_elements.Pulse:
     """Translate pulse from model."""
-    return elements.Pulse(
+    return md_elements.Pulse(
         pulse_length=pulse.pulse_length.value,
         bandwidth=pulse.bandwidth.value,
         pulse_sampling_rate=pulse.pulse_sampling_rate.value,
@@ -1558,28 +1576,28 @@ def translate_pulse_from_model(pulse: models.PulseType) -> elements.Pulse:
     )
 
 
-def translate_pulse_to_model(pulse: elements.Pulse) -> models.PulseType:
+def translate_pulse_to_model(pulse: md_elements.Pulse) -> md_models.PulseType:
     """Translate pulse to model."""
-    return models.PulseType(
-        pulse_length=models.DoubleWithUnit(value=pulse.pulse_length, unit=models.Units.S),
-        bandwidth=models.DoubleWithUnit(value=pulse.bandwidth, unit=models.Units.HZ),
-        pulse_energy=models.DoubleWithUnit(value=pulse.pulse_energy, unit=models.Units.J),
-        pulse_sampling_rate=models.DoubleWithUnit(
+    return md_models.PulseType(
+        pulse_length=md_models.DoubleWithUnit(value=pulse.pulse_length, unit=md_models.Units.S),
+        bandwidth=md_models.DoubleWithUnit(value=pulse.bandwidth, unit=md_models.Units.HZ),
+        pulse_energy=md_models.DoubleWithUnit(value=pulse.pulse_energy, unit=md_models.Units.J),
+        pulse_sampling_rate=md_models.DoubleWithUnit(
             value=pulse.pulse_sampling_rate,
-            unit=models.Units.HZ,
+            unit=md_models.Units.HZ,
         ),
         pulse_start_frequency=(
-            models.DoubleWithUnit(
+            md_models.DoubleWithUnit(
                 value=pulse.pulse_start_frequency,
-                unit=models.Units.HZ,
+                unit=md_models.Units.HZ,
             )
             if pulse.pulse_start_frequency is not None
             else None
         ),
         pulse_start_phase=(
-            models.DoubleWithUnit(
+            md_models.DoubleWithUnit(
                 value=pulse.pulse_start_phase,
-                unit=models.Units.RAD,
+                unit=md_models.Units.RAD,
             )
             if pulse.pulse_start_phase is not None
             else None
@@ -1593,7 +1611,7 @@ def translate_pulse_to_model(pulse: elements.Pulse) -> models.PulseType:
 
 
 def _translate_poly_list_from_model(
-    poly_list: list[models.PolyType],
+    poly_list: list[md_models.PolyType],
     specific_type: type[Poly2DT],
 ) -> list[Poly2DT]:
     """Translate a model polynomial list into metadata polynomials."""
@@ -1601,97 +1619,97 @@ def _translate_poly_list_from_model(
 
 
 def _translate_doppler_centroid_vector_from_model(
-    poly_list: list[models.PolyType],
-) -> elements.DopplerCentroidVector:
+    poly_list: list[md_models.PolyType],
+) -> md_elements.DopplerCentroidVector:
     """Translate a Doppler centroid vector from model."""
-    return elements.DopplerCentroidVector(
+    return md_elements.DopplerCentroidVector(
         poly_list=_translate_poly_list_from_model(
             poly_list,
-            elements.DopplerCentroidVector.SINGLE_POLY_TYPE,
+            md_elements.DopplerCentroidVector.SINGLE_POLY_TYPE,
         ),
     )
 
 
 def _translate_doppler_rate_vector_from_model(
-    poly_list: list[models.PolyType],
-) -> elements.DopplerRateVector:
+    poly_list: list[md_models.PolyType],
+) -> md_elements.DopplerRateVector:
     """Translate a Doppler rate vector from model."""
-    return elements.DopplerRateVector(
+    return md_elements.DopplerRateVector(
         poly_list=_translate_poly_list_from_model(
             poly_list,
-            elements.DopplerRateVector.SINGLE_POLY_TYPE,
+            md_elements.DopplerRateVector.SINGLE_POLY_TYPE,
         ),
     )
 
 
 def _translate_tops_azimuth_modulation_rate_vector_from_model(
-    poly_list: list[models.PolyType],
-) -> elements.TopsAzimuthModulationRateVector:
+    poly_list: list[md_models.PolyType],
+) -> md_elements.TopsAzimuthModulationRateVector:
     """Translate a TOPS azimuth modulation rate vector from model."""
-    return elements.TopsAzimuthModulationRateVector(
+    return md_elements.TopsAzimuthModulationRateVector(
         poly_list=_translate_poly_list_from_model(
             poly_list,
-            elements.TopsAzimuthModulationRateVector.SINGLE_POLY_TYPE,
+            md_elements.TopsAzimuthModulationRateVector.SINGLE_POLY_TYPE,
         ),
     )
 
 
 def _translate_slant_to_ground_vector_from_model(
-    poly_list: list[models.PolyType],
-) -> elements.SlantToGroundVector:
+    poly_list: list[md_models.PolyType],
+) -> md_elements.SlantToGroundVector:
     """Translate a slant-to-ground vector from model."""
-    return elements.SlantToGroundVector(
+    return md_elements.SlantToGroundVector(
         poly_list=_translate_poly_list_from_model(
             poly_list,
-            elements.SlantToGroundVector.SINGLE_POLY_TYPE,
+            md_elements.SlantToGroundVector.SINGLE_POLY_TYPE,
         ),
     )
 
 
 def _translate_ground_to_slant_vector_from_model(
-    poly_list: list[models.PolyType],
-) -> elements.GroundToSlantVector:
+    poly_list: list[md_models.PolyType],
+) -> md_elements.GroundToSlantVector:
     """Translate a ground-to-slant vector from model."""
-    return elements.GroundToSlantVector(
+    return md_elements.GroundToSlantVector(
         poly_list=_translate_poly_list_from_model(
             poly_list,
-            elements.GroundToSlantVector.SINGLE_POLY_TYPE,
+            md_elements.GroundToSlantVector.SINGLE_POLY_TYPE,
         ),
     )
 
 
 def _translate_slant_to_incidence_vector_from_model(
-    poly_list: list[models.PolyType],
-) -> elements.SlantToIncidenceVector:
+    poly_list: list[md_models.PolyType],
+) -> md_elements.SlantToIncidenceVector:
     """Translate a slant-to-incidence vector from model."""
-    return elements.SlantToIncidenceVector(
+    return md_elements.SlantToIncidenceVector(
         poly_list=_translate_poly_list_from_model(
             poly_list,
-            elements.SlantToIncidenceVector.SINGLE_POLY_TYPE,
+            md_elements.SlantToIncidenceVector.SINGLE_POLY_TYPE,
         ),
     )
 
 
 def _translate_slant_to_elevation_vector_from_model(
-    poly_list: list[models.PolyType],
-) -> elements.SlantToElevationVector:
+    poly_list: list[md_models.PolyType],
+) -> md_elements.SlantToElevationVector:
     """Translate a slant-to-elevation vector from model."""
-    return elements.SlantToElevationVector(
+    return md_elements.SlantToElevationVector(
         poly_list=_translate_poly_list_from_model(
             poly_list,
-            elements.SlantToElevationVector.SINGLE_POLY_TYPE,
+            md_elements.SlantToElevationVector.SINGLE_POLY_TYPE,
         ),
     )
 
 
-def _translate_poly_vector_to_model(vector: _PolyVectorLike) -> list[models.PolyType]:
+def _translate_poly_vector_to_model(vector: _PolyVectorLike) -> list[md_models.PolyType]:
     """Translate a polynomial metadata vector into a model list."""
     return translate_polynomial_list_to_model(vector.poly_list)
 
 
 def _translate_coreg_poly_vector_to_model(
     vector: _CoregPolyVectorLike,
-) -> list[models.PolyCoregType]:
+) -> list[md_models.PolyCoregType]:
     """Translate a coregistration polynomial vector into a model list."""
     return translate_coreg_polynomial_list_to_model(vector.poly_list)
 
@@ -1783,10 +1801,10 @@ CHANNEL_FIELDS_TO_MODEL = (
 
 
 def translate_metadata_channel_from_model(
-    channel_mtd: models.AresysXmlDoc.Channel,
-) -> channel.MetaDataChannel:
+    channel_mtd: md_models.AresysXmlDoc.Channel,
+) -> MetaDataChannel:
     """Translate a metadata channel model into the corresponding object."""
-    mdc = channel.MetaDataChannel(
+    mdc = MetaDataChannel(
         content_id=channel_mtd.content_id,
         number=channel_mtd.number,
         total=channel_mtd.total,
@@ -1800,21 +1818,21 @@ def translate_metadata_channel_from_model(
 
 
 def translate_metadata_from_model(
-    model: models.AresysXmlDoc,
-) -> channel.MetaData:
+    model: md_models.AresysXmlDoc,
+) -> MetaData:
     """Translate metadata model into corresponding object.
 
     Parameters
     ----------
-    model : models.AresysXmlDoc
+    model : md_models.AresysXmlDoc
         xsdata model
 
     Returns
     -------
-    channel_metadata.MetaData
+    MetaData
         metadata object
     """
-    output_metadata = channel.MetaData(description=model.description)
+    output_metadata = MetaData(description=model.description)
 
     for channel_mtd in model.channel:
         output_metadata.channels.append(translate_metadata_channel_from_model(channel_mtd))
@@ -1823,12 +1841,12 @@ def translate_metadata_from_model(
 
 
 def translate_metadata_channel_to_model(
-    metadata_channel: channel.MetaDataChannel,
+    metadata_channel: MetaDataChannel,
     number: int,
     total: int,
-) -> models.AresysXmlDoc.Channel:
+) -> md_models.AresysXmlDoc.Channel:
     """Translate a metadata channel into the corresponding model."""
-    channel_model = models.AresysXmlDoc.Channel(
+    channel_model = md_models.AresysXmlDoc.Channel(
         number=number,
         total=total,
         content_id=metadata_channel.content_id,
@@ -1844,21 +1862,21 @@ def translate_metadata_channel_to_model(
 
 
 def translate_metadata_to_model(
-    metadata_obj: channel.MetaData,
-) -> models.AresysXmlDoc:
-    """Translate metadata model into corresponding object.
+    metadata_obj: MetaData,
+) -> md_models.AresysXmlDoc:
+    """Translate metadata object into the corresponding model.
 
     Parameters
     ----------
-    metadata_obj : channel_metadata.MetaData
+    metadata_obj : MetaData
         metadata object
 
     Returns
     -------
-    models.AresysXmlDoc
+    md_models.AresysXmlDoc
         xsdata model
     """
-    metadata_model = models.AresysXmlDoc(
+    metadata_model = md_models.AresysXmlDoc(
         number_of_channels=len(metadata_obj.channels),
         version_number=2.1,
         description=metadata_obj.description,

@@ -25,6 +25,15 @@ ignore = [
   "missing-trailing-comma",
 ]
 
+flake8-import-conventions.banned-from = [
+  "aresys_io.core",
+  "aresys_io.product",
+  "aresys_io.product.metadata",
+  "aresys_io.product.pf",
+  "aresys_io.product.point_target",
+  "aresys_io.sarsystem",
+]
+
 [lint.flake8-copyright]
 notice-rgx = "(?m)^# SPDX-FileCopyrightText: Aresys S\\.r\\.l\\. <info@aresys\\.it>\\r?\\n# SPDX-License-Identifier: MIT\\r?$"
 
@@ -43,6 +52,7 @@ notice-rgx = "(?m)^# SPDX-FileCopyrightText: Aresys S\\.r\\.l\\. <info@aresys\\.
   "D",                       # all pydocstyle docstring rules
   "compare-to-empty-string",
   "private-member-access",
+  "banned-import-from",
 ]
 "src/aresys_io/**/models/*.py" = [
   "D",             # all pydocstyle docstring rules
