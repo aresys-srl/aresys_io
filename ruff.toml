@@ -4,13 +4,7 @@ target-version = "py311"
 output-format = "concise"
 required-version = ">=0.16.7"
 
-exclude = [
-    ".git",
-    ".venv",
-    "build",
-    "dist",
-    "tools/*",
-]
+exclude = [".git", ".venv", "build", "dist", "tools/*"]
 
 [format]
 docstring-code-format = true
@@ -24,35 +18,35 @@ preview = true
 select = ["ALL"]
 
 ignore = [
-  "incorrect-blank-line-before-class",    # incorrect-blank-line-before-class
-  "multi-line-summary-second-line",    # multi-line-summary-second-line
-  "magic-value-comparison", # magic-value-comparison
-  "assert",    # assert
-  "missing-trailing-comma",  # missing-trailing-comma
+  "incorrect-blank-line-before-class",
+  "multi-line-summary-second-line",
+  "magic-value-comparison",
+  "assert",
+  "missing-trailing-comma",
 ]
 
 [lint.flake8-copyright]
 notice-rgx = "(?m)^# SPDX-FileCopyrightText: Aresys S\\.r\\.l\\. <info@aresys\\.it>\\r?\\n# SPDX-License-Identifier: MIT\\r?$"
 
 [lint.per-file-ignores]
-"**/__init__.py" = ["undefined-local-with-import-star"] # undefined-local-with-import-star
+"**/__init__.py" = ["undefined-local-with-import-star"]
 "scripts/**/*.py" = [
-  "implicit-namespace-package", # implicit-namespace-package
-  "suspicious-xml-element-tree-usage",   # suspicious-xml-element-tree-usage
-  "suspicious-subprocess-import",   # suspicious-subprocess-import
-  "suspicious-xml-etree-import",   # suspicious-xml-etree-import
-  "subprocess-without-shell-equals-true",   # subprocess-without-shell-equals-true
-  "start-process-with-partial-path",   # start-process-with-partial-path
+  "implicit-namespace-package",
+  "suspicious-xml-element-tree-usage",
+  "suspicious-subprocess-import",
+  "suspicious-xml-etree-import",
+  "subprocess-without-shell-equals-true",
+  "start-process-with-partial-path",
 ]
-"src/aresys_io/sarsystem/**/*.py" = ["eq-without-hash"] # eq-without-hash
+"src/aresys_io/sarsystem/**/*.py" = ["eq-without-hash"]
 "tests/**/*.py" = [
-  "D",       # all pydocstyle docstring rules
-  "compare-to-empty-string", # compare-to-empty-string
-  "private-member-access",  # private-member-access
+  "D",                       # all pydocstyle docstring rules
+  "compare-to-empty-string",
+  "private-member-access",
 ]
 "src/aresys_io/**/models/*.py" = [
-  "D",    # all pydocstyle docstring rules
-  "line-too-long", # line-too-long
+  "D",             # all pydocstyle docstring rules
+  "line-too-long",
 ]
 
 [lint.pydoclint]
