@@ -9,7 +9,7 @@ import warnings
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
-from aresys_io.product.metadata import elements as mtd_elements
+import aresys_io.product.metadata.elements as mtd_elements
 from aresys_io.product.metadata.create_attitude import (
     create_attitude_from_attitude_info_and_trajectory,
 )

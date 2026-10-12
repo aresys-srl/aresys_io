@@ -6,7 +6,8 @@
 from pathlib import Path
 
 from aresys_io.core.parsing import parse, serialize
-from aresys_io.product.metadata import channel, models
+from aresys_io.product.metadata.channel import MetaData
+from aresys_io.product.metadata.models import AresysXmlDoc
 from aresys_io.product.metadata.translate import (
     translate_metadata_from_model,
     translate_metadata_to_model,
@@ -20,7 +21,7 @@ __all__ = [
 ]
 
 
-def read_metadata(metadata_file: str | Path) -> channel.MetaData:
+def read_metadata(metadata_file: str | Path) -> MetaData:
     """Read metadata from XML file.
 
     Parameters
@@ -30,19 +31,19 @@ def read_metadata(metadata_file: str | Path) -> channel.MetaData:
 
     Returns
     -------
-    metadata.MetaData
+    MetaData
         Channel metadata
     """
     metadata_content = Path(metadata_file).read_text(encoding="utf-8")
     return parse_metadata(metadata_content)
 
 
-def write_metadata(metadata_obj: channel.MetaData, metadata_file: str | Path) -> None:
+def write_metadata(metadata_obj: MetaData, metadata_file: str | Path) -> None:
     """Write metadata to XML file.
 
     Parameters
     ----------
-    metadata_obj : channel_metadata.MetaData
+    metadata_obj : MetaData
         Channel metadata.
 
     metadata_file : str | Path
@@ -52,12 +53,12 @@ def write_metadata(metadata_obj: channel.MetaData, metadata_file: str | Path) ->
     Path(metadata_file).write_text(metadata_content, encoding="utf-8")
 
 
-def serialize_metadata(metadata_obj: channel.MetaData) -> str:
+def serialize_metadata(metadata_obj: MetaData) -> str:
     """Serialize metadata object.
 
     Parameters
     ----------
-    metadata_obj : channel_metadata.MetaData
+    metadata_obj : MetaData
         Metadata representation object
 
     Returns
@@ -69,7 +70,7 @@ def serialize_metadata(metadata_obj: channel.MetaData) -> str:
     return serialize(metadata_model)
 
 
-def parse_metadata(metadata_content: str) -> channel.MetaData:
+def parse_metadata(metadata_content: str) -> MetaData:
     """Parse metadata XML string.
 
     Parameters
@@ -79,7 +80,7 @@ def parse_metadata(metadata_content: str) -> channel.MetaData:
 
     Returns
     -------
-    channel_metadata.MetaData
+    MetaData
         Metadata representation object
     """
-    return translate_metadata_from_model(parse(metadata_content, models.AresysXmlDoc))
+    return translate_metadata_from_model(parse(metadata_content, AresysXmlDoc))
