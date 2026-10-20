@@ -38,9 +38,6 @@ through its individual submodules. Common operations include:
 - reading point-target products and raster files
 - creating and updating metadata and handling the different components
 
-Here is a high-level overview of the product structure, while all details are available in the
-[Product Folder specification document](TBD).
-
 ## Product Types
 
 The main product types supported by this format can be grouped into three categories:
