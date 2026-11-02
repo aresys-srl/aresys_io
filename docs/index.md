@@ -43,3 +43,5 @@ instructions!
 This package can be installed using ``pip`` in any python environment satisfying the requirements.
 
 > :lucide-circle-chevron-right: Refer to the [installation documentation](install.md) for further information.
+
+If you are moving an existing application from ArePyTools, see the [migration guide](migration.md) for API mappings and compatibility notes.
