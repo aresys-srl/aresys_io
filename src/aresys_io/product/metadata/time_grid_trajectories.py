@@ -6,11 +6,20 @@
 from dataclasses import dataclass
 from typing import Self
 
+import numpy as np
+import numpy.typing as npt
+from perseo_core.geometry.geocoding import (
+    direct_geocoding_bistatic,
+    direct_geocoding_monostatic,
+    inverse_geocoding_bistatic,
+    inverse_geocoding_monostatic,
+)
 from perseo_core.geometry.navigation import Trajectory
+from perseo_core.timing.precise_datetime import PreciseDateTime
 
 from aresys_io.product.metadata.channel import MetaData
 from aresys_io.product.metadata.create_orbit import create_trajectory_from_state_vectors
-from aresys_io.product.metadata.elements import TimeGridInfo
+from aresys_io.product.metadata.elements import SideLooking, TimeGridInfo
 
 
 @dataclass
@@ -106,3 +115,83 @@ class TimeGridTrajectories:
             case _:
                 msg = f"Unsupported time grid info type: {type(data)!r}"
                 raise TypeError(msg)
+
+
+def time_grid_times_to_ground_points(
+    trajectories: TimeGridTrajectories,
+    look_direction: SideLooking,
+    azimuth_times: PreciseDateTime | npt.NDArray,
+    range_times: float | npt.NDArray[np.float64],
+    altitude: float,
+) -> npt.NDArray[np.floating]:
+    """Convert time coordinates into ground points."""
+    match trajectories.data:
+        case Monostatic(trajectory=trajectory):
+            return direct_geocoding_monostatic(
+                sensor_positions=trajectory.position(azimuth_times),
+                sensor_velocities=trajectory.velocity(azimuth_times),
+                range_times=range_times,
+                doppler_frequencies=0,
+                wavelength=1,
+                altitude=altitude,
+                look_direction=look_direction,
+            )
+        case BistaticSingleSystem(trajectory=trajectory):
+            # pyrefly: ignore [unsupported-operation]
+            azimuth_times_tx = azimuth_times - range_times
+            return direct_geocoding_bistatic(
+                sensor_positions_rx=trajectory.position(azimuth_times),
+                sensor_velocities_rx=trajectory.velocity(azimuth_times),
+                sensor_positions_tx=trajectory.position(azimuth_times_tx),
+                sensor_velocities_tx=trajectory.velocity(azimuth_times_tx),
+                range_times=range_times,
+                doppler_frequencies=0,
+                wavelength=1,
+                altitude=altitude,
+                look_direction=look_direction,
+            )
+        case Bistatic(trajectory_rx=trajectory_rx, trajectory_tx=trajectory_tx):
+            # pyrefly: ignore [unsupported-operation]
+            azimuth_times_tx = azimuth_times - range_times
+            return direct_geocoding_bistatic(
+                sensor_positions_rx=trajectory_rx.position(azimuth_times),
+                sensor_velocities_rx=trajectory_rx.velocity(azimuth_times),
+                sensor_positions_tx=trajectory_tx.position(azimuth_times_tx),
+                sensor_velocities_tx=trajectory_tx.velocity(azimuth_times_tx),
+                range_times=range_times,
+                doppler_frequencies=0,
+                wavelength=1,
+                altitude=altitude,
+                look_direction=look_direction,
+            )
+
+
+def ground_points_to_time_grid_times(
+    trajectories: TimeGridTrajectories,
+    ground_points: npt.NDArray[np.floating],
+) -> tuple[PreciseDateTime | np.datetime64 | npt.NDArray, float | npt.NDArray[np.floating]]:
+    """Convert ground points into time coordinates."""
+    match trajectories.data:
+        case Monostatic(trajectory=trajectory):
+            return inverse_geocoding_monostatic(
+                trajectory=trajectory,
+                ground_points=ground_points,
+                doppler_frequencies=0,
+                wavelength=1,
+            )
+        case BistaticSingleSystem(trajectory=trajectory):
+            return inverse_geocoding_bistatic(
+                trajectory_rx=trajectory,
+                trajectory_tx=trajectory,
+                ground_points=ground_points,
+                doppler_frequencies=0,
+                wavelength=1,
+            )
+        case Bistatic(trajectory_rx=trajectory_rx, trajectory_tx=trajectory_tx):
+            return inverse_geocoding_bistatic(
+                trajectory_rx=trajectory_rx,
+                trajectory_tx=trajectory_tx,
+                ground_points=ground_points,
+                doppler_frequencies=0,
+                wavelength=1,
+            )
