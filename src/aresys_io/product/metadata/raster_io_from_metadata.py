@@ -82,13 +82,11 @@ def read_raster_with_raster_info(
     raster_info : metadata.RasterInfo
         RasterInfo metadata corresponding to the raster to be read
     block_to_read : list[int] | None, optional
-        data block to be read, to be specified as a list of 4 integers, in the form:
-            0. first line to be read
-            1. first sample to be read
-            2. total number of lines to be read
-            3. total number of samples to be read.
-
-        if None, the whole raster is read, by default None
+        Window in the order `[first_line, first_sample, num_lines, num_samples]`.
+        The first two values are zero-based offsets; the last two are counts.
+        For example, `[2, 3, 4, 5]` reads four lines and five samples
+        starting at line index 2 and sample index 3. If omitted or `None`,
+        the whole raster is read.
 
     Returns
     -------
