@@ -73,3 +73,29 @@
     display: none;
   }
 }
+
+.download-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 0.85rem;
+    justify-content: center;
+    align-items: center;
+    margin: 1.5rem 0;
+}
+
+.download-buttons .md-button {
+    margin: 0 !important;
+}
+
+.button-blue {
+    background-color: #2563eb !important;
+    border-color: #2563eb !important;
+    color: white !important;
+}
+
+.button-green {
+    background-color: #059669 !important;
+    border-color: #059669 !important;
+    color: white !important;
+}
