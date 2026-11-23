@@ -4,7 +4,7 @@ target-version = "py311"
 output-format = "concise"
 required-version = ">=0.16.7"
 
-exclude = [".git", ".venv", "build", "dist", "tools/*"]
+exclude = [".git", ".venv", "build", "dist", "tools/*", "docs", "scripts"]
 
 [format]
 docstring-code-format = true
