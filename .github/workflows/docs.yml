@@ -1,0 +1,133 @@
+name: docs
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to deploy (dev, 1.1.0, ...); 'dev' is rebuilt on every push to main"
+        required: true
+        default: dev
+
+  push:
+    branches:
+      - main
+    tags:
+      - "aresys-io-v*"
+    paths:
+      - ".github/workflows/docs.yml"
+      - "docs/**"
+      - "overrides/**"
+      - "src/**"
+      - "tools/build_doc.py"
+      - "tools/build.template.md"
+      - "pyproject.toml"
+      - "zensical.toml"
+
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/docs.yml"
+      - "docs/**"
+      - "overrides/**"
+      - "src/**"
+      - "tools/build_doc.py"
+      - "tools/build.template.md"
+      - "pyproject.toml"
+      - "zensical.toml"
+
+env:
+  PYTHON_VERSION: "3.12"
+  # Zensical-compatible fork of mike, not published on PyPI.
+  # See https://zensical.org/docs/compatibility/mkdocs/mike/
+  MIKE_REQUIREMENT: "mike @ git+https://github.com/squidfunk/mike.git@2d4ad799442f4592db8ad53b179bfb33db8c69ac"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install docs dependencies
+        run: python -m pip install ".[docs]"
+
+      - name: Build documentation
+        run: python tools/build_doc.py
+
+  deploy:
+    needs: [build]
+    if: github.event_name != 'pull_request'
+
+    runs-on: ubuntu-latest
+
+    # mike pushes one commit per deployment: never let two deployments overlap.
+    concurrency:
+      group: docs-deploy
+      cancel-in-progress: false
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install docs dependencies
+        run: python -m pip install ".[docs]" "${{ env.MIKE_REQUIREMENT }}"
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Resolve version
+        id: version
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
+            version="${INPUT_VERSION}"
+          elif [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+            version="${GITHUB_REF_NAME#aresys-io-v}"
+          else
+            version="dev"
+          fi
+          if ! [[ "${version}" =~ ^[A-Za-z0-9][A-Za-z0-9._-]*$ ]]; then
+            echo "error: invalid version '${version}'" >&2
+            exit 1
+          fi
+          if [ "${version}" = "latest" ]; then
+            echo "error: 'latest' is an alias, not a version" >&2
+            exit 1
+          fi
+          echo "version=${version}" >> "${GITHUB_OUTPUT}"
+
+      - name: Generate build information
+        env:
+          DOCS_VERSION: ${{ steps.version.outputs.version }}
+        run: python tools/build_doc.py --skip-build
+
+      - name: Deploy development documentation
+        if: steps.version.outputs.version == 'dev'
+        run: mike deploy --push dev --title Development
+
+      - name: Deploy release documentation
+        if: steps.version.outputs.version != 'dev'
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          mike deploy --push --update-aliases "${VERSION}" latest --title "${VERSION}"
+          mike set-default --push latest

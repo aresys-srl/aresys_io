@@ -41,6 +41,12 @@ dev = ["ruff>=0.16.7"]
 test = ["pytest", "pytest-cov"]
 typecheck = ["pyrefly==1.1.0", "scipy-stubs"]
 docs = ["zensical", "mkdocstrings-python"]
+# Versioned documentation deployment. The Zensical-compatible fork of mike is
+# not published on PyPI and is pinned to a commit for reproducibility.
+# See https://zensical.org/docs/compatibility/mkdocs/mike/
+docs-deploy = [
+    "mike @ git+https://github.com/squidfunk/mike.git@2d4ad799442f4592db8ad53b179bfb33db8c69ac",
+]
 
 [build-system]
 requires = ["hatchling"]
@@ -51,6 +57,9 @@ path = "src/aresys_io/__init__.py"
 
 [tool.hatch.build.targets.sdist]
 only-include = ["src", "tests", "docs"]
+
+[tool.hatch.metadata]
+allow-direct-references = true
 
 [tool.pytest.ini_options]
 minversion = "8.0"

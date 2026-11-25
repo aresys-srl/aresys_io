@@ -12,7 +12,7 @@ site_description = "Documentation for the Aresys Input/Output python package."
 site_author = "Aresys s.r.l."
 repo_url = "https://github.com/aresys-srl/aresys_io"
 repo_name = "aresys/aresys_io"
-site_url = "https://opensource.aresys.it/aresys_io"
+site_url = "https://opensource.aresys.it/aresys_io/"
 copyright = """
 Copyright &copy; 2026-present Aresys s.r.l.
 """
@@ -253,6 +253,23 @@ members_order = "source"
 # Link back to the Aresys Open Source landing page, shown in the header.
 open_source_url = "https://opensource.aresys.it/"
 open_source_label = "Aresys Open Source"
+
+# ----------------------------------------------------------------------------
+# VERSIONING
+# ----------------------------------------------------------------------------
+# Versioned documentation is deployed with the Zensical-compatible fork of
+# mike, see https://zensical.org/docs/compatibility/mkdocs/mike/
+[project.extra.version]
+provider = "mike"
+# Versions carrying one of these aliases, or matching the version name, do not
+# display the outdated-version warning.
+default = ["latest", "dev"]
+# Show the alias next to the version number in the version selector.
+alias = true
+
+[project.plugins.mike]
+# GitHub Pages does not follow symlinks, so aliases are written as redirects.
+alias_type = "redirect"
 
 [[project.extra.social]]
 icon = "fontawesome/brands/github"
