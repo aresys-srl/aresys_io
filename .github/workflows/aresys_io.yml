@@ -8,15 +8,11 @@ on:
       - main
     tags:
       - "aresys-io-v*"
-      - "docs-v*"
     paths:
       - ".github/workflows/aresys_io.yml"
       - "src/**"
       - "tests/**"
-      - "docs/**"
-      - "overrides/**"
       - "pyproject.toml"
-      - "zensical.toml"
 
   pull_request:
     branches:
@@ -25,10 +21,7 @@ on:
       - ".github/workflows/aresys_io.yml"
       - "src/**"
       - "tests/**"
-      - "docs/**"
-      - "overrides/**"
       - "pyproject.toml"
-      - "zensical.toml"
 
 jobs:
   ruff:
@@ -167,26 +160,6 @@ jobs:
           path: dist/
           retention-days: 14
 
-  doc_build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-python@v7
-        with:
-          python-version: "3.12"
-
-      - run: python -m pip install ".[docs]"
-      - run: python tools/build_doc.py
-      - uses: actions/upload-artifact@v7
-        with:
-          name: documentation-site
-          path: site/
-          retention-days: 14
-
   publish:
     needs: [ruff, pyrefly, unittest_linux, unittest_windows, build]
     if: startsWith(github.ref_name, 'aresys-io-v')
@@ -218,37 +191,3 @@ jobs:
         with:
           packages-dir: dist
 
-  publish_docs:
-    needs: [doc_build, publish]
-    if: >
-      ${{
-        !cancelled() &&
-        (startsWith(github.ref_name, 'aresys-io-v') || startsWith(github.ref_name, 'docs-v')) &&
-        needs.doc_build.result == 'success' &&
-        (needs.publish.result == 'success' || needs.publish.result == 'skipped')
-      }}
-
-    runs-on: ubuntu-latest
-
-    permissions:
-      pages: write
-      id-token: write
-
-    steps:
-      - name: Download docs site
-        uses: actions/download-artifact@v8
-        with:
-          name: documentation-site
-          path: site
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v6
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v5
-        with:
-          path: site
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v5

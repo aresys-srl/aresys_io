@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{#
+  Versioned documentation (mike): warn the user when they are not viewing the
+  default version. The link always points to the root of the site, which
+  redirects to the default version, so older builds do not depend on a
+  specific alias.
+#}
+{% block outdated %}
+  You're not viewing the latest version.
+  <a href="{{ '../' ~ base_url }}">
+    <strong>Click here to go to the latest version.</strong>
+  </a>
+{% endblock %}
