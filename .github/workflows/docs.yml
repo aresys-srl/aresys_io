@@ -122,12 +122,12 @@ jobs:
 
       - name: Deploy development documentation
         if: steps.version.outputs.version == 'dev'
-        run: mike deploy --push dev --title Development
+        run: mike deploy --push dev --title dev
 
       - name: Deploy release documentation
         if: steps.version.outputs.version != 'dev'
         env:
           VERSION: ${{ steps.version.outputs.version }}
         run: |
-          mike deploy --push --update-aliases "${VERSION}" latest --title "${VERSION}"
+          mike deploy --push --update-aliases "${VERSION}" latest
           mike set-default --push latest

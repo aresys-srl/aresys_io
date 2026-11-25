@@ -99,3 +99,16 @@
     border-color: #059669 !important;
     color: white !important;
 }
+
+/*
+ * Version selector (mike): render the alias in parentheses, e.g.
+ * "1.1.0 (latest)" instead of "1.1.0 latest". The alias is emitted by the
+ * theme as a separate span, and its format is hardcoded in the bundle.
+ */
+.md-version__alias::before {
+    content: "(";
+}
+
+.md-version__alias::after {
+    content: ")";
+}
